@@ -1,0 +1,17 @@
+FROM docker.io/library/golang:1.27 AS build
+
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+COPY server ./server
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/bbca ./server/cmd/bbca
+
+FROM docker.io/library/debian:bookworm-slim
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates poppler-utils tesseract-ocr tesseract-ocr-eng tesseract-ocr-ind \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+COPY --from=build /out/bbca /usr/local/bin/bbca
+ENTRYPOINT ["/usr/local/bin/bbca"]

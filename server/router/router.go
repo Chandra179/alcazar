@@ -54,6 +54,22 @@ func (d *dependencies) New() *gin.Engine {
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.POST("/example", d.example)
+	bbca := r.Group("/api/v1/companies/BBCA")
+	if d.financialCoverage != nil {
+		bbca.GET("/coverage", d.financialCoverage)
+	}
+	if d.financialPeriods != nil {
+		bbca.GET("/periods", d.financialPeriods)
+	}
+	if d.financialFacts != nil {
+		bbca.GET("/facts", d.financialFacts)
+	}
+	if d.financialMetrics != nil {
+		bbca.GET("/metrics", d.financialMetrics)
+	}
+	if d.financialPrompts != nil {
+		bbca.GET("/prompts", d.financialPrompts)
+	}
 
 	return r
 }

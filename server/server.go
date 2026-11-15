@@ -17,6 +17,7 @@ import (
 
 	"github.com/Chandra179/lux/server/config"
 	"github.com/Chandra179/lux/server/internal/example"
+	"github.com/Chandra179/lux/server/internal/financials"
 	"github.com/Chandra179/lux/server/logger"
 	"github.com/Chandra179/lux/server/middleware"
 	"github.com/Chandra179/lux/server/router"
@@ -60,6 +61,13 @@ func runHTTPServer() error {
 		return err
 	}
 	defer func() { _ = db.Close() }()
+	catalogPath := strings.TrimSpace(os.Getenv("BBCA_CATALOG"))
+	if catalogPath == "" {
+		catalogPath = filepath.Join("..", "atlas", "business", "fundamental-analysis.yaml")
+	}
+	if err := financials.Initialize(context.Background(), db, catalogPath); err != nil {
+		return fmt.Errorf("initialize BBCA financial data: %w", err)
+	}
 
 	badgerDB, err := store.NewBadger(cfg.Badger.Dir)
 	if err != nil {
@@ -71,14 +79,20 @@ func runHTTPServer() error {
 		Logger: log,
 		DB:     db,
 	})
+	financialDeps := financials.NewDependencies(&financials.DependenciesConfig{DB: db})
 	middlewareDeps := middleware.NewDependencies(log)
 
 	engine := router.NewDependencies(&router.DependenciesConfig{
-		Logger:           log,
-		RequestLog:       middlewareDeps.RequestLog(cfg.Middleware.RequestLog),
-		RequestBodyLimit: middleware.RequestBodyLimit(cfg.HTTP.MaxBodySizeInBytes),
-		Readiness:        readinessHandler(db, badgerDB),
-		Example:          exampleDeps.HandleExample,
+		Logger:            log,
+		RequestLog:        middlewareDeps.RequestLog(cfg.Middleware.RequestLog),
+		RequestBodyLimit:  middleware.RequestBodyLimit(cfg.HTTP.MaxBodySizeInBytes),
+		Readiness:         readinessHandler(db, badgerDB),
+		Example:           exampleDeps.HandleExample,
+		FinancialCoverage: financialDeps.HandleCoverage,
+		FinancialPeriods:  financialDeps.HandlePeriods,
+		FinancialFacts:    financialDeps.HandleFacts,
+		FinancialMetrics:  financialDeps.HandleMetrics,
+		FinancialPrompts:  financialDeps.HandlePrompts,
 	}).New()
 
 	httpServer := &http.Server{

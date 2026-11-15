@@ -7,8 +7,9 @@ BINARY ?= bin/lux-server
 APP_ENVIRONMENT ?= dev
 SQLITE_DSN ?= lux.db
 BADGER_DIR ?= lux
+REVIEW_FILE ?= data/review/bbca-review.csv
 
-.PHONY: all build run test lint fmt tidy verify migrate-up podman-build \
+.PHONY: all build run test lint fmt tidy verify migrate-up podman-build bbca-import bbca-review bbca-approve \
 	web-install web-dev web-build web-lint web-typecheck
 
 all: verify lint test build
@@ -40,6 +41,15 @@ migrate-up:
 
 podman-build:
 	$(PODMAN) build -t lux-server .
+
+bbca-import:
+	PODMAN="$(PODMAN)" ./scripts/bbca.sh import
+
+bbca-review:
+	PODMAN="$(PODMAN)" ./scripts/bbca.sh review --out "$(REVIEW_FILE)"
+
+bbca-approve:
+	PODMAN="$(PODMAN)" ./scripts/bbca.sh approve --file "$(REVIEW_FILE)"
 
 web-install:
 	$(NPM) --prefix web ci

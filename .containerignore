@@ -5,6 +5,7 @@
 bin
 client
 web
+data
 docs
 *.db
 *.db-*
