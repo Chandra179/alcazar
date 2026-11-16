@@ -35,7 +35,7 @@ func run(args []string) error {
 	filePath := flags.String("file", "", "review CSV to apply")
 	ocrLanguage := flags.String("ocr-language", "eng+ind", "Tesseract language set")
 	minPageChars := flags.Int("min-page-chars", 60, "OCR pages with fewer non-space characters")
-	force := flags.Bool("force", false, "re-extract processed documents")
+	force := flags.Bool("force", false, "rebuild facts from cached pages and extract any missing pages")
 	if err := flags.Parse(args[1:]); err != nil {
 		return err
 	}

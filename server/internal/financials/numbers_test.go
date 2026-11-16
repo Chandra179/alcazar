@@ -68,6 +68,18 @@ func TestPageBasisMixedHeadingsStaysUnknown(t *testing.T) {
 	}
 }
 
+func TestDetectCanonicalKeyRecognizesFixedAssetAcquisitions(t *testing.T) {
+	for _, label := range []string{
+		"Acquisition of fixed assets (1,234)",
+		"Acquisition of property and equipment (1,234)",
+		"Perolehan aset tetap (1.234)",
+	} {
+		if got := detectCanonicalKey(label); got != "capital_expenditures" {
+			t.Errorf("detectCanonicalKey(%q) = %q, want capital_expenditures", label, got)
+		}
+	}
+}
+
 func TestComparativeFactPeriodsKeepSourcePage(t *testing.T) {
 	document := importDocument{Document: Document{SHA256: "document-hash", Period: "2008"}}
 	page := Page{Number: 42, Text: "2008             2007\nTotal assets       1.250.000       1.100.000", ExtractionMethod: "pdftotext"}
@@ -81,6 +93,9 @@ func TestComparativeFactPeriodsKeepSourcePage(t *testing.T) {
 	if facts[0].PageNumber != 42 || facts[1].PageNumber != 42 {
 		t.Fatalf("source page numbers = %d, %d, want 42", facts[0].PageNumber, facts[1].PageNumber)
 	}
+	if facts[0].SourceLocator != "page:42" || facts[1].SourceLocator != "page:42" {
+		t.Fatalf("source locators = %q, %q, want page:42", facts[0].SourceLocator, facts[1].SourceLocator)
+	}
 }
 
 func TestMetricInputsRejectMixedReportingBasis(t *testing.T) {
@@ -90,5 +105,54 @@ func TestMetricInputsRejectMixedReportingBasis(t *testing.T) {
 	}
 	if reason := metricInputCompatibility(values, []string{"net_earnings", "revenue"}, "net-profit-margin"); reason == "" {
 		t.Fatal("mixed reporting basis was allowed")
+	}
+}
+
+func TestMetricInputsRequireKnownMetadata(t *testing.T) {
+	tests := []struct {
+		name string
+		fact Fact
+	}{
+		{name: "unknown basis", fact: Fact{ReportingBasis: "unknown", AuditedStatus: "audited", Currency: "IDR", Unit: "millions"}},
+		{name: "unknown audit status", fact: Fact{ReportingBasis: "consolidated", AuditedStatus: "unknown", Currency: "IDR", Unit: "millions"}},
+		{name: "unknown currency", fact: Fact{ReportingBasis: "consolidated", AuditedStatus: "audited", Unit: "millions"}},
+		{name: "unknown units", fact: Fact{ReportingBasis: "consolidated", AuditedStatus: "audited", Currency: "IDR"}},
+		{name: "generic units", fact: Fact{ReportingBasis: "consolidated", AuditedStatus: "audited", Currency: "IDR", Unit: "as displayed"}},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			values := map[string]periodFact{
+				"net_earnings": {Fact: test.fact},
+				"revenue":      {Fact: test.fact},
+			}
+			if reason := metricInputCompatibility(values, []string{"net_earnings", "revenue"}, "net-profit-margin"); reason == "" {
+				t.Fatal("metric accepted unknown or generic metadata")
+			}
+		})
+	}
+	valid := Fact{ReportingBasis: "consolidated", AuditedStatus: "audited", Currency: "IDR", Unit: "millions"}
+	values := map[string]periodFact{"net_earnings": {Fact: valid}, "revenue": {Fact: valid}}
+	if reason := metricInputCompatibility(values, []string{"net_earnings", "revenue"}, "net-profit-margin"); reason != "" {
+		t.Fatalf("compatible known metadata rejected: %s", reason)
+	}
+}
+
+func TestFormulaDispositionClassifiesNonCalculatedCatalogEntries(t *testing.T) {
+	want := map[string]string{
+		"closed-end-fund-discount-to-nav": "not_applicable",
+		"dividend-yield":                  "requires_external_data",
+		"earnings-yield-on-original-cost": "requires_external_data",
+		"insurance-float-cost":            "not_applicable",
+		"look-through-earnings":           "requires_external_data",
+		"owner-earnings":                  "requires_manual_estimate",
+		"price-earnings-ratio":            "requires_external_data",
+		"price-to-book-ratio":             "requires_external_data",
+		"real-return-after-inflation":     "requires_external_data",
+	}
+	for id, wantStatus := range want {
+		status, reason, ok := formulaDisposition(id)
+		if !ok || status != wantStatus || reason == "" {
+			t.Errorf("formulaDisposition(%q) = (%q, %q, %t), want status %q with reason", id, status, reason, ok, wantStatus)
+		}
 	}
 }

@@ -31,6 +31,7 @@ type ImportOptions struct {
 type factCandidate struct {
 	ID               string
 	PageNumber       int
+	SourceLocator    string
 	Period           string
 	PeriodStart      string
 	PeriodEnd        string
@@ -66,7 +67,7 @@ var financialAliases = []labelAlias{
 	{key: "selling_general_and_administrative_expense", re: regexp.MustCompile(`(?i)selling,? general and administrative|beban umum dan administrasi`)},
 	{key: "research_and_development_expense", re: regexp.MustCompile(`(?i)research and development expense|beban penelitian dan pengembangan`)},
 	{key: "depreciation_expense", re: regexp.MustCompile(`(?i)depreciation expense|beban penyusutan`)},
-	{key: "capital_expenditures", re: regexp.MustCompile(`(?i)capital expenditures|acquisition of property.*equipment|perolehan aset tetap`)},
+	{key: "capital_expenditures", re: regexp.MustCompile(`(?i)capital expenditures|acquisition of (?:property.*equipment|fixed assets)|perolehan aset tetap`)},
 	{key: "net_cash_from_operating_activities", re: regexp.MustCompile(`(?i)net cash (?:provided by|from) operating activities|arus kas bersih dari aktivitas operasi`)},
 	{key: "net_cash_from_investing_activities", re: regexp.MustCompile(`(?i)net cash (?:used in|from) investing activities|arus kas bersih dari aktivitas investasi`)},
 	{key: "net_cash_from_financing_activities", re: regexp.MustCompile(`(?i)net cash (?:used in|from) financing activities|arus kas bersih dari aktivitas pendanaan`)},
@@ -80,8 +81,10 @@ var financialAliases = []labelAlias{
 }
 
 func detectCanonicalKey(line string) string {
+	label := strings.TrimLeft(strings.TrimSpace(line), "0123456789 .:()#*-\t")
 	for _, alias := range financialAliases {
-		if alias.re.MatchString(line) {
+		match := alias.re.FindStringIndex(label)
+		if match != nil && match[0] == 0 {
 			return alias.key
 		}
 	}
@@ -309,13 +312,18 @@ func extractDocument(ctx context.Context, db *sql.DB, document importDocument, o
 				continue
 			}
 			periodStart, periodEnd, periodType := periodBounds(document.Period)
+			auditedStatus := "unknown"
+			if document.Audited {
+				auditedStatus = "audited"
+			}
 			facts = append(facts, factCandidate{
 				ID: deterministicID(document.SHA256, 0, index, candidate.Cell), PageNumber: 0,
-				Period: document.Period, PeriodStart: periodStart, PeriodEnd: periodEnd,
+				SourceLocator: candidate.Sheet + "!" + candidate.Cell,
+				Period:        document.Period, PeriodStart: periodStart, PeriodEnd: periodEnd,
 				PeriodType: periodType, RawLabel: candidate.Sheet + " / " + candidate.Label,
 				RawValue: candidate.Value, EvidenceText: candidate.Evidence, CanonicalKey: key,
-				NormalizedValue: strconv.FormatFloat(value, 'f', -1, 64), Currency: "IDR",
-				Unit: "as displayed", ReportingBasis: "unknown", AuditedStatus: "unknown",
+				NormalizedValue: strconv.FormatFloat(value, 'f', -1, 64), Currency: candidate.Currency,
+				Unit: candidate.Unit, ReportingBasis: "unknown", AuditedStatus: auditedStatus,
 				ExtractionMethod: "xlsx",
 			})
 		}
@@ -427,7 +435,8 @@ func candidatesFromPage(document importDocument, page Page) []factCandidate {
 			label := strings.TrimSpace(line)
 			candidates = append(candidates, factCandidate{
 				ID:         deterministicID(document.SHA256, page.Number, lineIndex, strconv.Itoa(tokenIndex)),
-				PageNumber: page.Number, Period: period, PeriodStart: start, PeriodEnd: end,
+				PageNumber: page.Number, SourceLocator: fmt.Sprintf("page:%d", page.Number),
+				Period: period, PeriodStart: start, PeriodEnd: end,
 				PeriodType: kind, RawLabel: label, RawValue: raw, EvidenceText: strings.TrimSpace(line),
 				CanonicalKey: key, NormalizedValue: strconv.FormatFloat(value, 'f', -1, 64),
 				Currency: currency, Unit: unit, ReportingBasis: basis, AuditedStatus: audited,
@@ -445,6 +454,10 @@ func storeExtractedDocument(ctx context.Context, db *sql.DB, document importDocu
 	}
 	defer func() { _ = tx.Rollback() }()
 	if force {
+		if _, err := tx.ExecContext(ctx, `DELETE FROM financial_fact_sources WHERE fact_id IN
+			(SELECT id FROM financial_facts WHERE document_id = ?)`, document.ID); err != nil {
+			return fmt.Errorf("replace document fact sources: %w", err)
+		}
 		if _, err := tx.ExecContext(ctx, `DELETE FROM financial_facts WHERE document_id = ?`, document.ID); err != nil {
 			return fmt.Errorf("replace document facts: %w", err)
 		}
@@ -461,7 +474,7 @@ func storeExtractedDocument(ctx context.Context, db *sql.DB, document importDocu
 	}
 	for _, fact := range facts {
 		if _, err := tx.ExecContext(ctx, `INSERT OR IGNORE INTO financial_facts
-			(id, document_id, page_number, period, period_start, period_end, period_type,
+				(id, document_id, page_number, period, period_start, period_end, period_type,
 			raw_label, raw_value, evidence_text, canonical_key, normalized_value, currency,
 			unit, reporting_basis, audited_status, extraction_method, status)
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
@@ -470,6 +483,11 @@ func storeExtractedDocument(ctx context.Context, db *sql.DB, document importDocu
 			fact.NormalizedValue, fact.Currency, fact.Unit, fact.ReportingBasis,
 			fact.AuditedStatus, fact.ExtractionMethod); err != nil {
 			return fmt.Errorf("store candidate fact %s: %w", fact.ID, err)
+		}
+		if _, err := tx.ExecContext(ctx, `INSERT INTO financial_fact_sources (fact_id, source_locator)
+				VALUES (?, ?) ON CONFLICT(fact_id) DO UPDATE SET source_locator = excluded.source_locator`,
+			fact.ID, fact.SourceLocator); err != nil {
+			return fmt.Errorf("store source locator for fact %s: %w", fact.ID, err)
 		}
 	}
 	if _, err := tx.ExecContext(ctx, `UPDATE financial_documents SET extraction_status = 'processed' WHERE id = ?`, document.ID); err != nil {

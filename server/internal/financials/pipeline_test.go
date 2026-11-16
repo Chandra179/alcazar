@@ -1,19 +1,20 @@
 package financials
 
 import (
-	"archive/zip"
 	"context"
 	"encoding/csv"
 	"encoding/json"
+	"math"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
-	"strings"
+	"strconv"
 	"testing"
 
 	"github.com/Chandra179/lux/server/router"
 	"github.com/Chandra179/lux/server/store"
 	"github.com/gin-gonic/gin"
+	"github.com/xuri/excelize/v2"
 	"go.uber.org/zap"
 )
 
@@ -97,8 +98,11 @@ func TestImportReviewApprovalAndReadAPI(t *testing.T) {
 		t.Fatalf("approved facts = %d, want 2", len(approved))
 	}
 	for _, fact := range approved {
-		if fact.PageNumber != 0 || fact.DocumentPath != "bbca-2025.xlsx" || fact.ExtractionMethod != "xlsx" {
+		if fact.PageNumber != 0 || fact.SourceLocator == "" || fact.DocumentPath != "bbca-2025.xlsx" || fact.ExtractionMethod != "xlsx" {
 			t.Fatalf("source traceability missing from fact: %#v", fact)
+		}
+		if fact.CanonicalKey == "net_earnings" && fact.SourceLocator != "Statement!B1" {
+			t.Fatalf("XLSX source locator = %q, want Statement!B1", fact.SourceLocator)
 		}
 	}
 
@@ -123,6 +127,17 @@ func TestImportReviewApprovalAndReadAPI(t *testing.T) {
 		if response.Code != 200 {
 			t.Fatalf("GET %s status = %d, body: %s", route, response.Code, response.Body.String())
 		}
+	}
+	factsResponse := httptest.NewRecorder()
+	engine.ServeHTTP(factsResponse, httptest.NewRequest("GET", "/api/v1/companies/BBCA/facts?period=2025", nil))
+	var factsPayload struct {
+		Facts []Fact `json:"facts"`
+	}
+	if err := json.Unmarshal(factsResponse.Body.Bytes(), &factsPayload); err != nil {
+		t.Fatal(err)
+	}
+	if len(factsPayload.Facts) != 2 || factsPayload.Facts[0].SourceLocator == "" || factsPayload.Facts[1].SourceLocator == "" {
+		t.Fatalf("API facts lost workbook source locators: %#v", factsPayload.Facts)
 	}
 	metricsResponse := httptest.NewRecorder()
 	engine.ServeHTTP(metricsResponse, httptest.NewRequest("GET", "/api/v1/companies/BBCA/metrics?period=2025", nil))
@@ -211,6 +226,248 @@ Net profit 100 80')`, document.ID)
 	}
 }
 
+func TestReviewPromptsFindComparativePeriodEvidence(t *testing.T) {
+	root := t.TempDir()
+	catalogPath := filepath.Join(root, "fundamental-analysis.yaml")
+	catalog := `entries:
+  - id: cash-flow-statement
+    type: concept
+    description: Cash flow statement reports sources and uses of cash.
+  - id: credit-risk
+    type: heuristic
+    description: Credit risk depends on borrowers' repayment capacity.
+`
+	if err := os.WriteFile(catalogPath, []byte(catalog), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	db, err := store.NewSQLite(context.Background(), filepath.Join(root, "test.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = db.Close() }()
+	if err := Initialize(context.Background(), db, catalogPath); err != nil {
+		t.Fatal(err)
+	}
+	_, err = db.Exec(`INSERT INTO financial_documents
+		(id,sha256,local_path,source_url,period,document_type,format,audited,extraction_status)
+		VALUES ('doc-2002','hash-2002','annual_reports/BCA_AR_2002.pdf','https://example.test/2002.pdf',
+		'2002','Annual report','PDF',1,'processed')`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = db.Exec(`INSERT INTO financial_pages (document_id,page_number,extraction_method,text)
+		VALUES ('doc-2002',2,'pdftotext','Five-year cash flow highlights for 1998 through 2002'),
+		('doc-2002',3,'pdftotext','Unrelated governance information')`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = db.Exec(`INSERT INTO financial_facts
+		(id,document_id,page_number,period,raw_label,raw_value,evidence_text,canonical_key,normalized_value,
+		currency,unit,reporting_basis,audited_status,extraction_method,status)
+		VALUES ('fact-1998','doc-2002',2,'1998','Net cash from operations','10','Net cash from operations 10',
+		'net_cash_from_operating_activities','10','IDR','millions','consolidated','audited','pdftotext','pending')`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	prompts, err := ListReviewPrompts(context.Background(), db, "1998")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(prompts) != 1 || prompts[0].Entity.ID != "cash-flow-statement" || len(prompts[0].Evidence) != 1 {
+		t.Fatalf("FY1998 prompts = %#v, want only the evidence-linked cash flow prompt", prompts)
+	}
+	if prompts[0].Evidence[0].PageNumber != 2 || prompts[0].Evidence[0].DocumentPath != "annual_reports/BCA_AR_2002.pdf" {
+		t.Fatalf("FY1998 evidence source = %#v, want FY2002 annual report page 2", prompts[0].Evidence[0])
+	}
+	missing, err := ListReviewPrompts(context.Background(), db, "1997")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(missing) != 0 {
+		t.Fatalf("prompts without evidence = %#v, want empty", missing)
+	}
+}
+
+func TestCalculateMetricsDerivesAverageBalanceInputs(t *testing.T) {
+	root := t.TempDir()
+	catalogPath := filepath.Join(root, "fundamental-analysis.yaml")
+	catalog := `entries:
+  - id: return-on-assets
+    type: formula
+    description: Net earnings divided by average total assets.
+    formula: (net_earnings / average_total_assets) * 100
+  - id: return-on-equity
+    type: formula
+    description: Net earnings available to common shareholders divided by average common equity.
+    formula: (net_income_available_to_common_shareholders / average_common_shareholders_equity) * 100
+`
+	if err := os.WriteFile(catalogPath, []byte(catalog), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	db, err := store.NewSQLite(context.Background(), filepath.Join(root, "test.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = db.Close() }()
+	if err := Initialize(context.Background(), db, catalogPath); err != nil {
+		t.Fatal(err)
+	}
+	for _, document := range []struct{ id, hash, period string }{
+		{id: "doc-2025", hash: "hash-2025", period: "2025"},
+		{id: "doc-2024", hash: "hash-2024", period: "2024"},
+	} {
+		_, err := db.Exec(`INSERT INTO financial_documents
+			(id,sha256,local_path,period,document_type,format,audited,extraction_status)
+			VALUES (?,?,?,?,?,?,1,'processed')`, document.id, document.hash,
+			"report-"+document.period+".pdf", document.period, "Audited financial statements", "PDF")
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	facts := []struct{ id, doc, period, key, label, value string }{
+		{"net-earnings", "doc-2025", "2025", "net_earnings", "Net earnings", "100"},
+		{"common-earnings", "doc-2025", "2025", "net_income_available_to_common_shareholders", "Net income available to common shareholders", "90"},
+		{"assets-end", "doc-2025", "2025", "total_assets", "Total assets", "200"},
+		{"equity-end", "doc-2025", "2025", "shareholders_equity", "Total equity", "150"},
+		{"assets-start", "doc-2024", "2024", "total_assets", "Total assets", "100"},
+		{"equity-start", "doc-2024", "2024", "shareholders_equity", "Total equity", "100"},
+	}
+	for _, fact := range facts {
+		_, err := db.Exec(`INSERT INTO financial_facts
+			(id,document_id,page_number,period,raw_label,raw_value,evidence_text,canonical_key,normalized_value,
+			currency,unit,reporting_basis,audited_status,extraction_method,status)
+			VALUES (?,?,1,?,?,?,?,?,?, 'IDR','millions','consolidated','audited','review','approved')`,
+			fact.id, fact.doc, fact.period, fact.label, fact.value, fact.label+" "+fact.value,
+			fact.key, fact.value)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	metrics, err := CalculateMetrics(context.Background(), db, "2025")
+	if err != nil {
+		t.Fatal(err)
+	}
+	byID := make(map[string]Metric, len(metrics))
+	for _, metric := range metrics {
+		byID[metric.EntityID] = metric
+	}
+	if metric := byID["return-on-assets"]; metric.Status != "calculated" || metric.Value == nil || math.Abs(*metric.Value-(100.0/150*100)) > 1e-9 {
+		t.Fatalf("return-on-assets = %#v", metric)
+	}
+	if metric := byID["return-on-equity"]; metric.Status != "calculated" || metric.Value == nil || math.Abs(*metric.Value-72) > 1e-9 {
+		t.Fatalf("return-on-equity = %#v", metric)
+	}
+	averageInput, ok := byID["return-on-assets"].Inputs["average_total_assets"].(map[string]any)
+	if !ok {
+		t.Fatalf("average asset input = %#v", byID["return-on-assets"].Inputs["average_total_assets"])
+	}
+	sources, ok := averageInput["source_facts"].([]map[string]any)
+	if !ok || len(sources) != 2 || sources[0]["fact_id"] != "assets-end" || sources[1]["fact_id"] != "assets-start" {
+		t.Fatalf("average asset sources = %#v", averageInput["source_facts"])
+	}
+}
+
+func TestCapitalExpenditureBurdenUsesTrailingTenAnnualPeriods(t *testing.T) {
+	root := t.TempDir()
+	catalogPath := filepath.Join(root, "fundamental-analysis.yaml")
+	catalog := `entries:
+  - id: capital-expenditure-to-net-earnings
+    type: formula
+    description: Ten-year reinvestment burden.
+    formula: (sum(capital_expenditures over period) / sum(net_earnings over same period)) * 100
+`
+	if err := os.WriteFile(catalogPath, []byte(catalog), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	db, err := store.NewSQLite(context.Background(), filepath.Join(root, "test.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = db.Close() }()
+	if err := Initialize(context.Background(), db, catalogPath); err != nil {
+		t.Fatal(err)
+	}
+	for year := 2016; year <= 2025; year++ {
+		period := strconv.Itoa(year)
+		documentID := "doc-" + period
+		_, err := db.Exec(`INSERT INTO financial_documents
+			(id,sha256,local_path,source_url,period,document_type,format,audited,extraction_status)
+			VALUES (?,?,?,?,?,'Audited financial statements','PDF',1,'processed')`,
+			documentID, "hash-"+period, "report-"+period+".pdf", "https://example.test/"+period, period)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, input := range []struct{ key, label, value string }{
+			{"capital_expenditures", "Capital expenditures", "-1"},
+			{"net_earnings", "Net earnings", "10"},
+		} {
+			factID := input.key + "-" + period
+			_, err := db.Exec(`INSERT INTO financial_facts
+				(id,document_id,page_number,period,raw_label,raw_value,evidence_text,canonical_key,normalized_value,
+				currency,unit,reporting_basis,audited_status,extraction_method,status)
+				VALUES (?,?,8,?,?,?,?,?,?,'IDR','millions','consolidated','audited','review','approved')`,
+				factID, documentID, period, input.label, input.value, input.label+" "+input.value,
+				input.key, input.value)
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+
+	metrics, err := CalculateMetrics(context.Background(), db, "2025")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(metrics) != 1 {
+		t.Fatalf("metrics = %#v, want only capital expenditure burden", metrics)
+	}
+	metric := metrics[0]
+	if metric.Status != "calculated" || metric.Value == nil || math.Abs(*metric.Value-10) > 1e-9 {
+		t.Fatalf("ten-year capital expenditure burden = %#v, want 10%%", metric)
+	}
+	if metric.Unit != "percent" || metric.Inputs["window_start"] != "2016" || metric.Inputs["window_end"] != "2025" {
+		t.Fatalf("metric window metadata = %#v", metric.Inputs)
+	}
+	annualInputs, ok := metric.Inputs["annual_inputs"].([]map[string]any)
+	if !ok || len(annualInputs) != 10 {
+		t.Fatalf("annual inputs = %#v, want ten periods", metric.Inputs["annual_inputs"])
+	}
+	capexInput, ok := annualInputs[0]["capital_expenditures"].(map[string]any)
+	if !ok || capexInput["value"] != float64(-1) {
+		t.Fatalf("first-year capex evidence = %#v", annualInputs[0]["capital_expenditures"])
+	}
+	sources, ok := capexInput["source_facts"].([]map[string]any)
+	if !ok || len(sources) != 1 || sources[0]["fact_id"] != "capital_expenditures-2016" || sources[0]["page_number"] != 8 {
+		t.Fatalf("capex source references = %#v", capexInput["source_facts"])
+	}
+	if _, err := db.Exec(`UPDATE financial_facts SET reporting_basis='unknown' WHERE id='capital_expenditures-2016'`); err != nil {
+		t.Fatal(err)
+	}
+	incompatible, err := CalculateMetrics(context.Background(), db, "2025")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(incompatible) != 1 || incompatible[0].Status != "conflict" {
+		t.Fatalf("mixed-metadata capital expenditure burden = %#v, want conflict", incompatible)
+	}
+
+	interim, err := CalculateMetrics(context.Background(), db, "2026-09")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(interim) != 1 || interim[0].Status != "requires_multi_period" || interim[0].Value != nil {
+		t.Fatalf("interim capital expenditure burden = %#v, want requires_multi_period", interim)
+	}
+
+	missingWindow, err := CalculateMetrics(context.Background(), db, "2015")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(missingWindow) != 1 || missingWindow[0].Status != "missing_inputs" {
+		t.Fatalf("incomplete historical window = %#v, want missing_inputs", missingWindow)
+	}
+}
+
 func approveCandidates(t *testing.T, filename string, approve map[string]bool) {
 	t.Helper()
 	file, err := os.Open(filename)
@@ -229,6 +486,13 @@ func approveCandidates(t *testing.T, filename string, approve map[string]bool) {
 	for index := 1; index < len(rows); index++ {
 		if approve[rows[index][columns["canonical_key"]]] {
 			rows[index][columns["status"]] = "approved"
+			for field, value := range map[string]string{
+				"currency": "IDR", "unit": "millions", "reporting_basis": "consolidated", "audited_status": "audited",
+			} {
+				if column, ok := columns[field]; ok {
+					rows[index][column] = value
+				}
+			}
 		}
 	}
 	file, err = os.Create(filename)
@@ -252,37 +516,33 @@ func approveCandidates(t *testing.T, filename string, approve map[string]bool) {
 
 func writeTestWorkbook(t *testing.T, filename string) {
 	t.Helper()
-	file, err := os.Create(filename)
-	if err != nil {
+	file := excelize.NewFile()
+	defer func() { _ = file.Close() }()
+	if err := file.SetSheetName("Sheet1", "Statement"); err != nil {
 		t.Fatal(err)
 	}
-	archive := zip.NewWriter(file)
-	entries := map[string]string{
-		"xl/workbook.xml":            `<?xml version="1.0"?><workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Statement" sheetId="1" r:id="rId1"/></sheets></workbook>`,
-		"xl/_rels/workbook.xml.rels": `<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>`,
-		"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetData>
-<row r="1"><c r="A1" t="inlineStr"><is><t>Net profit</t></is></c><c r="B1"><v>120</v></c></row>
-<row r="2"><c r="A2" t="inlineStr"><is><t>Revenue</t></is></c><c r="B2"><v>400</v></c></row>
-<row r="3"><c r="A3" t="inlineStr"><is><t>Income before tax</t></is></c><c r="B3"><v>100</v></c></row>
-<row r="4"><c r="A4" t="inlineStr"><is><t>Income tax expense</t></is></c><c r="B4"><v>20</v></c></row>
-<row r="5"><c r="A5" t="inlineStr"><is><t>Total liabilities</t></is></c><c r="B5"><v>900</v></c></row>
-<row r="6"><c r="A6" t="inlineStr"><is><t>Total equity</t></is></c><c r="B6"><v>100</v></c></row>
-<row r="7"><c r="A7" t="inlineStr"><is><t>Total assets</t></is></c><c r="B7"><v>1.250</v></c></row>
-</sheetData></worksheet>`,
+	rows := [][]any{
+		{"Net profit", 120},
+		{"Revenue", 400},
+		{"Income before tax", 100},
+		{"Income tax expense", 20},
+		{"Total liabilities", 900},
+		{"Total equity", 100},
+		{"Total assets", 1.25},
+		{"Adjustment for portfolio already deducted from total assets", 3},
 	}
-	for name, contents := range entries {
-		writer, err := archive.Create(name)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if _, err := strings.NewReader(contents).WriteTo(writer); err != nil {
-			t.Fatal(err)
+	for rowIndex, row := range rows {
+		for columnIndex, value := range row {
+			cell, err := excelize.CoordinatesToCellName(columnIndex+1, rowIndex+1)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := file.SetCellValue("Statement", cell, value); err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
-	if err := archive.Close(); err != nil {
-		t.Fatal(err)
-	}
-	if err := file.Close(); err != nil {
+	if err := file.SaveAs(filename); err != nil {
 		t.Fatal(err)
 	}
 }

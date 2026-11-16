@@ -40,7 +40,9 @@ make bbca-approve
 make run
 ```
 
-The SQLite database stores original evidence and pending candidate facts. The API exposes approved facts and metrics only. `make bbca-import` is resumable and keys documents by SHA-256; normal retries skip processed files, while `--force` rebuilds facts from cached page text when available and extracts pages that are missing. The importer uses `pdftotext -layout` first and page-level Tesseract OCR for sparse PDF pages, with English and Indonesian language data. XLSX files are read as OOXML using Go's standard library.
+The SQLite database stores original evidence and pending candidate facts. The API exposes approved facts and metrics only. `make bbca-import` is resumable and keys documents by SHA-256; normal retries skip processed files, while `--force` rebuilds facts from cached page text when available and extracts pages that are missing. The importer uses `pdftotext -layout` first and page-level Tesseract OCR for sparse PDF pages, with English and Indonesian language data. XLSX files are read with Excelize; the review export keeps workbook source coordinates such as `Statement!B7` in `source_locator`.
+
+The latest full local import processed all 40 source documents, extracted 12,788 PDF pages, and created 5,998 pending candidate facts. Tesseract handled 99 pages of the FY2006 report; native-text extraction was also confirmed on FY2002 and FY2025 reports. The local risk-exposure workbook produced no statement facts. A repeat import skipped all 40 processed documents. No candidate facts have been approved yet, so the facts endpoint currently returns none and the metrics endpoint calculates no values until review.
 
 API routes:
 
@@ -49,6 +51,8 @@ API routes:
 - `GET /api/v1/companies/BBCA/facts?period=2025`
 - `GET /api/v1/companies/BBCA/metrics?period=2025`
 - `GET /api/v1/companies/BBCA/prompts?period=2025`
+
+Metrics use approved facts only and require compatible, known reporting basis, audit status, currency, and unit metadata. ROA and ROE average balances are derived from approved current- and prior-period balances, and the metric response includes both source facts. The capital-expenditure burden uses a trailing ten fiscal-year window for annual periods; interim requests remain `requires_multi_period`, and the response links every annual input to its source. Formula statuses distinguish `missing_inputs`, `conflict`, `not_applicable`, `requires_external_data`, `requires_multi_period`, and `requires_manual_estimate`; an unknown formula ID remains `unsupported`. Review prompts include only concepts or heuristics with page evidence, including comparative facts sourced from another report year.
 
 ## Official source pages
 

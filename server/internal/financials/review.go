@@ -14,7 +14,7 @@ import (
 
 var reviewCSVHeader = []string{
 	"id", "status", "canonical_key", "period", "normalized_value", "currency", "unit",
-	"reporting_basis", "audited_status", "review_note", "document_path", "source_url", "page_number",
+	"reporting_basis", "audited_status", "review_note", "document_path", "source_url", "page_number", "source_locator",
 	"raw_label", "raw_value", "evidence_text",
 }
 
@@ -33,8 +33,10 @@ func ExportReviewCSV(ctx context.Context, db *sql.DB, filename string) error {
 	}
 	rows, err := db.QueryContext(ctx, `SELECT f.id, f.status, f.canonical_key, f.period,
 		f.normalized_value, f.currency, f.unit, f.reporting_basis, f.audited_status,
-		f.review_note, d.local_path, d.source_url, f.page_number, f.raw_label, f.raw_value, f.evidence_text
+		f.review_note, d.local_path, d.source_url, f.page_number, COALESCE(s.source_locator, ''),
+		f.raw_label, f.raw_value, f.evidence_text
 		FROM financial_facts f JOIN financial_documents d ON d.id = f.document_id
+		LEFT JOIN financial_fact_sources s ON s.fact_id = f.id
 		WHERE f.status = 'pending' ORDER BY d.local_path, f.page_number, f.id`)
 	if err != nil {
 		return fmt.Errorf("query pending facts: %w", err)
@@ -42,14 +44,14 @@ func ExportReviewCSV(ctx context.Context, db *sql.DB, filename string) error {
 	defer func() { _ = rows.Close() }()
 	for rows.Next() {
 		var row []string
-		var id, status, key, period, value, currency, unit, basis, audited, note, docPath, sourceURL, label, raw, evidence string
+		var id, status, key, period, value, currency, unit, basis, audited, note, docPath, sourceURL, sourceLocator, label, raw, evidence string
 		var page int
 		if err := rows.Scan(&id, &status, &key, &period, &value, &currency, &unit, &basis,
-			&audited, &note, &docPath, &sourceURL, &page, &label, &raw, &evidence); err != nil {
+			&audited, &note, &docPath, &sourceURL, &page, &sourceLocator, &label, &raw, &evidence); err != nil {
 			return fmt.Errorf("scan pending fact: %w", err)
 		}
 		row = []string{id, status, key, period, value, currency, unit, basis, audited, note,
-			docPath, sourceURL, strconv.Itoa(page), label, raw, evidence}
+			docPath, sourceURL, strconv.Itoa(page), sourceLocator, label, raw, evidence}
 		if err := csvWriter.Write(row); err != nil {
 			return fmt.Errorf("write review row: %w", err)
 		}
@@ -125,6 +127,10 @@ func ApplyReviewCSV(ctx context.Context, db *sql.DB, filename string) (int, erro
 			return 0, fmt.Errorf("row %d: status must be pending, approved, or rejected", line)
 		}
 		value := get(row, "normalized_value")
+		basis := strings.ToLower(nonempty(get(row, "reporting_basis"), "unknown"))
+		audited := strings.ToLower(nonempty(get(row, "audited_status"), "unknown"))
+		currency := strings.ToUpper(get(row, "currency"))
+		unit := strings.ToLower(get(row, "unit"))
 		if status == "approved" {
 			number, ok := ParseNumber(value)
 			if !ok {
@@ -138,8 +144,7 @@ func ApplyReviewCSV(ctx context.Context, db *sql.DB, filename string) (int, erro
 		result, err := tx.ExecContext(ctx, `UPDATE financial_facts SET status = ?, canonical_key = ?, period = ?,
 			normalized_value = ?, currency = ?, unit = ?, reporting_basis = ?, audited_status = ?, review_note = ?
 			WHERE id = ?`, status, get(row, "canonical_key"), get(row, "period"), value,
-			get(row, "currency"), get(row, "unit"), nonempty(get(row, "reporting_basis"), "unknown"),
-			nonempty(get(row, "audited_status"), "unknown"), get(row, "review_note"), id)
+			currency, unit, basis, audited, get(row, "review_note"), id)
 		if err != nil {
 			return 0, fmt.Errorf("update candidate %q: %w", id, err)
 		}

@@ -36,6 +36,7 @@ type Fact struct {
 	DocumentPath     string `json:"document_path"`
 	SourceURL        string `json:"source_url,omitempty"`
 	PageNumber       int    `json:"page_number"`
+	SourceLocator    string `json:"source_locator,omitempty"`
 	Period           string `json:"period,omitempty"`
 	PeriodStart      string `json:"period_start,omitempty"`
 	PeriodEnd        string `json:"period_end,omitempty"`
