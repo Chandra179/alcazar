@@ -68,7 +68,7 @@ func TestImportReviewApprovalAndReadAPI(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(pending) != 0 {
+	if pending == nil || len(pending) != 0 {
 		t.Fatalf("unapproved facts leaked through approved query: got %d", len(pending))
 	}
 
@@ -140,6 +140,74 @@ func TestImportReviewApprovalAndReadAPI(t *testing.T) {
 	engine.ServeHTTP(missingPeriod, httptest.NewRequest("GET", "/api/v1/companies/BBCA/facts", nil))
 	if missingPeriod.Code != 400 {
 		t.Fatalf("facts without period status = %d, want 400", missingPeriod.Code)
+	}
+}
+
+func TestForceImportRebuildsCandidatesFromCachedPDFPages(t *testing.T) {
+	root := t.TempDir()
+	dataDir := filepath.Join(root, "data")
+	if err := os.MkdirAll(dataDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dataDir, "bbca-2025.pdf"), []byte("unchanged source hash"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	manifest := "period,document_type,local_file,format,direct_source_url\n" +
+		"2025,Audited financial statements,bbca-2025.pdf,PDF,https://example.test/bbca-2025.pdf\n"
+	if err := os.WriteFile(filepath.Join(dataDir, "manifest.csv"), []byte(manifest), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	catalogPath := filepath.Join(root, "fundamental-analysis.yaml")
+	if err := os.WriteFile(catalogPath, []byte("entries:\n  - id: net-profit-margin\n    type: formula\n    description: Margin.\n    formula: earnings / revenue\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	db, err := store.NewSQLite(context.Background(), filepath.Join(root, "test.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = db.Close() }()
+	if err := store.EnsureBBCAFinancialSchema(context.Background(), db); err != nil {
+		t.Fatal(err)
+	}
+	documents, err := inventoryDocuments(dataDir)
+	if err != nil || len(documents) != 1 {
+		t.Fatalf("inventory documents = %d, err = %v", len(documents), err)
+	}
+	document := documents[0]
+	_, err = db.Exec(`INSERT INTO financial_documents
+		(id,sha256,local_path,source_url,period,document_type,format,audited,extraction_status)
+		VALUES (?,?,?,?,?,?,?,?, 'processed')`, document.ID, document.SHA256, document.LocalPath,
+		document.SourceURL, document.Period, document.DocumentType, document.Format, boolInt(document.Audited))
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = db.Exec(`INSERT INTO financial_pages (document_id,page_number,extraction_method,text)
+		VALUES (?,1,'pdftotext','2025          2024
+Net profit 100 80')`, document.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := Import(context.Background(), db, ImportOptions{DataDir: dataDir, CatalogPath: catalogPath, Force: true}); err != nil {
+		t.Fatal(err)
+	}
+	rows, err := db.Query(`SELECT period FROM financial_facts ORDER BY page_number, period`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = rows.Close() }()
+	var periods []string
+	for rows.Next() {
+		var period string
+		if err := rows.Scan(&period); err != nil {
+			t.Fatal(err)
+		}
+		periods = append(periods, period)
+	}
+	if err := rows.Err(); err != nil {
+		t.Fatal(err)
+	}
+	if len(periods) != 2 || periods[0] != "2024" || periods[1] != "2025" {
+		t.Fatalf("reparsed periods = %#v, want [2024 2025]", periods)
 	}
 }
 

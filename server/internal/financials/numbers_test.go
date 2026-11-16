@@ -29,17 +29,36 @@ func TestParseNumber(t *testing.T) {
 	}
 }
 
-func TestComparativePeriods(t *testing.T) {
-	got := comparativePeriods("2008", 3)
-	want := []string{"2008", "2007", "2006"}
+func TestPeriodsForExplicitColumns(t *testing.T) {
+	highlights := []string{"Five-year highlights", "1998        1999        2000        2001        2002", "Total assets 100 200 300 400 500"}
+	got := periodsForColumns(highlights, 2, "2002", 5)
+	want := []string{"1998", "1999", "2000", "2001", "2002"}
 	for index := range want {
 		if got[index] != want[index] {
 			t.Fatalf("period[%d] = %q, want %q", index, got[index], want[index])
 		}
 	}
-	interim := comparativePeriods("2026-09", 2)
-	if interim[0] != "2026-09" || interim[1] != "" {
-		t.Fatalf("interim comparative periods = %#v, want current period only", interim)
+
+	segments := []string{"2002", "Interest income 100 200 300 400 500 600 2100"}
+	got = periodsForColumns(segments, 1, "2002", 7)
+	for index, period := range got {
+		if period != "2002" {
+			t.Fatalf("segment period[%d] = %q, want 2002", index, period)
+		}
+	}
+
+	interim := []string{"2026          2025", "Total assets 100 90"}
+	got = periodsForColumns(interim, 1, "2026-09", 2)
+	if got[0] != "2026-09" || got[1] != "" {
+		t.Fatalf("interim comparative periods = %#v, want current interim and unknown comparative", got)
+	}
+
+	ambiguous := []string{"2025          2024", "Net profit 100 90 80"}
+	got = periodsForColumns(ambiguous, 1, "2025", 3)
+	for _, period := range got {
+		if period != "" {
+			t.Fatalf("mismatched column count assigned period %q", period)
+		}
 	}
 }
 
@@ -51,7 +70,7 @@ func TestPageBasisMixedHeadingsStaysUnknown(t *testing.T) {
 
 func TestComparativeFactPeriodsKeepSourcePage(t *testing.T) {
 	document := importDocument{Document: Document{SHA256: "document-hash", Period: "2008"}}
-	page := Page{Number: 42, Text: "Total assets       1.250.000       1.100.000", ExtractionMethod: "pdftotext"}
+	page := Page{Number: 42, Text: "2008             2007\nTotal assets       1.250.000       1.100.000", ExtractionMethod: "pdftotext"}
 	facts := candidatesFromPage(document, page)
 	if len(facts) != 2 {
 		t.Fatalf("candidate count = %d, want 2", len(facts))

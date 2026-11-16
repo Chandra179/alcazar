@@ -132,7 +132,7 @@ func Import(ctx context.Context, db *sql.DB, options ImportOptions) (ImportSumma
 			summary.Skipped++
 			continue
 		}
-		pages, facts, err := extractDocument(ctx, document, options)
+		pages, facts, err := extractDocument(ctx, db, document, options)
 		if err != nil {
 			return summary, fmt.Errorf("extract %s: %w", document.LocalPath, err)
 		}
@@ -275,14 +275,19 @@ func registerDocument(db *sql.DB, document importDocument, force bool) (bool, er
 	return processed, nil
 }
 
-func extractDocument(ctx context.Context, document importDocument, options ImportOptions) ([]Page, []factCandidate, error) {
+func extractDocument(ctx context.Context, db *sql.DB, document importDocument, options ImportOptions) ([]Page, []factCandidate, error) {
 	filename := filepath.Join(options.DataDir, filepath.FromSlash(document.LocalPath))
 	var pages []Page
 	var facts []factCandidate
 	switch strings.ToLower(filepath.Ext(filename)) {
 	case ".pdf":
 		var err error
-		pages, err = extractPDF(ctx, filename, options)
+		if options.Force {
+			pages, err = loadStoredPages(ctx, db, document.ID)
+		}
+		if err == nil && len(pages) == 0 {
+			pages, err = extractPDF(ctx, filename, options)
+		}
 		if err != nil {
 			return nil, nil, err
 		}
@@ -321,6 +326,27 @@ func extractDocument(ctx context.Context, document importDocument, options Impor
 		return nil, nil, err
 	}
 	return pages, facts, nil
+}
+
+func loadStoredPages(ctx context.Context, db *sql.DB, documentID string) ([]Page, error) {
+	rows, err := db.QueryContext(ctx, `SELECT page_number, text, extraction_method
+		FROM financial_pages WHERE document_id = ? ORDER BY page_number`, documentID)
+	if err != nil {
+		return nil, fmt.Errorf("load cached extracted pages: %w", err)
+	}
+	defer func() { _ = rows.Close() }()
+	var pages []Page
+	for rows.Next() {
+		var page Page
+		if err := rows.Scan(&page.Number, &page.Text, &page.ExtractionMethod); err != nil {
+			return nil, fmt.Errorf("scan cached page: %w", err)
+		}
+		pages = append(pages, page)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate cached pages: %w", err)
+	}
+	return pages, nil
 }
 
 func extractPDF(ctx context.Context, filename string, options ImportOptions) ([]Page, error) {
@@ -381,7 +407,8 @@ func candidatesFromPage(document importDocument, page Page) []factCandidate {
 		audited = "unaudited"
 	}
 	var candidates []factCandidate
-	for lineIndex, line := range strings.Split(page.Text, "\n") {
+	lines := strings.Split(page.Text, "\n")
+	for lineIndex, line := range lines {
 		key := detectCanonicalKey(line)
 		if key == "" {
 			continue
@@ -392,7 +419,7 @@ func candidatesFromPage(document importDocument, page Page) []factCandidate {
 				values = append(values, token)
 			}
 		}
-		periods := comparativePeriods(document.Period, len(values))
+		periods := periodsForColumns(lines, lineIndex, document.Period, len(values))
 		for tokenIndex, raw := range values {
 			value, _ := ParseNumber(raw)
 			period := periods[tokenIndex]
@@ -473,6 +500,7 @@ func writeExtractedPages(root, documentHash string, pages []Page) error {
 }
 
 var filenamePeriod = regexp.MustCompile(`(?:19|20)\d{2}(?:-(?:0[1-9]|1[0-2]))?`)
+var financialYearToken = regexp.MustCompile(`(?:19|20)\d{2}`)
 
 func inferPeriod(filename string) string {
 	return filenamePeriod.FindString(filename)
@@ -492,27 +520,80 @@ func periodBounds(period string) (string, string, string) {
 	return "", "", "unknown"
 }
 
-// comparativePeriods assigns visible annual comparative columns by position.
-// Candidate facts remain pending so reviewers can correct tables whose columns
-// use a different ordering or contain reference numbers.
-func comparativePeriods(documentPeriod string, values int) []string {
+// periodsForColumns only splits comparative values when nearby year headings
+// make the column periods explicit. This avoids treating segment values,
+// subtotal columns, and note references as earlier financial years.
+func periodsForColumns(lines []string, lineIndex int, documentPeriod string, values int) []string {
 	periods := make([]string, values)
 	if values == 0 {
 		return periods
 	}
-	if len(documentPeriod) != 4 {
-		periods[0] = documentPeriod
+	documentYear := 0
+	if len(documentPeriod) >= 4 {
+		documentYear, _ = strconv.Atoi(documentPeriod[:4])
+	}
+	var headingYears []int
+	start := max(0, lineIndex-12)
+	for index := lineIndex - 1; index >= start; index-- {
+		years := nearbyFinancialYears(lines[index], documentYear)
+		if len(years) > 0 {
+			headingYears = years
+			break
+		}
+	}
+	if len(headingYears) == 1 {
+		period := strconv.Itoa(headingYears[0])
+		if len(documentPeriod) == 7 && headingYears[0] == documentYear {
+			period = documentPeriod
+		}
+		for index := range periods {
+			periods[index] = period
+		}
 		return periods
 	}
-	baseYear, err := strconv.Atoi(documentPeriod)
-	if err != nil {
-		periods[0] = documentPeriod
+	if len(headingYears) > 1 {
+		if len(headingYears) != values {
+			return periods
+		}
+		for index, year := range headingYears {
+			if len(documentPeriod) == 7 {
+				if year == documentYear {
+					periods[index] = documentPeriod
+				}
+				continue
+			}
+			periods[index] = strconv.Itoa(year)
+		}
 		return periods
 	}
-	for index := range periods {
-		periods[index] = strconv.Itoa(baseYear - index)
+	if values == 1 {
+		periods[0] = documentPeriod
 	}
 	return periods
+}
+
+func nearbyFinancialYears(line string, documentYear int) []int {
+	if documentYear == 0 {
+		return nil
+	}
+	trimmed := strings.TrimSpace(line)
+	if len(trimmed) > 120 || len(strings.Fields(trimmed)) > 6 {
+		return nil
+	}
+	seen := make(map[int]bool)
+	var years []int
+	for _, token := range financialYearToken.FindAllString(trimmed, -1) {
+		year, err := strconv.Atoi(token)
+		if err != nil || year < documentYear-10 || year > documentYear || seen[year] {
+			continue
+		}
+		seen[year] = true
+		years = append(years, year)
+	}
+	if len(years) > 5 {
+		return nil
+	}
+	return years
 }
 
 func deterministicID(documentHash string, page, line int, token string) string {

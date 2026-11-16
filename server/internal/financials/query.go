@@ -100,7 +100,7 @@ func ListApprovedFacts(ctx context.Context, db *sql.DB, period string) ([]Fact, 
 		return nil, fmt.Errorf("query approved facts: %w", err)
 	}
 	defer func() { _ = rows.Close() }()
-	var facts []Fact
+	facts := make([]Fact, 0)
 	for rows.Next() {
 		var fact Fact
 		if err := rows.Scan(&fact.ID, &fact.DocumentID, &fact.DocumentPath, &fact.SourceURL, &fact.PageNumber,

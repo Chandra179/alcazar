@@ -40,7 +40,7 @@ make bbca-approve
 make run
 ```
 
-The SQLite database stores original evidence and pending candidate facts. The API exposes approved facts and metrics only. `make bbca-import` is resumable and keys documents by SHA-256; normal retries skip processed files, while `--force` re-extracts them. The importer uses `pdftotext -layout` first and page-level Tesseract OCR for sparse PDF pages, with English and Indonesian language data. XLSX files are read as OOXML using Go's standard library.
+The SQLite database stores original evidence and pending candidate facts. The API exposes approved facts and metrics only. `make bbca-import` is resumable and keys documents by SHA-256; normal retries skip processed files, while `--force` rebuilds facts from cached page text when available and extracts pages that are missing. The importer uses `pdftotext -layout` first and page-level Tesseract OCR for sparse PDF pages, with English and Indonesian language data. XLSX files are read as OOXML using Go's standard library.
 
 API routes:
 
