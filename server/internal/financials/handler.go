@@ -66,8 +66,8 @@ func (d *dependencies) HandlePrompts(c *gin.Context) {
 
 func requestedPeriod(c *gin.Context) (string, bool) {
 	period := c.Query("period")
-	if period == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "period query parameter is required"})
+	if _, _, kind := periodBounds(period); kind == "unknown" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "period must be YYYY or YYYY-MM"})
 		return "", false
 	}
 	return period, true

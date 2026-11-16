@@ -29,6 +29,25 @@ func LoadCatalog(path string) ([]CatalogEntry, string, error) {
 	if len(parsed.Entries) == 0 {
 		return nil, "", fmt.Errorf("catalog %q has no entries", path)
 	}
+	seen := make(map[string]bool, len(parsed.Entries))
+	for _, entry := range parsed.Entries {
+		if entry.ID == "" || entry.Description == "" || seen[entry.ID] {
+			return nil, "", fmt.Errorf("catalog %q has an incomplete or duplicate entry %q", path, entry.ID)
+		}
+		switch entry.Type {
+		case "formula", "concept", "heuristic":
+		default:
+			return nil, "", fmt.Errorf("catalog entry %q has unknown type %q", entry.ID, entry.Type)
+		}
+		seen[entry.ID] = true
+	}
+	for _, entry := range parsed.Entries {
+		for _, dependency := range entry.DependsOn {
+			if !seen[dependency] {
+				return nil, "", fmt.Errorf("catalog entry %q refers to missing entry %q", entry.ID, dependency)
+			}
+		}
+	}
 	sum := sha256.Sum256(data)
 	return parsed.Entries, hex.EncodeToString(sum[:]), nil
 }
@@ -80,7 +99,9 @@ func storeCatalog(ctx context.Context, db *sql.DB, entries []CatalogEntry, hash 
 	return nil
 }
 
-func listCatalog(db *sql.DB) ([]CatalogEntry, error) {
+func listCatalog(db interface {
+	Query(string, ...any) (*sql.Rows, error)
+}) ([]CatalogEntry, error) {
 	rows, err := db.Query(`SELECT id, type, description, formula, applies_when, depends_on, source
 		FROM fundamental_entities ORDER BY id`)
 	if err != nil {

@@ -21,7 +21,8 @@ type Document struct {
 	Audited          bool   `json:"audited"`
 	ExtractionStatus string `json:"extraction_status,omitempty"`
 	PageCount        int    `json:"page_count,omitempty"`
-	FactCount        int    `json:"fact_count,omitempty"`
+	FactCount        int    `json:"fact_count"`
+	StatementStatus  string `json:"statement_status,omitempty"`
 }
 
 type Page struct {
@@ -66,12 +67,15 @@ type Metric struct {
 }
 
 type EvidenceRef struct {
-	DocumentID   string `json:"document_id"`
-	DocumentPath string `json:"document_path"`
-	SourceURL    string `json:"source_url,omitempty"`
-	PageNumber   int    `json:"page_number"`
-	FactID       string `json:"fact_id,omitempty"`
-	Text         string `json:"text,omitempty"`
+	DocumentID    string `json:"document_id"`
+	DocumentPath  string `json:"document_path"`
+	SourceURL     string `json:"source_url,omitempty"`
+	PageNumber    int    `json:"page_number"`
+	FactID        string `json:"fact_id,omitempty"`
+	SourceLocator string `json:"source_locator,omitempty"`
+	FactStatus    string `json:"fact_status,omitempty"`
+	Period        string `json:"period,omitempty"`
+	Text          string `json:"text,omitempty"`
 }
 
 type ReviewPrompt struct {

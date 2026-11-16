@@ -23,16 +23,19 @@ func main() {
 
 func run(args []string) error {
 	if len(args) == 0 {
-		return errors.New("expected import, review, or approve subcommand")
+		return errors.New("expected import, catalog, review, or approve subcommand")
 	}
 	command := args[0]
 	flags := flag.NewFlagSet(command, flag.ContinueOnError)
 	flags.SetOutput(io.Discard)
 	dataDir := flags.String("data", "./data", "directory containing source reports")
-	dbPath := flags.String("db", "lux.db", "SQLite database path")
+	extractedDir := flags.String("extracted", "", "page text output directory (default: data/extracted)")
+	dbPath := flags.String("db", defaultDBPath(), "SQLite database path")
 	catalogPath := flags.String("catalog", defaultCatalogPath(), "fundamental-analysis.yaml path")
 	outPath := flags.String("out", filepath.Join("data", "review", "bbca-review.csv"), "review CSV output path")
 	filePath := flags.String("file", "", "review CSV to apply")
+	reviewPeriod := flags.String("period", "", "optional period of pending facts to export")
+	reviewDocument := flags.String("document", "", "optional source path relative to data for review export")
 	ocrLanguage := flags.String("ocr-language", "eng+ind", "Tesseract language set")
 	minPageChars := flags.Int("min-page-chars", 60, "OCR pages with fewer non-space characters")
 	force := flags.Bool("force", false, "rebuild facts from cached pages and extract any missing pages")
@@ -49,14 +52,16 @@ func run(args []string) error {
 		return err
 	}
 	defer func() { _ = db.Close() }()
-	if err := financials.Initialize(ctx, db, *catalogPath); err != nil {
+	if err := store.EnsureBBCAFinancialSchema(ctx, db); err != nil {
 		return err
 	}
 	switch command {
+	case "catalog":
+		return financials.Initialize(ctx, db, *catalogPath)
 	case "import":
 		summary, err := financials.Import(ctx, db, financials.ImportOptions{
 			DataDir: *dataDir, CatalogPath: *catalogPath,
-			ExtractedDir: filepath.Join(*dataDir, "extracted"), OCRLanguage: *ocrLanguage,
+			ExtractedDir: *extractedDir, OCRLanguage: *ocrLanguage,
 			MinPageChars: *minPageChars, Force: *force,
 		})
 		if err != nil {
@@ -65,7 +70,7 @@ func run(args []string) error {
 		fmt.Printf("documents=%d pages=%d facts=%d skipped=%d\n", summary.Documents, summary.Pages, summary.Facts, summary.Skipped)
 		return nil
 	case "review":
-		if err := financials.ExportReviewCSV(ctx, db, *outPath); err != nil {
+		if err := financials.ExportReviewCSV(ctx, db, *outPath, financials.ReviewFilter{Period: *reviewPeriod, Document: *reviewDocument}); err != nil {
 			return err
 		}
 		fmt.Printf("review CSV: %s\n", *outPath)
@@ -81,7 +86,7 @@ func run(args []string) error {
 		fmt.Printf("reviewed facts=%d\n", count)
 		return nil
 	default:
-		return fmt.Errorf("unknown subcommand %q (use import, review, or approve)", command)
+		return fmt.Errorf("unknown subcommand %q (use import, catalog, review, or approve)", command)
 	}
 }
 
@@ -90,4 +95,11 @@ func defaultCatalogPath() string {
 		return value
 	}
 	return filepath.Join("..", "atlas", "business", "fundamental-analysis.yaml")
+}
+
+func defaultDBPath() string {
+	if value := strings.TrimSpace(os.Getenv("SQLITE_DSN")); value != "" {
+		return value
+	}
+	return "lux.db"
 }

@@ -9,6 +9,16 @@ import (
 
 var amountToken = regexp.MustCompile(`\(?-?\d[\d.,]*\)?`)
 
+var canonicalAmount = regexp.MustCompile(`^-?\d+(?:\.\d+)?$`)
+
+func parseCanonicalNumber(raw string) (float64, bool) {
+	if !canonicalAmount.MatchString(raw) {
+		return 0, false
+	}
+	number, err := strconv.ParseFloat(raw, 64)
+	return number, err == nil && !math.IsInf(number, 0)
+}
+
 // ParseNumber understands common Indonesian and English financial number
 // formats. A dash, blank, or n.m. is missing data, never an implicit zero.
 func ParseNumber(raw string) (float64, bool) {
@@ -62,10 +72,6 @@ func ParseNumber(raw string) (float64, bool) {
 		value = -value
 	}
 	return value, true
-}
-
-func NumberTokens(line string) []string {
-	return amountToken.FindAllString(line, -1)
 }
 
 func digitsAfter(s string, index int) int {

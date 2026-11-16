@@ -82,7 +82,7 @@ func TestImportReviewApprovalAndReadAPI(t *testing.T) {
 	}
 
 	reviewPath := filepath.Join(root, "review.csv")
-	if err := ExportReviewCSV(context.Background(), db, reviewPath); err != nil {
+	if err := ExportReviewCSV(context.Background(), db, reviewPath, ReviewFilter{}); err != nil {
 		t.Fatal(err)
 	}
 	approveCandidates(t, reviewPath, map[string]bool{"net_earnings": true, "revenue": true})
@@ -96,6 +96,17 @@ func TestImportReviewApprovalAndReadAPI(t *testing.T) {
 	}
 	if len(approved) != 2 {
 		t.Fatalf("approved facts = %d, want 2", len(approved))
+	}
+	options.Force = true
+	if _, err := Import(context.Background(), db, options); err != nil {
+		t.Fatal(err)
+	}
+	replayed, err := ListApprovedFacts(context.Background(), db, "2025")
+	if err != nil || len(replayed) != len(approved) {
+		t.Fatalf("replay changed approvals: %#v, %v", replayed, err)
+	}
+	if _, err := ApplyReviewCSV(context.Background(), db, reviewPath); err == nil {
+		t.Fatal("previously applied review CSV was accepted")
 	}
 	for _, fact := range approved {
 		if fact.PageNumber != 0 || fact.SourceLocator == "" || fact.DocumentPath != "bbca-2025.xlsx" || fact.ExtractionMethod != "xlsx" {
@@ -197,8 +208,11 @@ func TestForceImportRebuildsCandidatesFromCachedPDFPages(t *testing.T) {
 		t.Fatal(err)
 	}
 	_, err = db.Exec(`INSERT INTO financial_pages (document_id,page_number,extraction_method,text)
-		VALUES (?,1,'pdftotext','2025          2024
-Net profit 100 80')`, document.ID)
+		VALUES (?,1,'pdftotext','PT BANK CENTRAL ASIA Tbk AND SUBSIDIARIES
+CONSOLIDATED STATEMENTS OF PROFIT OR LOSS
+(Expressed in millions of Rupiah)
+Notes          2025          2024
+Net profit     100           80')`, document.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -328,9 +342,9 @@ func TestCalculateMetricsDerivesAverageBalanceInputs(t *testing.T) {
 		{"net-earnings", "doc-2025", "2025", "net_earnings", "Net earnings", "100"},
 		{"common-earnings", "doc-2025", "2025", "net_income_available_to_common_shareholders", "Net income available to common shareholders", "90"},
 		{"assets-end", "doc-2025", "2025", "total_assets", "Total assets", "200"},
-		{"equity-end", "doc-2025", "2025", "shareholders_equity", "Total equity", "150"},
+		{"equity-end", "doc-2025", "2025", "common_shareholders_equity", "Common equity", "150"},
 		{"assets-start", "doc-2024", "2024", "total_assets", "Total assets", "100"},
-		{"equity-start", "doc-2024", "2024", "shareholders_equity", "Total equity", "100"},
+		{"equity-start", "doc-2024", "2024", "common_shareholders_equity", "Common equity", "100"},
 	}
 	for _, fact := range facts {
 		_, err := db.Exec(`INSERT INTO financial_facts

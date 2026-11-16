@@ -14,7 +14,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/Chandra179/lux/server/store"
 )
@@ -126,7 +125,7 @@ func Import(ctx context.Context, db *sql.DB, options ImportOptions) (ImportSumma
 		if err := ctx.Err(); err != nil {
 			return summary, err
 		}
-		processed, err := registerDocument(db, document, options.Force)
+		processed, err := registerDocument(db, document)
 		if err != nil {
 			return summary, err
 		}
@@ -139,7 +138,7 @@ func Import(ctx context.Context, db *sql.DB, options ImportOptions) (ImportSumma
 		if err != nil {
 			return summary, fmt.Errorf("extract %s: %w", document.LocalPath, err)
 		}
-		if err := storeExtractedDocument(ctx, db, document, pages, facts, options.Force); err != nil {
+		if err := storeExtractedDocument(ctx, db, document, pages, facts); err != nil {
 			return summary, err
 		}
 		summary.Pages += len(pages)
@@ -249,16 +248,17 @@ func readManifest(filename string) (map[string]sourceMetadata, error) {
 		docType, period, format := get(row, "document_type"), get(row, "period"), get(row, "format")
 		result[local] = sourceMetadata{
 			Period: period, DocumentType: docType, SourceURL: get(row, "direct_source_url"),
-			Format: strings.ToUpper(format), Audited: strings.Contains(strings.ToLower(docType), "audited"),
+			Format: strings.ToUpper(format), Audited: strings.HasPrefix(strings.ToLower(docType), "audited"),
 		}
 	}
 	return result, nil
 }
 
-func registerDocument(db *sql.DB, document importDocument, force bool) (bool, error) {
-	var status string
-	err := db.QueryRow(`SELECT extraction_status FROM financial_documents WHERE sha256 = ? LIMIT 1`, document.SHA256).Scan(&status)
-	processed := err == nil && status == "processed"
+func registerDocument(db *sql.DB, document importDocument) (bool, error) {
+	var status, version string
+	err := db.QueryRow(`SELECT d.extraction_status, COALESCE(p.version, '') FROM financial_documents d
+		LEFT JOIN financial_document_parsers p ON p.document_id = d.id WHERE d.sha256 = ?`, document.SHA256).Scan(&status, &version)
+	processed := err == nil && status == "processed" && version == statementParserVersion
 	if err != nil && err != sql.ErrNoRows {
 		return false, fmt.Errorf("check document %s: %w", document.LocalPath, err)
 	}
@@ -269,9 +269,9 @@ func registerDocument(db *sql.DB, document importDocument, force bool) (bool, er
 			source_url = excluded.source_url, period = excluded.period,
 			document_type = excluded.document_type, format = excluded.format,
 			audited = excluded.audited,
-			extraction_status = CASE WHEN ? = 1 THEN 'pending' ELSE financial_documents.extraction_status END`,
+		extraction_status = financial_documents.extraction_status`,
 		document.ID, document.SHA256, document.LocalPath, document.SourceURL,
-		document.Period, document.DocumentType, document.Format, boolInt(document.Audited), boolInt(force))
+		document.Period, document.DocumentType, document.Format, boolInt(document.Audited))
 	if err != nil {
 		return false, fmt.Errorf("register document %s: %w", document.LocalPath, err)
 	}
@@ -285,18 +285,20 @@ func extractDocument(ctx context.Context, db *sql.DB, document importDocument, o
 	switch strings.ToLower(filepath.Ext(filename)) {
 	case ".pdf":
 		var err error
-		if options.Force {
-			pages, err = loadStoredPages(ctx, db, document.ID)
-		}
-		if err == nil && len(pages) == 0 {
-			pages, err = extractPDF(ctx, filename, options)
-		}
+		pages, err = loadStoredPages(ctx, db, document.ID)
 		if err != nil {
 			return nil, nil, err
 		}
-		for _, page := range pages {
-			facts = append(facts, candidatesFromPage(document, page)...)
+		if len(pages) == 0 {
+			pages, err = extractPDF(ctx, filename, options)
+			if err != nil {
+				return nil, nil, err
+			}
+			if err := writeExtractedPages(options.ExtractedDir, document.SHA256, pages); err != nil {
+				return nil, nil, err
+			}
 		}
+		facts = parseStatements(document, pages)
 	case ".xlsx", ".xlsm":
 		workbookFacts, err := extractXLSX(filename)
 		if err != nil {
@@ -317,7 +319,7 @@ func extractDocument(ctx context.Context, db *sql.DB, document importDocument, o
 				auditedStatus = "audited"
 			}
 			facts = append(facts, factCandidate{
-				ID: deterministicID(document.SHA256, 0, index, candidate.Cell), PageNumber: 0,
+				ID: deterministicID(document.SHA256, 0, index, strings.Join([]string{statementParserVersion, candidate.Sheet, candidate.Cell, candidate.Label, candidate.Value, document.Period}, "|")), PageNumber: 0,
 				SourceLocator: candidate.Sheet + "!" + candidate.Cell,
 				Period:        document.Period, PeriodStart: periodStart, PeriodEnd: periodEnd,
 				PeriodType: periodType, RawLabel: candidate.Sheet + " / " + candidate.Label,
@@ -329,9 +331,6 @@ func extractDocument(ctx context.Context, db *sql.DB, document importDocument, o
 		}
 	default:
 		return nil, nil, fmt.Errorf("unsupported document format %q", filepath.Ext(filename))
-	}
-	if err := writeExtractedPages(options.ExtractedDir, document.SHA256, pages); err != nil {
-		return nil, nil, err
 	}
 	return pages, facts, nil
 }
@@ -404,66 +403,18 @@ func ocrPDFPage(ctx context.Context, filename string, page int, languages string
 	return string(output), nil
 }
 
-func candidatesFromPage(document importDocument, page Page) []factCandidate {
-	currency, unit := pageUnits(page.Text)
-	basis := pageBasis(page.Text)
-	audited := "unknown"
-	if document.Audited {
-		audited = "audited"
-	}
-	if strings.Contains(strings.ToLower(page.Text), "unaudited") || strings.Contains(strings.ToLower(page.Text), "tidak diaudit") {
-		audited = "unaudited"
-	}
-	var candidates []factCandidate
-	lines := strings.Split(page.Text, "\n")
-	for lineIndex, line := range lines {
-		key := detectCanonicalKey(line)
-		if key == "" {
-			continue
-		}
-		var values []string
-		for _, token := range NumberTokens(line) {
-			if _, ok := ParseNumber(token); ok {
-				values = append(values, token)
-			}
-		}
-		periods := periodsForColumns(lines, lineIndex, document.Period, len(values))
-		for tokenIndex, raw := range values {
-			value, _ := ParseNumber(raw)
-			period := periods[tokenIndex]
-			start, end, kind := periodBounds(period)
-			label := strings.TrimSpace(line)
-			candidates = append(candidates, factCandidate{
-				ID:         deterministicID(document.SHA256, page.Number, lineIndex, strconv.Itoa(tokenIndex)),
-				PageNumber: page.Number, SourceLocator: fmt.Sprintf("page:%d", page.Number),
-				Period: period, PeriodStart: start, PeriodEnd: end,
-				PeriodType: kind, RawLabel: label, RawValue: raw, EvidenceText: strings.TrimSpace(line),
-				CanonicalKey: key, NormalizedValue: strconv.FormatFloat(value, 'f', -1, 64),
-				Currency: currency, Unit: unit, ReportingBasis: basis, AuditedStatus: audited,
-				ExtractionMethod: page.ExtractionMethod,
-			})
-		}
-	}
-	return candidates
-}
-
-func storeExtractedDocument(ctx context.Context, db *sql.DB, document importDocument, pages []Page, facts []factCandidate, force bool) error {
+func storeExtractedDocument(ctx context.Context, db *sql.DB, document importDocument, pages []Page, facts []factCandidate) error {
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
 		return fmt.Errorf("begin document import: %w", err)
 	}
 	defer func() { _ = tx.Rollback() }()
-	if force {
-		if _, err := tx.ExecContext(ctx, `DELETE FROM financial_fact_sources WHERE fact_id IN
-			(SELECT id FROM financial_facts WHERE document_id = ?)`, document.ID); err != nil {
-			return fmt.Errorf("replace document fact sources: %w", err)
-		}
-		if _, err := tx.ExecContext(ctx, `DELETE FROM financial_facts WHERE document_id = ?`, document.ID); err != nil {
-			return fmt.Errorf("replace document facts: %w", err)
-		}
-		if _, err := tx.ExecContext(ctx, `DELETE FROM financial_pages WHERE document_id = ?`, document.ID); err != nil {
-			return fmt.Errorf("replace document pages: %w", err)
-		}
+	if _, err := tx.ExecContext(ctx, `DELETE FROM financial_fact_sources WHERE fact_id IN
+		(SELECT id FROM financial_facts WHERE document_id = ? AND status = 'pending')`, document.ID); err != nil {
+		return fmt.Errorf("replace pending fact sources: %w", err)
+	}
+	if _, err := tx.ExecContext(ctx, `DELETE FROM financial_facts WHERE document_id = ? AND status = 'pending'`, document.ID); err != nil {
+		return fmt.Errorf("replace pending facts: %w", err)
 	}
 	for _, page := range pages {
 		if _, err := tx.ExecContext(ctx, `INSERT OR REPLACE INTO financial_pages
@@ -493,6 +444,10 @@ func storeExtractedDocument(ctx context.Context, db *sql.DB, document importDocu
 	if _, err := tx.ExecContext(ctx, `UPDATE financial_documents SET extraction_status = 'processed' WHERE id = ?`, document.ID); err != nil {
 		return fmt.Errorf("mark document %s processed: %w", document.LocalPath, err)
 	}
+	if _, err := tx.ExecContext(ctx, `INSERT INTO financial_document_parsers (document_id, version) VALUES (?, ?)
+		ON CONFLICT(document_id) DO UPDATE SET version = excluded.version`, document.ID, statementParserVersion); err != nil {
+		return fmt.Errorf("record parser version: %w", err)
+	}
 	if err := tx.Commit(); err != nil {
 		return fmt.Errorf("commit document import: %w", err)
 	}
@@ -518,7 +473,6 @@ func writeExtractedPages(root, documentHash string, pages []Page) error {
 }
 
 var filenamePeriod = regexp.MustCompile(`(?:19|20)\d{2}(?:-(?:0[1-9]|1[0-2]))?`)
-var financialYearToken = regexp.MustCompile(`(?:19|20)\d{2}`)
 
 func inferPeriod(filename string) string {
 	return filenamePeriod.FindString(filename)
@@ -526,92 +480,16 @@ func inferPeriod(filename string) string {
 
 func periodBounds(period string) (string, string, string) {
 	if len(period) == 4 {
-		if _, err := strconv.Atoi(period); err == nil {
+		if year, err := strconv.Atoi(period); err == nil && year >= 1900 && year <= 2099 {
 			return period + "-01-01", period + "-12-31", "annual"
 		}
 	}
 	if len(period) == 7 {
-		if _, err := time.Parse("2006-01", period); err == nil {
-			return "", "", "interim"
+		if start, end := monthPeriodBounds(period); end != "" {
+			return start, end, "interim"
 		}
 	}
 	return "", "", "unknown"
-}
-
-// periodsForColumns only splits comparative values when nearby year headings
-// make the column periods explicit. This avoids treating segment values,
-// subtotal columns, and note references as earlier financial years.
-func periodsForColumns(lines []string, lineIndex int, documentPeriod string, values int) []string {
-	periods := make([]string, values)
-	if values == 0 {
-		return periods
-	}
-	documentYear := 0
-	if len(documentPeriod) >= 4 {
-		documentYear, _ = strconv.Atoi(documentPeriod[:4])
-	}
-	var headingYears []int
-	start := max(0, lineIndex-12)
-	for index := lineIndex - 1; index >= start; index-- {
-		years := nearbyFinancialYears(lines[index], documentYear)
-		if len(years) > 0 {
-			headingYears = years
-			break
-		}
-	}
-	if len(headingYears) == 1 {
-		period := strconv.Itoa(headingYears[0])
-		if len(documentPeriod) == 7 && headingYears[0] == documentYear {
-			period = documentPeriod
-		}
-		for index := range periods {
-			periods[index] = period
-		}
-		return periods
-	}
-	if len(headingYears) > 1 {
-		if len(headingYears) != values {
-			return periods
-		}
-		for index, year := range headingYears {
-			if len(documentPeriod) == 7 {
-				if year == documentYear {
-					periods[index] = documentPeriod
-				}
-				continue
-			}
-			periods[index] = strconv.Itoa(year)
-		}
-		return periods
-	}
-	if values == 1 {
-		periods[0] = documentPeriod
-	}
-	return periods
-}
-
-func nearbyFinancialYears(line string, documentYear int) []int {
-	if documentYear == 0 {
-		return nil
-	}
-	trimmed := strings.TrimSpace(line)
-	if len(trimmed) > 120 || len(strings.Fields(trimmed)) > 6 {
-		return nil
-	}
-	seen := make(map[int]bool)
-	var years []int
-	for _, token := range financialYearToken.FindAllString(trimmed, -1) {
-		year, err := strconv.Atoi(token)
-		if err != nil || year < documentYear-10 || year > documentYear || seen[year] {
-			continue
-		}
-		seen[year] = true
-		years = append(years, year)
-	}
-	if len(years) > 5 {
-		return nil
-	}
-	return years
 }
 
 func deterministicID(documentHash string, page, line int, token string) string {

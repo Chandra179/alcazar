@@ -61,11 +61,7 @@ func runHTTPServer() error {
 		return err
 	}
 	defer func() { _ = db.Close() }()
-	catalogPath := strings.TrimSpace(os.Getenv("BBCA_CATALOG"))
-	if catalogPath == "" {
-		catalogPath = filepath.Join("..", "atlas", "business", "fundamental-analysis.yaml")
-	}
-	if err := financials.Initialize(context.Background(), db, catalogPath); err != nil {
+	if err := store.EnsureBBCAFinancialSchema(context.Background(), db); err != nil {
 		return fmt.Errorf("initialize BBCA financial data: %w", err)
 	}
 

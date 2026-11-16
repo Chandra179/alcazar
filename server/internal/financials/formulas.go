@@ -1,0 +1,90 @@
+package financials
+
+import "fmt"
+
+type formulaDefinition struct {
+	inputs               []string
+	unit, status, reason string
+	compute              func(map[string]periodFact) (float64, error)
+	openingBalance       bool
+	years                int
+}
+
+func ratioDefinition(numerator, denominator, unit string, multiplier float64) formulaDefinition {
+	return formulaDefinition{inputs: []string{numerator, denominator}, unit: unit, compute: func(v map[string]periodFact) (float64, error) {
+		if v[denominator].Number <= 0 {
+			return 0, fmt.Errorf("%s must be positive", denominator)
+		}
+		return v[numerator].Number / v[denominator].Number * multiplier, nil
+	}}
+}
+
+var formulaDefinitions = func() map[string]formulaDefinition {
+	assets := ratioDefinition("net_earnings", "average_total_assets", "percent", 100)
+	equity := ratioDefinition("net_income_available_to_common_shareholders", "average_common_shareholders_equity", "percent", 100)
+	assets.openingBalance, equity.openingBalance = true, true
+	definitions := map[string]formulaDefinition{
+		"net-profit-margin":                   ratioDefinition("net_earnings", "revenue", "percent", 100),
+		"effective-tax-rate":                  ratioDefinition("income_tax_expense", "income_before_tax", "percent", 100),
+		"total-liabilities-to-equity":         ratioDefinition("total_liabilities", "shareholders_equity", "ratio", 1),
+		"return-on-assets":                    assets,
+		"return-on-equity":                    equity,
+		"earnings-per-share":                  {inputs: []string{"net_income_available_to_common_shareholders", "weighted_average_common_shares_outstanding"}, unit: "currency per share", compute: earningsPerShare},
+		"net-change-in-cash":                  {inputs: []string{"net_cash_from_operating_activities", "net_cash_from_investing_activities", "net_cash_from_financing_activities"}, unit: "source currency and scale", compute: sumCashMovements},
+		"capital-expenditure-to-net-earnings": {inputs: []string{"capital_expenditures", "net_earnings"}, unit: "percent", years: 10},
+	}
+	for id := range notApplicableBankFormulas {
+		definitions[id] = formulaDefinition{status: "not_applicable", reason: "This catalog formula is for a different business or security type and does not map reliably to a deposit-taking bank."}
+	}
+	for id, reason := range formulasRequiringExternalData {
+		definitions[id] = formulaDefinition{status: "requires_external_data", reason: reason}
+	}
+	for id, reason := range formulasRequiringManualEstimate {
+		definitions[id] = formulaDefinition{status: "requires_manual_estimate", reason: reason}
+	}
+	return definitions
+}()
+
+func earningsPerShare(v map[string]periodFact) (float64, error) {
+	shares := v["weighted_average_common_shares_outstanding"].Number
+	if shares <= 0 {
+		return 0, fmt.Errorf("share count must be positive")
+	}
+	return numberAtUnit(v["net_income_available_to_common_shareholders"], "units") / shares, nil
+}
+
+func sumCashMovements(v map[string]periodFact) (float64, error) {
+	return v["net_cash_from_operating_activities"].Number + v["net_cash_from_investing_activities"].Number + v["net_cash_from_financing_activities"].Number, nil
+}
+
+var notApplicableBankFormulas = map[string]bool{
+	"cost-of-goods-sold":              true,
+	"gross-margin":                    true,
+	"gross-profit":                    true,
+	"operating-profit":                true,
+	"sga-to-gross-profit":             true,
+	"rd-to-gross-profit":              true,
+	"depreciation-to-gross-profit":    true,
+	"interest-to-operating-income":    true,
+	"net-receivables-to-sales":        true,
+	"return-on-invested-capital":      true,
+	"working-capital":                 true,
+	"net-current-asset-value":         true,
+	"current-ratio":                   true,
+	"quick-ratio":                     true,
+	"insurance-float-cost":            true,
+	"closed-end-fund-discount-to-nav": true,
+}
+
+var formulasRequiringExternalData = map[string]string{
+	"price-earnings-ratio":            "Requires a labeled market share price and EPS basis, which are outside the local financial-statement data.",
+	"price-to-book-ratio":             "Requires a market price per share, which is outside the local financial-statement data.",
+	"dividend-yield":                  "Requires a labeled trailing or expected annual dividend per share and market share price.",
+	"earnings-yield-on-original-cost": "Requires investor-specific split-adjusted purchase price and normalized earnings per share.",
+	"real-return-after-inflation":     "Requires a nominal return and a matching-period inflation rate.",
+	"look-through-earnings":           "Requires investee earnings not recognized in reported income and an estimate of incremental distribution taxes.",
+}
+
+var formulasRequiringManualEstimate = map[string]string{
+	"owner-earnings": "Requires normalized earnings, maintenance capital expenditures, and incremental working-capital estimates that are not directly reported facts.",
+}

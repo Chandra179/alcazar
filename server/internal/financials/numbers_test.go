@@ -29,39 +29,6 @@ func TestParseNumber(t *testing.T) {
 	}
 }
 
-func TestPeriodsForExplicitColumns(t *testing.T) {
-	highlights := []string{"Five-year highlights", "1998        1999        2000        2001        2002", "Total assets 100 200 300 400 500"}
-	got := periodsForColumns(highlights, 2, "2002", 5)
-	want := []string{"1998", "1999", "2000", "2001", "2002"}
-	for index := range want {
-		if got[index] != want[index] {
-			t.Fatalf("period[%d] = %q, want %q", index, got[index], want[index])
-		}
-	}
-
-	segments := []string{"2002", "Interest income 100 200 300 400 500 600 2100"}
-	got = periodsForColumns(segments, 1, "2002", 7)
-	for index, period := range got {
-		if period != "2002" {
-			t.Fatalf("segment period[%d] = %q, want 2002", index, period)
-		}
-	}
-
-	interim := []string{"2026          2025", "Total assets 100 90"}
-	got = periodsForColumns(interim, 1, "2026-09", 2)
-	if got[0] != "2026-09" || got[1] != "" {
-		t.Fatalf("interim comparative periods = %#v, want current interim and unknown comparative", got)
-	}
-
-	ambiguous := []string{"2025          2024", "Net profit 100 90 80"}
-	got = periodsForColumns(ambiguous, 1, "2025", 3)
-	for _, period := range got {
-		if period != "" {
-			t.Fatalf("mismatched column count assigned period %q", period)
-		}
-	}
-}
-
 func TestPageBasisMixedHeadingsStaysUnknown(t *testing.T) {
 	if got := pageBasis("consolidated and unconsolidated statements"); got != "unknown" {
 		t.Fatalf("pageBasis mixed heading = %q, want unknown", got)
@@ -80,21 +47,31 @@ func TestDetectCanonicalKeyRecognizesFixedAssetAcquisitions(t *testing.T) {
 	}
 }
 
-func TestComparativeFactPeriodsKeepSourcePage(t *testing.T) {
-	document := importDocument{Document: Document{SHA256: "document-hash", Period: "2008"}}
-	page := Page{Number: 42, Text: "2008             2007\nTotal assets       1.250.000       1.100.000", ExtractionMethod: "pdftotext"}
-	facts := candidatesFromPage(document, page)
-	if len(facts) != 2 {
-		t.Fatalf("candidate count = %d, want 2", len(facts))
+func TestStatementParserSeparatesComparativeColumnsAndLabels(t *testing.T) {
+	document := importDocument{Document: Document{SHA256: "hash", Period: "2025", Audited: true}}
+	page := Page{Number: 8, Text: `PT BANK CENTRAL ASIA Tbk AND SUBSIDIARIES
+CONSOLIDATED STATEMENTS OF FINANCIAL POSITION
+31 DECEMBER 2025 AND 2024
+(Expressed in millions of Rupiah)
+                                               Notes       2025          2024
+TOTAL LIABILITIES                               12       1,294,508      1,176,979
+TOTAL EQUITY                                             281,687        262,835
+TOTAL LIABILITIES AND EQUITY                            1,586,829      1,449,301`, ExtractionMethod: "pdftotext"}
+	facts := parseStatements(document, []Page{page})
+	if len(facts) != 4 {
+		t.Fatalf("facts = %#v", facts)
 	}
-	if facts[0].Period != "2008" || facts[1].Period != "2007" {
-		t.Fatalf("candidate periods = %q, %q, want 2008 and 2007", facts[0].Period, facts[1].Period)
+	if fact := facts[0]; fact.CanonicalKey != "total_liabilities" || fact.Period != "2025" || fact.NormalizedValue != "1294508" || fact.PeriodEnd != "2025-12-31" || fact.PeriodType != "instant" || fact.SourceLocator != "page:8/balance/row:6/column:1" {
+		t.Fatalf("FY2025 liabilities = %#v", fact)
 	}
-	if facts[0].PageNumber != 42 || facts[1].PageNumber != 42 {
-		t.Fatalf("source page numbers = %d, %d, want 42", facts[0].PageNumber, facts[1].PageNumber)
+	if facts[1].Period != "2024" || facts[1].NormalizedValue != "1176979" {
+		t.Fatalf("comparative = %#v", facts[1])
 	}
-	if facts[0].SourceLocator != "page:42" || facts[1].SourceLocator != "page:42" {
-		t.Fatalf("source locators = %q, %q, want page:42", facts[0].SourceLocator, facts[1].SourceLocator)
+}
+
+func TestParseCanonicalNumberKeepsThreeDecimalPlaces(t *testing.T) {
+	if number, ok := parseCanonicalNumber("-2447.423"); !ok || number != -2447.423 {
+		t.Fatalf("canonical number = %v, %t", number, ok)
 	}
 }
 
@@ -150,9 +127,10 @@ func TestFormulaDispositionClassifiesNonCalculatedCatalogEntries(t *testing.T) {
 		"real-return-after-inflation":     "requires_external_data",
 	}
 	for id, wantStatus := range want {
-		status, reason, ok := formulaDisposition(id)
+		definition, ok := formulaDefinitions[id]
+		status, reason := definition.status, definition.reason
 		if !ok || status != wantStatus || reason == "" {
-			t.Errorf("formulaDisposition(%q) = (%q, %q, %t), want status %q with reason", id, status, reason, ok, wantStatus)
+			t.Errorf("formulaDefinitions[%q] = (%q, %q, %t), want status %q with reason", id, status, reason, ok, wantStatus)
 		}
 	}
 }

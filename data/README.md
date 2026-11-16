@@ -9,7 +9,7 @@ Collected on 2026-11-15 from BCA and OJK pages. Ticker: BBCA (PT Bank Central As
 - `2026_interim/` — unaudited consolidated and published financial reports for March, June, and September 2026, plus the October 2026 monthly publication.
 - `financial_data_archives/` — September 2026 capital and risk exposure publication in PDF and XLSX. This XLSX covers capital/risk disclosures, not the full annual financial statements.
 - `manifest.csv` — local filenames, reporting periods, document types, and direct source URLs.
-- `extracted/` — generated page-by-page text from PDFs and XLSX, written by the importer and ignored by Git.
+- `extracted/` — generated page-by-page text from PDFs, written by the importer and ignored by Git.
 - `review/` — generated review CSV exports, also ignored by Git.
 
 The PDFs contain the primary statements, notes, auditor opinions, and/or annual-report context. Most reports through 2013 are Indonesian-language; later annual reports and statements are English or bilingual.
@@ -33,16 +33,16 @@ make bbca-import
 make bbca-review
 ```
 
-Edit `review/bbca-review.csv` to correct candidate periods, values, basis, or status (`approved`, `rejected`, or `pending`), then apply it:
+Use `REVIEW_FILE=data/review/your-queue.csv` with both `make bbca-review` and `make bbca-approve` to keep multiple exports. Set `REVIEW_PERIOD=2025` or `REVIEW_DOCUMENT=audited_statements/BCA_audited_2025.pdf` to narrow an export. Edit only the rows you want to approve or reject. Rows left `pending` are skipped. Use decimal numbers without grouping separators in `normalized_value` and keep `candidate_revision` unedited. When correcting a period, clear the derived date columns or update them to match. A flow with an unknown start date requires an explicit January 1 start to be approved as year to date. A review CSV exported before revision checking was added needs to be exported again.
 
 ```bash
 make bbca-approve
 make run
 ```
 
-The SQLite database stores original evidence and pending candidate facts. The API exposes approved facts and metrics only. `make bbca-import` is resumable and keys documents by SHA-256; normal retries skip processed files, while `--force` rebuilds facts from cached page text when available and extracts pages that are missing. The importer uses `pdftotext -layout` first and page-level Tesseract OCR for sparse PDF pages, with English and Indonesian language data. XLSX files are read with Excelize; the review export keeps workbook source coordinates such as `Statement!B7` in `source_locator`.
+The importer keeps source evidence and generates pending facts from recognized statement tables. It records the statement, row, and column alongside the PDF page. The XLSX reader records the sheet and cell. The primary statement parser distinguishes group earnings, earnings attributable to the parent, group equity, and parent equity. A few historical PDFs provide highlights only, and questionable OCR values may still need review at the source.
 
-The latest full local import processed all 40 source documents, extracted 12,788 PDF pages, and created 5,998 pending candidate facts. Tesseract handled 99 pages of the FY2006 report; native-text extraction was also confirmed on FY2002 and FY2025 reports. The local risk-exposure workbook produced no statement facts. A repeat import skipped all 40 processed documents. No candidate facts have been approved yet, so the facts endpoint currently returns none and the metrics endpoint calculates no values until review.
+The document hash and parser version control replay. The importer reuses cached PDF pages. On a parser change or `--force`, it replaces pending candidates and retains approved and rejected decisions. The CLI checks the revision before applying a decision and records the original observation in SQLite. `make bbca-catalog` updates the persisted Atlas catalog independently, and `make run` reads that catalog from SQLite. Set the same `SQLITE_DSN` for all Make targets when using a second database. For the container targets, use a path relative to the Alcazar root so the database resolves in the mounted workspace.
 
 API routes:
 
@@ -52,7 +52,7 @@ API routes:
 - `GET /api/v1/companies/BBCA/metrics?period=2025`
 - `GET /api/v1/companies/BBCA/prompts?period=2025`
 
-Metrics use approved facts only and require compatible, known reporting basis, audit status, currency, and unit metadata. ROA and ROE average balances are derived from approved current- and prior-period balances, and the metric response includes both source facts. The capital-expenditure burden uses a trailing ten fiscal-year window for annual periods; interim requests remain `requires_multi_period`, and the response links every annual input to its source. Formula statuses distinguish `missing_inputs`, `conflict`, `not_applicable`, `requires_external_data`, `requires_multi_period`, and `requires_manual_estimate`; an unknown formula ID remains `unsupported`. Review prompts include only concepts or heuristics with page evidence, including comparative facts sourced from another report year.
+Metrics use approved facts only and require compatible, known reporting basis, audit status, currency, and unit metadata. ROA and ROE average balances are derived from approved current- and prior-period balances, and the metric response includes both source facts. The capital-expenditure burden uses a trailing ten fiscal-year window for annual periods; interim requests remain `requires_multi_period`, and the response links every annual input to its source. Formula statuses distinguish `missing_inputs`, `conflict`, `not_applicable`, `requires_external_data`, `requires_multi_period`, and `requires_manual_estimate`; an unknown formula ID remains `unsupported`. Coverage reports pending and approved facts by period and identifies missing consolidated statement inputs. Review prompts use selected fact keys and statement disclosures with source references. A prompt can include pending evidence and labels its review status.
 
 ## Official source pages
 
