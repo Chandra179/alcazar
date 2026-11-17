@@ -54,6 +54,39 @@ API routes:
 
 Metrics use approved facts only and require compatible, known reporting basis, audit status, currency, and unit metadata. ROA and ROE average balances are derived from approved current- and prior-period balances, and the metric response includes both source facts. The capital-expenditure burden uses a trailing ten fiscal-year window for annual periods; interim requests remain `requires_multi_period`, and the response links every annual input to its source. Formula statuses distinguish `missing_inputs`, `conflict`, `not_applicable`, `requires_external_data`, `requires_multi_period`, and `requires_manual_estimate`; an unknown formula ID remains `unsupported`. Coverage reports pending and approved facts by period and identifies missing consolidated statement inputs. Review prompts use selected fact keys and statement disclosures with source references. A prompt can include pending evidence and labels its review status.
 
+## FY2025 analysis report
+
+Open [`analysis/bbca-fy2025.md`](analysis/bbca-fy2025.md) for the source-cited report and 101-rule appendix. [`analysis/bbca-fy2025.yaml`](analysis/bbca-fy2025.yaml) records the qualitative assessments, supplemental observations, and catalog hash. The decision CSV records the source checks for statement facts. Review decisions use the original candidate revisions, so regenerating candidates with a different parser or OCR result may require a fresh review.
+
+Create the dedicated database once from the repository root. Run the approval step against a fresh analysis database. Reapplying the same decisions to an already reviewed database reports stale candidate revisions.
+
+```sh
+make bbca-import SQLITE_DSN=data/analysis/bbca-analysis.db
+make bbca-approve SQLITE_DSN=data/analysis/bbca-analysis.db \
+  REVIEW_FILE=data/analysis/bbca-fy2025-review.csv
+```
+
+If `lux.db` already contains the matching 40-document import and has no reviewed facts, it can supply the initial candidates. With `sqlite3` installed, run `sqlite3 -readonly lux.db '.backup data/analysis/bbca-analysis.db'` instead of the import on a fresh analysis database, then apply the decision CSV with the command above.
+
+```sh
+make bbca-analysis
+make bbca-analysis ANALYSIS_FORMAT=json > /tmp/bbca-fy2025.json
+```
+
+The Markdown and JSON commands write to stdout and open the database read-only. They use the sibling Atlas catalog (or `BBCA_CATALOG`) and require its hash to match the catalog stored in that database. If the catalog changes, refresh the database with `make bbca-catalog SQLITE_DSN=data/analysis/bbca-analysis.db`. New rule IDs are marked `unreviewed_rule` until the evidence pack is updated. Market prices and the written FY2025 assessments are a historical snapshot. `ANALYSIS_DB` and `ANALYSIS_EVIDENCE` override the report inputs.
+
+### PDF export
+
+The PDF includes the analysis, financial history, rule assessments, and the calculation inputs with clickable source references. Install ReportLab once in a Python environment if needed:
+
+```sh
+python3 -m venv .venv-bbca-pdf
+.venv-bbca-pdf/bin/python -m pip install reportlab==4.4.9
+make bbca-analysis-pdf PYTHON=.venv-bbca-pdf/bin/python
+```
+
+If `python3` already has ReportLab, run `make bbca-analysis-pdf` or `make bbca-analysis ANALYSIS_FORMAT=pdf`. The default destination is `output/pdf/bbca-fy2025.pdf`. Set `ANALYSIS_PDF=/path/to/report.pdf` to choose another file. Use `PYTHON` to select an existing interpreter with ReportLab. PDF export uses the same dedicated analysis database and evidence as Markdown and JSON.
+
 ## Official source pages
 
 - [BCA annual reports](https://www.bca.co.id/en/tentang-bca/hubungan-investor/laporan-presentasi/laporan-tahunan)

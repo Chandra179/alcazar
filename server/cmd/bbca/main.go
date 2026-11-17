@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -23,7 +24,7 @@ func main() {
 
 func run(args []string) error {
 	if len(args) == 0 {
-		return errors.New("expected import, catalog, review, or approve subcommand")
+		return errors.New("expected import, catalog, review, approve, or analysis subcommand")
 	}
 	command := args[0]
 	flags := flag.NewFlagSet(command, flag.ContinueOnError)
@@ -39,6 +40,8 @@ func run(args []string) error {
 	ocrLanguage := flags.String("ocr-language", "eng+ind", "Tesseract language set")
 	minPageChars := flags.Int("min-page-chars", 60, "OCR pages with fewer non-space characters")
 	force := flags.Bool("force", false, "rebuild facts from cached pages and extract any missing pages")
+	analysisFormat := flags.String("format", "markdown", "analysis output format (markdown or json)")
+	evidencePath := flags.String("evidence", filepath.Join("data", "analysis", "bbca-fy2025.yaml"), "analysis evidence file")
 	if err := flags.Parse(args[1:]); err != nil {
 		return err
 	}
@@ -47,6 +50,9 @@ func run(args []string) error {
 	}
 
 	ctx := context.Background()
+	if command == "analysis" {
+		return runAnalysis(ctx, *dbPath, *catalogPath, *evidencePath, *analysisFormat)
+	}
 	db, err := store.NewSQLite(ctx, *dbPath)
 	if err != nil {
 		return err
@@ -86,8 +92,29 @@ func run(args []string) error {
 		fmt.Printf("reviewed facts=%d\n", count)
 		return nil
 	default:
-		return fmt.Errorf("unknown subcommand %q (use import, catalog, review, or approve)", command)
+		return fmt.Errorf("unknown subcommand %q (use import, catalog, review, approve, or analysis)", command)
 	}
+}
+
+func runAnalysis(ctx context.Context, dbPath, catalogPath, evidencePath, format string) error {
+	if format != "markdown" && format != "json" {
+		return fmt.Errorf("invalid analysis format %q (use markdown or json)", format)
+	}
+	path, err := filepath.Abs(dbPath)
+	if err != nil {
+		return err
+	}
+	dsn := url.URL{Scheme: "file", Path: filepath.ToSlash(path), RawQuery: "mode=ro"}
+	db, err := store.NewSQLite(ctx, dsn.String())
+	if err != nil {
+		return fmt.Errorf("open analysis database %q; see data/README.md for setup: %w", dbPath, err)
+	}
+	defer func() { _ = db.Close() }()
+	report, err := financials.BuildAnalysis(ctx, db, catalogPath, evidencePath)
+	if err != nil {
+		return err
+	}
+	return report.Write(os.Stdout, format)
 }
 
 func defaultCatalogPath() string {

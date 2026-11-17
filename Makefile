@@ -10,8 +10,13 @@ BADGER_DIR ?= lux
 REVIEW_FILE ?= data/review/bbca-review.csv
 REVIEW_PERIOD ?=
 REVIEW_DOCUMENT ?=
+ANALYSIS_DB ?= data/analysis/bbca-analysis.db
+ANALYSIS_FORMAT ?= markdown
+ANALYSIS_EVIDENCE ?= data/analysis/bbca-fy2025.yaml
+ANALYSIS_PDF ?= output/pdf/bbca-fy2025.pdf
+PYTHON ?= python3
 
-.PHONY: all build run test lint fmt tidy verify migrate-up podman-build bbca-import bbca-catalog bbca-review bbca-approve \
+.PHONY: all build run test lint fmt tidy verify migrate-up podman-build bbca-import bbca-catalog bbca-review bbca-approve bbca-analysis bbca-analysis-pdf \
 	web-install web-dev web-build web-lint web-typecheck
 
 all: verify lint test build
@@ -55,6 +60,20 @@ bbca-review:
 
 bbca-approve:
 	PODMAN="$(PODMAN)" ./scripts/bbca.sh approve --db "$(SQLITE_DSN)" --file "$(REVIEW_FILE)"
+
+ifeq ($(ANALYSIS_FORMAT),pdf)
+bbca-analysis: bbca-analysis-pdf
+else
+bbca-analysis:
+	@$(GO) run ./server/cmd/bbca analysis --db "$(ANALYSIS_DB)" --format "$(ANALYSIS_FORMAT)" --evidence "$(ANALYSIS_EVIDENCE)"
+endif
+
+bbca-analysis-pdf:
+	@set -eu; \
+	input=$$(mktemp); \
+	trap 'rm -f "$$input"' EXIT; \
+	$(GO) run ./server/cmd/bbca analysis --db "$(ANALYSIS_DB)" --format json --evidence "$(ANALYSIS_EVIDENCE)" > "$$input"; \
+	"$(PYTHON)" scripts/bbca_analysis_pdf.py "$$input" "$(ANALYSIS_PDF)"
 
 web-install:
 	$(NPM) --prefix web ci

@@ -164,6 +164,12 @@ func ListPeriods(ctx context.Context, db *sql.DB) ([]string, error) {
 }
 
 func ListApprovedFacts(ctx context.Context, db *sql.DB, period string) ([]Fact, error) {
+	return listApprovedFacts(ctx, db, period)
+}
+
+func listApprovedFacts(ctx context.Context, db interface {
+	QueryContext(context.Context, string, ...any) (*sql.Rows, error)
+}, period string) ([]Fact, error) {
 	rows, err := db.QueryContext(ctx, `SELECT f.id, f.document_id, d.local_path, d.source_url, f.page_number,
 		COALESCE(s.source_locator, ''),
 		f.period, f.period_start, f.period_end, f.period_type, f.raw_label, f.raw_value,
@@ -172,7 +178,7 @@ func ListApprovedFacts(ctx context.Context, db *sql.DB, period string) ([]Fact, 
 		FROM financial_facts f JOIN financial_documents d ON d.id = f.document_id
 		LEFT JOIN financial_fact_sources s ON s.fact_id = f.id
 		WHERE f.status = 'approved' AND (? = '' OR f.period = ?)
-		ORDER BY f.period, d.local_path, f.page_number, f.canonical_key`, period, period)
+		ORDER BY f.period, d.local_path, f.page_number, f.canonical_key, f.id`, period, period)
 	if err != nil {
 		return nil, fmt.Errorf("query approved facts: %w", err)
 	}

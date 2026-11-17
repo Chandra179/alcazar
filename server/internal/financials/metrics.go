@@ -24,11 +24,19 @@ func CalculateMetrics(ctx context.Context, db *sql.DB, period string) ([]Metric,
 		return nil, err
 	}
 	defer func() { _ = tx.Rollback() }()
+	metrics, err := calculateMetrics(ctx, tx, period, "")
+	if err != nil {
+		return nil, err
+	}
+	return metrics, tx.Commit()
+}
+
+func calculateMetrics(ctx context.Context, tx *sql.Tx, period, basis string) ([]Metric, error) {
 	entries, err := listCatalog(tx)
 	if err != nil {
 		return nil, err
 	}
-	facts, err := approvedFactsForCalculation(ctx, tx, period)
+	facts, err := approvedFactsForCalculation(ctx, tx, period, basis)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +49,7 @@ func CalculateMetrics(ctx context.Context, db *sql.DB, period string) ([]Metric,
 		}
 	}
 	if previousPeriod := previousBalancePeriod(period); needsAverageBalances && previousPeriod != "" {
-		previousFacts, err := approvedFactsForCalculation(ctx, tx, previousPeriod)
+		previousFacts, err := approvedFactsForCalculation(ctx, tx, previousPeriod, basis)
 		if err != nil {
 			return nil, err
 		}
@@ -69,7 +77,7 @@ func CalculateMetrics(ctx context.Context, db *sql.DB, period string) ([]Metric,
 			continue
 		}
 		if definition.years != 0 {
-			metric, err = calculateCapitalExpenditureBurden(ctx, tx, period, definition)
+			metric, err = calculateCapitalExpenditureBurden(ctx, tx, period, basis, definition)
 			if err != nil {
 				return nil, err
 			}
@@ -140,10 +148,10 @@ func CalculateMetrics(ctx context.Context, db *sql.DB, period string) ([]Metric,
 		metric.Inputs = inputRefs
 		metrics = append(metrics, metric)
 	}
-	return metrics, tx.Commit()
+	return metrics, nil
 }
 
-func calculateCapitalExpenditureBurden(ctx context.Context, tx *sql.Tx, period string, definition formulaDefinition) (Metric, error) {
+func calculateCapitalExpenditureBurden(ctx context.Context, tx *sql.Tx, period, basis string, definition formulaDefinition) (Metric, error) {
 	metric := Metric{EntityID: "capital-expenditure-to-net-earnings", Period: period, Unit: definition.unit}
 	_, _, periodType := periodBounds(period)
 	if periodType != "annual" {
@@ -167,7 +175,7 @@ func calculateCapitalExpenditureBurden(ctx context.Context, tx *sql.Tx, period s
 
 	for year := startYear; year <= endYear; year++ {
 		annualPeriod := strconv.Itoa(year)
-		facts, err := approvedFactsForCalculation(ctx, tx, annualPeriod)
+		facts, err := approvedFactsForCalculation(ctx, tx, annualPeriod, basis)
 		if err != nil {
 			return metric, err
 		}
@@ -262,7 +270,7 @@ func sourceFactReferences(facts []Fact) []map[string]any {
 	return references
 }
 
-func approvedFactsForCalculation(ctx context.Context, db *sql.Tx, period string) ([]periodFact, error) {
+func approvedFactsForCalculation(ctx context.Context, db *sql.Tx, period, basis string) ([]periodFact, error) {
 	rows, err := db.QueryContext(ctx, `SELECT f.id, f.document_id, d.local_path, d.source_url, f.page_number,
 		COALESCE(s.source_locator, ''),
 		f.period, f.period_start, f.period_end, f.period_type, f.raw_label, f.raw_value,
@@ -270,7 +278,9 @@ func approvedFactsForCalculation(ctx context.Context, db *sql.Tx, period string)
 		f.reporting_basis, f.audited_status, f.extraction_method, f.status, f.review_note
 		FROM financial_facts f JOIN financial_documents d ON d.id = f.document_id
 		LEFT JOIN financial_fact_sources s ON s.fact_id = f.id
-		WHERE f.status = 'approved' AND f.period = ? AND f.canonical_key <> ''`, period)
+		WHERE f.status = 'approved' AND f.period = ? AND f.canonical_key <> ''
+		AND (? = '' OR f.reporting_basis = ?)
+		ORDER BY d.local_path, f.page_number, f.id`, period, basis, basis)
 	if err != nil {
 		return nil, fmt.Errorf("query metric inputs: %w", err)
 	}
