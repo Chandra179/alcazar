@@ -1,5 +1,344 @@
 catalog_hash: 34548287b36c92bb96cdf7ba28fa045c8d0a034eab7490eab75e31835717ee34
+facts_hash: 7a871d482bc0f2ee4e0b05b4dcbc2843f9cd229e8eec43393f25d305d48a7cec
 sources:
+  bank-opening-p139:
+    title: BCA FY2025 audited bank-only appendix
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=139
+    where: PDF p. 139, FY2025 and FY2024 parent-only balance sheet
+  bank-opening-p140:
+    title: BCA FY2025 audited bank-only appendix
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=140
+    where: PDF p. 140, FY2025 and FY2024 parent-only balance sheet
+  oct2025-margin:
+    title: BCA October 2025 bank-only publication
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Bulanan/2025/20251114-laporan-keuangan-publikasi-bulanan-oktober-2025-eng.pdf#page=3
+    where: PDF p. 3, net interest plus the signed income amounts in lines B.1–B.9 before provisions and other operating
+      expenses
+  oct2025-equity:
+    title: BCA October 2025 bank-only publication
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Bulanan/2025/20251114-laporan-keuangan-publikasi-bulanan-oktober-2025-eng.pdf#page=2
+    where: PDF p. 2, bank-only ordinary shareholders’ equity
+  oct2026-margin:
+    title: BCA October 2026 bank-only publication
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Bulanan/2026/20261113-laporan-keuangan-publikasi-bulanan-oktober-2026-eng.pdf#page=3
+    where: PDF p. 3, net interest plus the signed income amounts in lines B.1–B.9 before provisions and other operating
+      expenses
+  oct2026-equity:
+    title: BCA October 2026 bank-only publication
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Bulanan/2026/20261113-laporan-keuangan-publikasi-bulanan-oktober-2026-eng.pdf#page=2
+    where: PDF p. 2, bank-only ordinary shareholders’ equity
+  larfy23:
+    title: BCA FY2023 analyst presentation
+    url: https://www.bca.co.id/-/media/Feature/Report/File/Berita-Investor/2024/20240125-FY23-Corporate-Presentation.pdf
+    where: Historical loan-at-risk presentation, bank-only basis
+  dividend2026-q2:
+    title: BCA FY2026 second-quarter interim dividend notice
+    url: https://www.bca.co.id/-/media/Feature/Report/File/Berita-Investor/2026/20260605-Pengumuman-Dividen-Interim-Q2-2026-EN.pdf
+    where: IDR 20 per share, June distribution
+  dividend2026-q3:
+    title: BCA FY2026 third-quarter interim dividend announcement
+    url: https://www.bca.co.id/en/tentang-bca/media-riset/pressroom/siaran-pers/2026/08/20/03/33/tebar-rp307-triliun-bca-umumkan-pembayaran-dividen-interim
+    where: IDR 25 per share, 16 September payment
+  additional-fy2003-p69:
+    title: BCA FY2003 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2003.pdf#page=69
+    where: PDF p. 69, closing parent equity outside minority interests
+  additional-fy2008-p103:
+    title: BCA FY2008 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2008.pdf#page=103
+    where: PDF p. 103, reported FY2008 and restated FY2007 closing equity
+  additional-fy2009-p127:
+    title: BCA FY2009 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2009.pdf#page=127
+    where: PDF p. 127, FY2009 closing equity
+  standalone2007:
+    title: BCA FY2007 audited statements (archival copy)
+    url: https://id.scribd.com/document/594932766/FY-2007-BBCA-Bank-Central-Asia-Tbk
+    where: Statement pp. 2–3, 2006 and 2007 assets and equity
+  additional-fy2002-p2:
+    title: BCA FY2002 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=2
+    where: PDF p. 2, financial highlights. Operating income is net interest income plus other operating income.
+  additional-fy2005-p4:
+    title: BCA FY2005 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2005.pdf#page=4
+    where: PDF p. 4, financial highlights. Operating income is net interest income plus other operating income.
+  additional-fy2010-p12:
+    title: BCA FY2010 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2010.pdf#page=12
+    where: PDF p. 12, financial highlights. Operating income and net income.
+  larfy25:
+    title: BCA FY2025 analyst presentation
+    url: https://www.bca.co.id/-/media/Feature/Report/File/Berita-Investor/2026/20260210-FY25-Presentasi-Perusahaan-EN.pdf
+    where: Slide 18, consolidated FY2024–FY2025 loan-at-risk ratio and coverage
+  archive00-income:
+    title: BCA audited FY1999 and FY2000 split periods (Global Reports mirror)
+    url: https://studylibid.com/doc/1976703/pt-bank-central-asia-tbk-dan-anak-perusahaan
+    where: Statement p. 8, consolidated income after minority interests and tax components
+  archive00-balance:
+    title: BCA audited FY1999 and FY2000 split periods (Global Reports mirror)
+    url: https://studylibid.com/doc/1976703/pt-bank-central-asia-tbk-dan-anak-perusahaan
+    where: Statement pp. 4–6, closing balance sheets
+  archive00-equity:
+    title: BCA audited FY1999 and FY2000 split periods (Global Reports mirror)
+    url: https://studylibid.com/doc/1976703/pt-bank-central-asia-tbk-dan-anak-perusahaan
+    where: Statement p. 10, 1 January 1999 equity deficit
+  archive00-eps:
+    title: BCA audited FY1999 and FY2000 split periods (Global Reports mirror)
+    url: https://studylibid.com/doc/1976703/pt-bank-central-asia-tbk-dan-anak-perusahaan
+    where: Note 2w, basic EPS weighted shares
+  archive00-cash:
+    title: BCA audited FY1999 and FY2000 split periods (Global Reports mirror)
+    url: https://studylibid.com/doc/1976703/pt-bank-central-asia-tbk-dan-anak-perusahaan
+    where: Statement pp. 11–12, cash-flow subtotals and opening/closing cash
+  bca_ar_2002-p2:
+    title: BCA annual report FY2002
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=2
+    where: PDF p. 2, FY1998–2002 financial highlights
+  bca_ar_2002-p96:
+    title: BCA annual report FY2002
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=96
+    where: PDF p. 96, consolidated balance sheet, minority interests presented separately
+  bca_ar_2005-p80:
+    title: BCA annual report FY2005
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2005.pdf#page=80
+    where: PDF p. 80, consolidated balance sheet, minority interests presented separately
+  bca_ar_2006-p73:
+    title: BCA annual report FY2006
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2006.pdf#page=73
+    where: PDF p. 73, consolidated balance sheet
+  bca_ar_2002-p171:
+    title: BCA annual report FY2002
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=171
+    where: PDF p. 171, basic EPS, general reserve and cash-dividend notes
+  bca_ar_2002-p170:
+    title: BCA annual report FY2002
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=170
+    where: PDF p. 170, audited basic EPS note, weighted average adjusted for the disclosed split where applicable
+  bca_ar_2003-p139:
+    title: BCA annual report FY2003
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2003.pdf#page=139
+    where: PDF p. 139, audited basic EPS note, weighted average adjusted for the disclosed split where applicable
+  bca_ar_2005-p150:
+    title: BCA annual report FY2005
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2005.pdf#page=150
+    where: PDF p. 150, audited basic EPS note, weighted average adjusted for the disclosed split where applicable
+  bca_ar_2006-p144:
+    title: BCA annual report FY2006
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2006.pdf#page=144
+    where: PDF p. 144, audited basic EPS note, weighted average adjusted for the disclosed split where applicable
+  bca_ar_2008-p173:
+    title: BCA annual report FY2008
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2008.pdf#page=173
+    where: PDF p. 173, audited basic EPS note, weighted average adjusted for the disclosed split where applicable
+  bca_ar_2008-p172:
+    title: BCA annual report FY2008
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2008.pdf#page=172
+    where: PDF p. 172, audited basic EPS note, weighted average adjusted for the disclosed split where applicable
+  bca_ar_2009-p194:
+    title: BCA annual report FY2009
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2009.pdf#page=194
+    where: PDF p. 194, audited basic EPS note, weighted average adjusted for the disclosed split where applicable
+  bca_ar_2011-p232:
+    title: BCA annual report FY2011
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2011.pdf#page=232
+    where: PDF p. 232, audited basic EPS note, weighted average adjusted for the disclosed split where applicable
+  bca_ar_2013-p447:
+    title: BCA annual report FY2013
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2013.pdf#page=447
+    where: PDF p. 447, audited basic EPS note, weighted average adjusted for the disclosed split where applicable
+  bca_ar_2002-p98:
+    title: BCA annual report FY2002
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=98
+    where: PDF p. 98, consolidated income statement
+  bca_ar_2003-p71:
+    title: BCA annual report FY2003
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2003.pdf#page=71
+    where: PDF p. 71, consolidated income statement
+  bca_ar_2005-p82:
+    title: BCA annual report FY2005
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2005.pdf#page=82
+    where: PDF p. 82, consolidated income statement
+  bca_ar_2006-p75:
+    title: BCA annual report FY2006
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2006.pdf#page=75
+    where: PDF p. 75, consolidated income statement
+  bca_ar_2011-p149:
+    title: BCA annual report FY2011
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2011.pdf#page=149
+    where: PDF p. 149, consolidated income statement
+  bca_ar_2013-p346:
+    title: BCA annual report FY2013
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2013.pdf#page=346
+    where: PDF p. 346, consolidated income statement
+  bca_ar_2015-p406:
+    title: BCA annual report FY2015
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/BCA-AR-2015-Eng.pdf#page=406
+    where: PDF p. 406, consolidated income statement
+  bca_ar_2016-p452:
+    title: BCA annual report FY2016
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/20170315-buku-bca-ar16-EN.pdf#page=452
+    where: PDF p. 452, consolidated income statement
+  bca_ar_2011-p153:
+    title: BCA annual report FY2011
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2011.pdf#page=153
+    where: PDF p. 153, fixed-asset purchases in the consolidated cash flow statement
+  bca_ar_2013-p349:
+    title: BCA annual report FY2013
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2013.pdf#page=349
+    where: PDF p. 349, fixed-asset purchases in the consolidated cash flow statement
+  q25-03-p5:
+    title: BCA consolidated statements 2025-03
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/04/20250423-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-31-maret-2025-billingual.pdf#page=5
+    where: PDF p. 5, consolidated statement of financial position
+  q25-03-p6:
+    title: BCA consolidated statements 2025-03
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/04/20250423-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-31-maret-2025-billingual.pdf#page=6
+    where: PDF p. 6, consolidated statement of financial position
+  q25-03-p7:
+    title: BCA consolidated statements 2025-03
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/04/20250423-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-31-maret-2025-billingual.pdf#page=7
+    where: PDF p. 7, consolidated statement of financial position
+  q25-06-p5:
+    title: BCA consolidated statements 2025-06
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/07/20250730-Laporan-Keuangan-Konsolidasi-PT-BCA-Tbk-Billingual.pdf#page=5
+    where: PDF p. 5, consolidated statement of financial position
+  q25-06-p6:
+    title: BCA consolidated statements 2025-06
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/07/20250730-Laporan-Keuangan-Konsolidasi-PT-BCA-Tbk-Billingual.pdf#page=6
+    where: PDF p. 6, consolidated statement of financial position
+  q25-06-p7:
+    title: BCA consolidated statements 2025-06
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/07/20250730-Laporan-Keuangan-Konsolidasi-PT-BCA-Tbk-Billingual.pdf#page=7
+    where: PDF p. 7, consolidated statement of financial position
+  q25-09-p5:
+    title: BCA consolidated statements 2025-09
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/10/20251020-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2025-billingual.pdf#page=5
+    where: PDF p. 5, consolidated statement of financial position
+  q25-09-p6:
+    title: BCA consolidated statements 2025-09
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/10/20251020-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2025-billingual.pdf#page=6
+    where: PDF p. 6, consolidated statement of financial position
+  q25-09-p7:
+    title: BCA consolidated statements 2025-09
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/10/20251020-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2025-billingual.pdf#page=7
+    where: PDF p. 7, consolidated statement of financial position
+  bca_unaudited_consolidated_2026-03-p114:
+    title: BCA consolidated statements 2026-03
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260423-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-31-maret-2026-billingual.pdf#page=114
+    where: PDF p. 114, basic EPS note, weighted-average shares excluding treasury shares
+  bca_unaudited_consolidated_2026-03-p8:
+    title: BCA consolidated statements 2026-03
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260423-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-31-maret-2026-billingual.pdf#page=8
+    where: PDF p. 8, consolidated income statement, same YTD period
+  bca_unaudited_consolidated_2026-06-p109:
+    title: BCA consolidated statements 2026-06
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260728-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-juni-2026-billingual.pdf#page=109
+    where: PDF p. 109, basic EPS note, weighted-average shares excluding treasury shares
+  bca_unaudited_consolidated_2026-06-p8:
+    title: BCA consolidated statements 2026-06
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260728-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-juni-2026-billingual.pdf#page=8
+    where: PDF p. 8, consolidated income statement, same YTD period
+  bca_unaudited_consolidated_2026-09-p109:
+    title: BCA consolidated statements 2026-09
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2026-billingual.pdf#page=109
+    where: PDF p. 109, basic EPS note, weighted-average shares excluding treasury shares
+  bca_unaudited_consolidated_2026-09-p8:
+    title: BCA consolidated statements 2026-09
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2026-billingual.pdf#page=8
+    where: PDF p. 8, consolidated income statement, same YTD period
+  bca_monthly_published_financial_report_2025-10-p3:
+    title: BCA October 2025 bank-only publication
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Bulanan/2025/20251114-laporan-keuangan-publikasi-bulanan-oktober-2025-eng.pdf#page=3
+    where: PDF p. 3, bank-only income statement and current-year earnings on PDF p. 2
+  bca_monthly_published_financial_report_2026-10-p3:
+    title: BCA October 2026 bank-only publication
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Bulanan/2026/20261113-laporan-keuangan-publikasi-bulanan-oktober-2026-eng.pdf#page=3
+    where: PDF p. 3, bank-only income statement and current-year earnings on PDF p. 2
+  bca_ar_2015-p24:
+    title: BCA annual report FY2015
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/BCA-AR-2015-Eng.pdf#page=24
+    where: PDF p. 24, issuer highlights, consolidated operating income and headline net income
+  bca_ar_2020-p18:
+    title: BCA annual report FY2020
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/20210226AR-2020-BCAInggris-Medium-Res.pdf#page=18
+    where: PDF p. 18, issuer highlights, consolidated operating income and headline net income
+  jsx-close2000:
+    title: Jakarta Stock Exchange Q4 2000 Statistics (university archive)
+    url: https://repository.unas.ac.id/id/eprint/2309/1/EKA%20WIDIA.pdf
+    where: Regular Market cumulative table, BBCA last traded 22 December at IDR 1,675 on the pre-split share basis
+  bca_ar_2002-p75:
+    title: BCA annual report FY2002
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=75
+    where: PDF p. 75, share highlights, year-end close and issuer book value per share
+  bca_ar_2003-p4:
+    title: BCA annual report FY2003
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2003.pdf#page=4
+    where: PDF p. 4, share highlights, year-end close and issuer book value per share
+  bca_ar_2004-p7:
+    title: BCA annual report FY2004
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2004.pdf#page=7
+    where: PDF p. 7, share highlights, year-end close and issuer book value per share
+  bca_ar_2005-p7:
+    title: BCA annual report FY2005
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2005.pdf#page=7
+    where: PDF p. 7, share highlights, year-end close and issuer book value per share
+  bca_ar_2006-p14:
+    title: BCA annual report FY2006
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2006.pdf#page=14
+    where: PDF p. 14, share highlights, year-end close and issuer book value per share
+  bca_ar_2008-p15:
+    title: BCA annual report FY2008
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2008.pdf#page=15
+    where: PDF p. 15, share highlights, year-end close and issuer book value per share
+  bca_ar_2009-p9:
+    title: BCA annual report FY2009
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2009.pdf#page=9
+    where: PDF p. 9, share highlights, year-end close and issuer book value per share
+  bca_ar_2013-p26:
+    title: BCA annual report FY2013
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2013.pdf#page=26
+    where: PDF p. 26, share highlights, year-end close and issuer book value per share
+  bca_ar_2015-p28:
+    title: BCA annual report FY2015
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/BCA-AR-2015-Eng.pdf#page=28
+    where: PDF p. 28, share highlights, year-end close and issuer book value per share
+  bca_ar_2020-p20:
+    title: BCA annual report FY2020
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/20210226AR-2020-BCAInggris-Medium-Res.pdf#page=20
+    where: PDF p. 20, share highlights, year-end close and issuer book value per share
+  dividend-record:
+    title: BCA dividend and entitlement history
+    url: https://www.bca.co.id/en/tentang-bca/Hubungan-Investor/Informasi-Saham/Riwayat-Deviden
+    where: Regular-market entitlement and payment dates. Amounts adjusted for the 2004 and 2008 splits where still needed.
+  bps-dec-series:
+    title: Statistics Indonesia national CPI
+    url: https://www.bps.go.id/id/statistics-table/1/OTE0IzE%3D/tingkat-inflasi-harga-
+    where: December row, calendar-year headline inflation
+  bps-dec-early:
+    title: Statistics Indonesia historical national inflation
+    url: https://web-api.bps.go.id/download.php?f=lj9gE%2BdnYAXWggNoksgV8ytvV3lOUVRQSmp3Tm9Pd0VCdW9UQ2hqL1ViZnBWNTl2SWJUdlIyam5ja0xqZ0IyM29nWWtNTC9TU2VnZDZqYmdPVm5LTkplZEgxaGN0NFdVbHppYytzdjgweTFrRVg1b2RnZDlTV3A5QXp3QlBGbytxUGtoVTNmZmJnOHp5dklRUTh4Sm9VU3drcXVRSU03VWFBeDY1YUF0dFp3MGhZeUU5QmFJc3RLaFRrQStKSElCaWs4M3N4L2NodmFmWTRzWkF5UjdKVHc2bzBrNWZtRTJSSktJc0h3SHlVZVJXMysyZ2JMWFgzRG0vSWpaNHB0R2pDbWJyVUJ6bnJDN1EyRTRjVG5qb0dlNnM0VVluc1k5NXhJcFk2c0hRSDBsZUtSOXpiT29XcTlHa1NJPQ%3D%3D
+    where: National monthly inflation 1996–2006 table, cumulative row
+  lar9m26:
+    title: BCA September 2026 analyst presentation
+    url: https://www.bca.co.id/-/media/Feature/Report/File/Berita-Investor/2026/20261027-9m26-corporate-presentation.pdf#page=17
+    where: Slide 17, consolidated loan-at-risk and coverage series
+  bca_life_audited_2025-p1:
+    title: BCA_Life_audited_2025
+    url: https://www.bcalife.co.id/storage/financials/laporan-keuangan-bca-life-tahun-2025-1777555983.pdf#page=1
+    where: PDF p. 1, standalone audited figures, PSAK 117 and restated FY2024 comparative
+  bca_insurance_audited_2025-p1:
+    title: BCA_Insurance_audited_2025
+    url: https://www.bcainsurance.co.id/site/uploads/financial_reports/69eecc8dd9330-lk-bca-insurance-april-2026-final.pdf#page=1
+    where: PDF p. 1, standalone audited figures, PSAK 117 and restated FY2024 comparative
+  bond-series-b:
+    title: KSEI registered security BBCA01BSBCN1
+    url: https://web.ksei.co.id/services/registered-securities/corporate-bonds/lc/BBCA01BSBCN1?setLocale=en-US
+    where: ISIN IDA0000918B3, Series B registered principal, coupon and maturity
+  bca_audited_2025-p84:
+    title: BCA_audited_2025
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=84
+    where: PDF pp. 84–85, Note 24, subordinated bond terms and negative covenants
   balance:
     title: BCA audited FY2025
     url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=7
@@ -212,6 +551,74 @@ sources:
     title: BCA FY2025 annual report
     url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=15
     where: PDF 15
+  restated2013:
+    title: BCA FY2015 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/BCA-AR-2015-Eng.pdf#page=402
+    where: PDF pp. 402 and 404, restated FY2014 opening balances
+  km1:
+    title: BCA September 2026 capital and risk exposure disclosure
+    url: https://www.bca.co.id/-/media/Files/laporan-exposure/20261027-capital-and-risk-exposure-publication-report-30-september-2026-pdf.pdf#page=2
+    where: PDF p. 2, consolidated KM1
+  dividends2025ar:
+    title: BCA AR 2025
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=18
+    where: PDF p. 18, interim and final dividend payment schedule
+  weighted2021:
+    title: BCA audited 2021
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2021.pdf#page=114
+    where: PDF p. 114, basic and diluted EPS note
+  weighted2022:
+    title: BCA audited 2022
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2022.pdf#page=115
+    where: PDF p. 115, basic and diluted EPS note
+  weighted2023:
+    title: BCA audited 2023
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2024/20240125-final-lk-bca-1223-english.pdf#page=113
+    where: PDF p. 113, basic and diluted EPS note
+  km1_25:
+    title: BCA capital risk exposure 2026-09
+    url: https://www.bca.co.id/-/media/Files/laporan-exposure/20261027-capital-and-risk-exposure-publication-report-30-september-2026-xlsx.xlsx
+    where: Q-KM1 cells C25:G25
+  km1_44:
+    title: BCA capital risk exposure 2026-09
+    url: https://www.bca.co.id/-/media/Files/laporan-exposure/20261027-capital-and-risk-exposure-publication-report-30-september-2026-xlsx.xlsx
+    where: Q-KM1 cells C44:G44
+  km1_48:
+    title: BCA capital risk exposure 2026-09
+    url: https://www.bca.co.id/-/media/Files/laporan-exposure/20261027-capital-and-risk-exposure-publication-report-30-september-2026-xlsx.xlsx
+    where: Q-KM1 cells C48:G48
+  cash_archive_2002:
+    title: BCA FY2002 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=100
+    where: "PDF pp. 100\u2013101, consolidated cash flow statements"
+  cash_archive_2003:
+    title: BCA FY2003 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2003.pdf#page=73
+    where: "PDF pp. 73\u201374, consolidated cash flow statements"
+  cash_archive_2005:
+    title: BCA FY2005 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2005.pdf#page=85
+    where: "PDF pp. 85\u201386, consolidated cash flow statements"
+  cash_archive_2006:
+    title: BCA FY2006 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2006.pdf#page=78
+    where: "PDF pp. 78\u201379, consolidated cash flow statements"
+  cash_archive_2008:
+    title: BCA FY2008 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2008.pdf#page=108
+    where: "PDF pp. 108\u2013109, consolidated cash flow statements"
+  cash_archive_2009:
+    title: BCA FY2009 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2009.pdf#page=132
+    where: "PDF pp. 132\u2013133, consolidated cash flow statements"
+  cash_archive_2011:
+    title: BCA FY2011 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2011.pdf#page=153
+    where: "PDF pp. 153\u2013154, consolidated cash flow statements"
+  cash_archive_2013:
+    title: BCA FY2013 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2013.pdf#page=349
+    where: "PDF pp. 349\u2013350, consolidated cash flow statements"
 observations:
 - key: Net interest and sharia income
   period: '2024'
@@ -472,13 +879,6 @@ observations:
   value: 5.3
   source: ratios
   subject: BBCA
-- key: Loan at risk
-  period: '2025'
-  basis: bank only
-  unit: '%'
-  value: 4.8
-  source: ratios
-  subject: BBCA
 - key: Net interest margin
   period: '2024'
   basis: bank only
@@ -626,6 +1026,7 @@ observations:
   value: 9675
   source: price
   subject: BBCA
+  share_basis: october-2021-split
 - key: Year-end close
   period: '2025'
   basis: market
@@ -633,6 +1034,7 @@ observations:
   value: 8075
   source: price
   subject: BBCA
+  share_basis: october-2021-split
 - key: Published price to book
   period: '2025'
   basis: market
@@ -647,6 +1049,7 @@ observations:
   value: 305
   source: div
   subject: BBCA
+  share_basis: october-2021-split
 - key: Fiscal dividends
   period: '2024'
   basis: market
@@ -654,6 +1057,7 @@ observations:
   value: 300
   source: div
   subject: BBCA
+  share_basis: october-2021-split
 - key: Fiscal dividends
   period: '2025'
   basis: market
@@ -661,6 +1065,7 @@ observations:
   value: 336
   source: agm
   subject: BBCA
+  share_basis: october-2021-split
 - key: Closing common shares ex treasury
   period: '2025'
   basis: consolidated
@@ -668,6 +1073,7 @@ observations:
   value: 123013033200
   source: equity
   subject: BBCA
+  share_basis: october-2021-split
 - key: CPI growth
   period: '2025'
   basis: Indonesia CPI
@@ -731,6 +1137,7 @@ observations:
   value: -355.05
   source: eps2002
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '1999'
   basis: consolidated
@@ -745,6 +1152,7 @@ observations:
   value: 7.85
   source: eps2002
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2000'
   basis: consolidated
@@ -759,6 +1167,7 @@ observations:
   value: 15.3
   source: eps2002
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2001'
   basis: consolidated
@@ -773,6 +1182,7 @@ observations:
   value: 26.45
   source: eps2002
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2002'
   basis: consolidated
@@ -787,6 +1197,7 @@ observations:
   value: 21.3
   source: eps2002
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2003'
   basis: consolidated
@@ -801,6 +1212,7 @@ observations:
   value: 19.75
   source: eps2003
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2004'
   basis: consolidated
@@ -815,6 +1227,7 @@ observations:
   value: 26.0
   source: eps2008
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2005'
   basis: consolidated
@@ -829,6 +1242,7 @@ observations:
   value: 29.2
   source: eps2008
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2006'
   basis: consolidated
@@ -843,6 +1257,7 @@ observations:
   value: 34.6
   source: eps2008
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2007'
   basis: consolidated
@@ -857,6 +1272,7 @@ observations:
   value: 36.6
   source: eps2008
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2008'
   basis: consolidated
@@ -871,6 +1287,7 @@ observations:
   value: 47.2
   source: eps2008
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2009'
   basis: consolidated
@@ -885,6 +1302,7 @@ observations:
   value: 55.8
   source: eps2012
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2010'
   basis: consolidated
@@ -899,6 +1317,7 @@ observations:
   value: 69.6
   source: eps2012
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2011'
   basis: consolidated
@@ -913,6 +1332,7 @@ observations:
   value: 88.8
   source: eps2012
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2012'
   basis: consolidated
@@ -927,6 +1347,7 @@ observations:
   value: 96.0
   source: eps2012
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2013'
   basis: consolidated
@@ -941,6 +1362,7 @@ observations:
   value: 115.8
   source: eps2015
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2014'
   basis: consolidated
@@ -955,6 +1377,7 @@ observations:
   value: 133.8
   source: eps2015
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2015'
   basis: consolidated
@@ -969,6 +1392,7 @@ observations:
   value: 146.2
   source: eps2015
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2016'
   basis: consolidated
@@ -983,6 +1407,7 @@ observations:
   value: 167.2
   source: eps2020
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2017'
   basis: consolidated
@@ -997,6 +1422,7 @@ observations:
   value: 189.0
   source: eps2020
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2018'
   basis: consolidated
@@ -1011,6 +1437,7 @@ observations:
   value: 210.0
   source: eps2021
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2019'
   basis: consolidated
@@ -1025,6 +1452,7 @@ observations:
   value: 232.0
   source: eps2021
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2020'
   basis: consolidated
@@ -1039,6 +1467,7 @@ observations:
   value: 220.0
   source: eps2021
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2021'
   basis: consolidated
@@ -1053,6 +1482,7 @@ observations:
   value: 255.0
   source: eps2021
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2022'
   basis: consolidated
@@ -1067,6 +1497,7 @@ observations:
   value: 330.0
   source: eps2025
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2023'
   basis: consolidated
@@ -1081,6 +1512,7 @@ observations:
   value: 395.0
   source: eps2025
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2024'
   basis: consolidated
@@ -1095,6 +1527,7 @@ observations:
   value: 445.0
   source: eps2025
   subject: BBCA
+  share_basis: october-2021-split
 - key: Basic EPS as published
   period: '2025'
   basis: consolidated
@@ -1109,32 +1542,3328 @@ observations:
   value: 467.0
   source: eps2025
   subject: BBCA
+  share_basis: october-2021-split
+- key: Risk-weighted assets
+  period: '2023'
+  basis: consolidated
+  unit: IDR million
+  value: 825611000
+  source: car
+  subject: BBCA
+- key: Risk-weighted assets
+  period: '2024'
+  basis: consolidated
+  unit: IDR million
+  value: 910184000
+  source: car
+  subject: BBCA
+- key: Risk-weighted assets
+  period: '2025'
+  basis: consolidated
+  unit: IDR million
+  value: 936368457
+  source: km1
+  subject: BBCA
+- key: Common Equity Tier 1 capital
+  period: '2025'
+  basis: consolidated
+  unit: IDR million
+  value: 273828527
+  source: km1
+  subject: BBCA
+- key: Capital adequacy ratio (KM1)
+  period: 2025-09
+  basis: consolidated
+  unit: '%'
+  value: 30.64
+  source: km1
+  corroboration: km1_25
+  subject: BBCA
+- key: Liquidity coverage ratio (KM1)
+  period: 2025-09
+  basis: consolidated
+  unit: '%'
+  value: 306.94
+  source: km1
+  corroboration: km1_44
+  subject: BBCA
+- key: Net stable funding ratio (KM1)
+  period: 2025-09
+  basis: consolidated
+  unit: '%'
+  value: 161.43
+  source: km1
+  corroboration: km1_48
+  subject: BBCA
+- key: Capital adequacy ratio (KM1)
+  period: 2025-12
+  basis: consolidated
+  unit: '%'
+  value: 30.36
+  source: km1
+  corroboration: km1_25
+  subject: BBCA
+- key: Liquidity coverage ratio (KM1)
+  period: 2025-12
+  basis: consolidated
+  unit: '%'
+  value: 310.93
+  source: km1
+  corroboration: km1_44
+  subject: BBCA
+- key: Net stable funding ratio (KM1)
+  period: 2025-12
+  basis: consolidated
+  unit: '%'
+  value: 159.85
+  source: km1
+  corroboration: km1_48
+  subject: BBCA
+- key: Capital adequacy ratio (KM1)
+  period: 2026-03
+  basis: consolidated
+  unit: '%'
+  value: 27.52
+  source: km1
+  corroboration: km1_25
+  subject: BBCA
+- key: Liquidity coverage ratio (KM1)
+  period: 2026-03
+  basis: consolidated
+  unit: '%'
+  value: 307.44
+  source: km1
+  corroboration: km1_44
+  subject: BBCA
+- key: Net stable funding ratio (KM1)
+  period: 2026-03
+  basis: consolidated
+  unit: '%'
+  value: 159.38
+  source: km1
+  corroboration: km1_48
+  subject: BBCA
+- key: Capital adequacy ratio (KM1)
+  period: 2026-06
+  basis: consolidated
+  unit: '%'
+  value: 27.39
+  source: km1
+  corroboration: km1_25
+  subject: BBCA
+- key: Liquidity coverage ratio (KM1)
+  period: 2026-06
+  basis: consolidated
+  unit: '%'
+  value: 279.63
+  source: km1
+  corroboration: km1_44
+  subject: BBCA
+- key: Net stable funding ratio (KM1)
+  period: 2026-06
+  basis: consolidated
+  unit: '%'
+  value: 155.11
+  source: km1
+  corroboration: km1_48
+  subject: BBCA
+- key: Capital adequacy ratio (KM1)
+  period: 2026-09
+  basis: consolidated
+  unit: '%'
+  value: 28.12
+  source: km1
+  corroboration: km1_25
+  subject: BBCA
+- key: Liquidity coverage ratio (KM1)
+  period: 2026-09
+  basis: consolidated
+  unit: '%'
+  value: 267.66
+  source: km1
+  corroboration: km1_44
+  subject: BBCA
+- key: Net stable funding ratio (KM1)
+  period: 2026-09
+  basis: consolidated
+  unit: '%'
+  value: 156.7
+  source: km1
+  corroboration: km1_48
+  subject: BBCA
+- key: Split-adjusted weighted average shares
+  period: '2020'
+  basis: consolidated
+  unit: shares
+  value: 123275050000
+  source: weighted2021
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Split-adjusted weighted average shares
+  period: '2021'
+  basis: consolidated
+  unit: shares
+  value: 123275050000
+  source: weighted2021
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Split-adjusted weighted average shares
+  period: '2022'
+  basis: consolidated
+  unit: shares
+  value: 123275050000
+  source: weighted2022
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Split-adjusted weighted average shares
+  period: '2023'
+  basis: consolidated
+  unit: shares
+  value: 123275050000
+  source: weighted2023
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Split-adjusted weighted average shares
+  period: '2024'
+  basis: consolidated
+  unit: shares
+  value: 123275050000
+  source: eps
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Split-adjusted weighted average shares
+  period: '2025'
+  basis: consolidated
+  unit: shares
+  value: 123244982342
+  source: eps
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Year-end close
+  period: '2023'
+  basis: market
+  unit: IDR/share
+  value: 9400
+  source: price
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Year-end close
+  period: '2022'
+  basis: market
+  unit: IDR/share
+  value: 8550
+  source: price
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Year-end close
+  period: '2021'
+  basis: market
+  unit: IDR/share
+  value: 7300
+  source: price
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Published book value per share
+  period: '2025'
+  basis: market
+  unit: IDR/share
+  value: 2288
+  source: price
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Published book value per share
+  period: '2024'
+  basis: market
+  unit: IDR/share
+  value: 2131
+  source: price
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Published book value per share
+  period: '2023'
+  basis: market
+  unit: IDR/share
+  value: 1966
+  source: price
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Published book value per share
+  period: '2022'
+  basis: market
+  unit: IDR/share
+  value: 1794
+  source: price
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Published book value per share
+  period: '2021'
+  basis: market
+  unit: IDR/share
+  value: 1645
+  source: price
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Gross loans and financing
+  period: '2023'
+  basis: consolidated
+  unit: IDR billion
+  value: 810392
+  source: ar
+  subject: BBCA
+- key: Gross loans and financing
+  period: '2022'
+  basis: consolidated
+  unit: IDR billion
+  value: 711262
+  source: ar
+  subject: BBCA
+- key: Gross loans and financing
+  period: '2021'
+  basis: consolidated
+  unit: IDR billion
+  value: 636987
+  source: ar
+  subject: BBCA
+- key: Third-party funds
+  period: '2023'
+  basis: consolidated
+  unit: IDR billion
+  value: 1101673
+  source: ar
+  subject: BBCA
+- key: Third-party funds
+  period: '2022'
+  basis: consolidated
+  unit: IDR billion
+  value: 1039718
+  source: ar
+  subject: BBCA
+- key: Third-party funds
+  period: '2021'
+  basis: consolidated
+  unit: IDR billion
+  value: 975949
+  source: ar
+  subject: BBCA
+- key: Reported operating income
+  period: '2025'
+  basis: consolidated
+  unit: IDR billion
+  value: 112006
+  source: ar
+  subject: BBCA
+- key: Reported operating income
+  period: '2024'
+  basis: consolidated
+  unit: IDR billion
+  value: 106552
+  source: ar
+  subject: BBCA
+- key: Reported operating income
+  period: '2023'
+  basis: consolidated
+  unit: IDR billion
+  value: 96728
+  source: ar
+  subject: BBCA
+- key: Reported operating income
+  period: '2022'
+  basis: consolidated
+  unit: IDR billion
+  value: 83981
+  source: ar
+  subject: BBCA
+- key: Reported operating income
+  period: '2021'
+  basis: consolidated
+  unit: IDR billion
+  value: 75430
+  source: ar
+  subject: BBCA
+- key: Net interest margin
+  period: '2023'
+  basis: bank only
+  unit: '%'
+  value: 5.5
+  source: ratios
+  subject: BBCA
+- key: Net interest margin
+  period: '2022'
+  basis: bank only
+  unit: '%'
+  value: 5.3
+  source: ratios
+  subject: BBCA
+- key: Net interest margin
+  period: '2021'
+  basis: bank only
+  unit: '%'
+  value: 5.1
+  source: ratios
+  subject: BBCA
+- key: Cost to income
+  period: '2023'
+  basis: bank only
+  unit: '%'
+  value: 33.9
+  source: ratios
+  subject: BBCA
+- key: Cost to income
+  period: '2022'
+  basis: bank only
+  unit: '%'
+  value: 34.9
+  source: ratios
+  subject: BBCA
+- key: Cost to income
+  period: '2021'
+  basis: bank only
+  unit: '%'
+  value: 34.8
+  source: ratios
+  subject: BBCA
+- key: Gross NPL
+  period: '2023'
+  basis: bank only
+  unit: '%'
+  value: 1.9
+  source: ratios
+  subject: BBCA
+- key: Gross NPL
+  period: '2022'
+  basis: bank only
+  unit: '%'
+  value: 1.8
+  source: ratios
+  subject: BBCA
+- key: Gross NPL
+  period: '2021'
+  basis: bank only
+  unit: '%'
+  value: 2.2
+  source: ratios
+  subject: BBCA
+- key: Loan at risk
+  period: '2023'
+  basis: bank only
+  unit: '%'
+  value: 6.9
+  source: ratios
+  subject: BBCA
+- key: Loan at risk
+  period: '2022'
+  basis: bank only
+  unit: '%'
+  value: 10.4
+  source: ratios
+  subject: BBCA
+- key: Loan at risk
+  period: '2021'
+  basis: bank only
+  unit: '%'
+  value: 15.2
+  source: ratios
+  subject: BBCA
+- key: CASA ratio
+  period: '2023'
+  basis: consolidated
+  unit: '%'
+  value: 80.3
+  source: ratios
+  subject: BBCA
+- key: CASA ratio
+  period: '2022'
+  basis: consolidated
+  unit: '%'
+  value: 81.6
+  source: ratios
+  subject: BBCA
+- key: CASA ratio
+  period: '2021'
+  basis: consolidated
+  unit: '%'
+  value: 78.6
+  source: ratios
+  subject: BBCA
+- key: Loan to deposit ratio
+  period: '2023'
+  basis: bank only
+  unit: '%'
+  value: 70.2
+  source: ratios
+  subject: BBCA
+- key: Loan to deposit ratio
+  period: '2022'
+  basis: bank only
+  unit: '%'
+  value: 65.2
+  source: ratios
+  subject: BBCA
+- key: Loan to deposit ratio
+  period: '2021'
+  basis: bank only
+  unit: '%'
+  value: 62.0
+  source: ratios
+  subject: BBCA
+- key: Liquidity coverage ratio
+  period: '2023'
+  basis: bank only
+  unit: '%'
+  value: 357.8
+  source: ratios
+  subject: BBCA
+- key: Liquidity coverage ratio
+  period: '2022'
+  basis: bank only
+  unit: '%'
+  value: 393.5
+  source: ratios
+  subject: BBCA
+- key: Liquidity coverage ratio
+  period: '2021'
+  basis: bank only
+  unit: '%'
+  value: 396.3
+  source: ratios
+  subject: BBCA
+- key: Net stable funding ratio
+  period: '2023'
+  basis: consolidated
+  unit: '%'
+  value: 168.6
+  source: ratios
+  subject: BBCA
+- key: Net stable funding ratio
+  period: '2022'
+  basis: consolidated
+  unit: '%'
+  value: 171.1
+  source: ratios
+  subject: BBCA
+- key: Net stable funding ratio
+  period: '2021'
+  basis: consolidated
+  unit: '%'
+  value: 180.7
+  source: ratios
+  subject: BBCA
+- key: Cash dividends paid
+  period: '2024'
+  basis: market
+  unit: IDR/share
+  value: 277.5
+  source: dividends2025ar
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Fiscal dividends
+  period: '2023'
+  basis: market
+  unit: IDR/share
+  value: 270
+  source: dividends2025ar
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Cash dividends paid
+  period: '2023'
+  basis: market
+  unit: IDR/share
+  value: 212.5
+  source: dividends2025ar
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Fiscal dividends
+  period: '2022'
+  basis: market
+  unit: IDR/share
+  value: 205
+  source: dividends2025ar
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Cash dividends paid
+  period: '2022'
+  basis: market
+  unit: IDR/share
+  value: 155
+  source: dividends2025ar
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Fiscal dividends
+  period: '2021'
+  basis: market
+  unit: IDR/share
+  value: 145
+  source: dividends2025ar
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Operating cash flow
+  period: '2001'
+  basis: consolidated
+  unit: IDR million
+  value: 463586
+  source: cash_archive_2002
+  subject: BBCA
+- key: Investing cash flow
+  period: '2001'
+  basis: consolidated
+  unit: IDR million
+  value: -148375
+  source: cash_archive_2002
+  subject: BBCA
+- key: Financing cash flow
+  period: '2001'
+  basis: consolidated
+  unit: IDR million
+  value: -782660
+  source: cash_archive_2002
+  subject: BBCA
+- key: Operating cash flow
+  period: '2002'
+  basis: consolidated
+  unit: IDR million
+  value: 4029258
+  source: cash_archive_2002
+  subject: BBCA
+- key: Investing cash flow
+  period: '2002'
+  basis: consolidated
+  unit: IDR million
+  value: -1033796
+  source: cash_archive_2002
+  subject: BBCA
+- key: Financing cash flow
+  period: '2002'
+  basis: consolidated
+  unit: IDR million
+  value: -1881398
+  source: cash_archive_2002
+  subject: BBCA
+- key: Operating cash flow
+  period: '2003'
+  basis: consolidated
+  unit: IDR million
+  value: 6211974
+  source: cash_archive_2003
+  subject: BBCA
+- key: Investing cash flow
+  period: '2003'
+  basis: consolidated
+  unit: IDR million
+  value: -3940546
+  source: cash_archive_2003
+  subject: BBCA
+- key: Financing cash flow
+  period: '2003'
+  basis: consolidated
+  unit: IDR million
+  value: -1476215
+  source: cash_archive_2003
+  subject: BBCA
+- key: Operating cash flow
+  period: '2004'
+  basis: consolidated
+  unit: IDR million
+  value: 17917735
+  source: cash_archive_2005
+  subject: BBCA
+- key: Investing cash flow
+  period: '2004'
+  basis: consolidated
+  unit: IDR million
+  value: -12356852
+  source: cash_archive_2005
+  subject: BBCA
+- key: Financing cash flow
+  period: '2004'
+  basis: consolidated
+  unit: IDR million
+  value: -1745047
+  source: cash_archive_2005
+  subject: BBCA
+- key: Operating cash flow
+  period: '2005'
+  basis: consolidated
+  unit: IDR million
+  value: 8446710
+  source: cash_archive_2005
+  subject: BBCA
+- key: Investing cash flow
+  period: '2005'
+  basis: consolidated
+  unit: IDR million
+  value: -1300936
+  source: cash_archive_2005
+  subject: BBCA
+- key: Financing cash flow
+  period: '2005'
+  basis: consolidated
+  unit: IDR million
+  value: -1593109
+  source: cash_archive_2005
+  subject: BBCA
+- key: Operating cash flow
+  period: '2006'
+  basis: consolidated
+  unit: IDR million
+  value: 7110169
+  source: cash_archive_2006
+  subject: BBCA
+- key: Investing cash flow
+  period: '2006'
+  basis: consolidated
+  unit: IDR million
+  value: 79652
+  source: cash_archive_2006
+  subject: BBCA
+- key: Financing cash flow
+  period: '2006'
+  basis: consolidated
+  unit: IDR million
+  value: -1839612
+  source: cash_archive_2006
+  subject: BBCA
+- key: Operating cash flow
+  period: '2007'
+  basis: consolidated
+  unit: IDR million
+  value: 8806087
+  source: cash_archive_2008
+  subject: BBCA
+- key: Investing cash flow
+  period: '2007'
+  basis: consolidated
+  unit: IDR million
+  value: -2534824
+  source: cash_archive_2008
+  subject: BBCA
+- key: Financing cash flow
+  period: '2007'
+  basis: consolidated
+  unit: IDR million
+  value: -1758173
+  source: cash_archive_2008
+  subject: BBCA
+- key: Operating cash flow
+  period: '2008'
+  basis: consolidated
+  unit: IDR million
+  value: -1743764
+  source: cash_archive_2008
+  subject: BBCA
+- key: Investing cash flow
+  period: '2008'
+  basis: consolidated
+  unit: IDR million
+  value: 4205004
+  source: cash_archive_2008
+  subject: BBCA
+- key: Financing cash flow
+  period: '2008'
+  basis: consolidated
+  unit: IDR million
+  value: -2858995
+  source: cash_archive_2008
+  subject: BBCA
+- key: Operating cash flow
+  period: '2009'
+  basis: consolidated
+  unit: IDR million
+  value: -18660401
+  source: cash_archive_2009
+  subject: BBCA
+- key: Investing cash flow
+  period: '2009'
+  basis: consolidated
+  unit: IDR million
+  value: 25805983
+  source: cash_archive_2009
+  subject: BBCA
+- key: Financing cash flow
+  period: '2009'
+  basis: consolidated
+  unit: IDR million
+  value: -3201329
+  source: cash_archive_2009
+  subject: BBCA
+- key: Operating cash flow
+  period: '2010'
+  basis: consolidated
+  unit: IDR million
+  value: 3305964
+  source: cash_archive_2011
+  subject: BBCA
+- key: Investing cash flow
+  period: '2010'
+  basis: consolidated
+  unit: IDR million
+  value: -4999306
+  source: cash_archive_2011
+  subject: BBCA
+- key: Financing cash flow
+  period: '2010'
+  basis: consolidated
+  unit: IDR million
+  value: -3022702
+  source: cash_archive_2011
+  subject: BBCA
+- key: Operating cash flow
+  period: '2011'
+  basis: consolidated
+  unit: IDR million
+  value: -37228553
+  source: cash_archive_2011
+  subject: BBCA
+- key: Investing cash flow
+  period: '2011'
+  basis: consolidated
+  unit: IDR million
+  value: 3316909
+  source: cash_archive_2011
+  subject: BBCA
+- key: Financing cash flow
+  period: '2011'
+  basis: consolidated
+  unit: IDR million
+  value: -2773338
+  source: cash_archive_2011
+  subject: BBCA
+- key: Operating cash flow
+  period: '2012'
+  basis: consolidated
+  unit: IDR million
+  value: 27715044
+  source: cash_archive_2013
+  subject: BBCA
+- key: Investing cash flow
+  period: '2012'
+  basis: consolidated
+  unit: IDR million
+  value: 2052255
+  source: cash_archive_2013
+  subject: BBCA
+- key: Financing cash flow
+  period: '2012'
+  basis: consolidated
+  unit: IDR million
+  value: -1300874
+  source: cash_archive_2013
+  subject: BBCA
+- key: Operating cash flow
+  period: '2013'
+  basis: consolidated
+  unit: IDR million
+  value: -4189827
+  source: cash_archive_2013
+  subject: BBCA
+- key: Investing cash flow
+  period: '2013'
+  basis: consolidated
+  unit: IDR million
+  value: -4612390
+  source: cash_archive_2013
+  subject: BBCA
+- key: Financing cash flow
+  period: '2013'
+  basis: consolidated
+  unit: IDR million
+  value: 83951
+  source: cash_archive_2013
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2025'
+  basis: consolidated
+  unit: IDR billion
+  value: 57563
+  source: ar
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2024'
+  basis: consolidated
+  unit: IDR billion
+  value: 54851
+  source: ar
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2023'
+  basis: consolidated
+  unit: IDR billion
+  value: 48458
+  source: ar
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2022'
+  basis: consolidated
+  unit: IDR billion
+  value: 40756
+  source: ar
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2021'
+  basis: consolidated
+  unit: IDR billion
+  value: 31440
+  source: ar
+  subject: BBCA
+- key: Parent earnings
+  period: 2000 Jan–Oct
+  basis: consolidated
+  unit: IDR thousand
+  value: 1088106629
+  source: archive00-income
+  subject: BBCA
+- key: Pretax income
+  period: 2000 Jan–Oct
+  basis: consolidated
+  unit: IDR thousand
+  value: 1292247434
+  source: archive00-income
+  subject: BBCA
+- key: Tax expense
+  period: 2000 Jan–Oct
+  basis: consolidated
+  unit: IDR thousand
+  value: 203893200
+  source: archive00-income
+  subject: BBCA
+- key: Operating cash flow
+  period: 2000 Jan–Oct
+  basis: consolidated
+  unit: IDR thousand
+  value: 975256683
+  source: archive00-cash
+  subject: BBCA
+- key: Investing cash flow
+  period: 2000 Jan–Oct
+  basis: consolidated
+  unit: IDR thousand
+  value: 92141746
+  source: archive00-cash
+  subject: BBCA
+- key: Financing cash flow
+  period: 2000 Jan–Oct
+  basis: consolidated
+  unit: IDR thousand
+  value: -2339910534
+  source: archive00-cash
+  subject: BBCA
+- key: Fixed-asset purchases (outflow)
+  period: 2000 Jan–Oct
+  basis: consolidated
+  unit: IDR thousand
+  value: -178456257
+  source: archive00-cash
+  subject: BBCA
+- key: Parent earnings
+  period: 2000 Nov–Dec
+  basis: consolidated
+  unit: IDR thousand
+  value: 713984743
+  source: archive00-income
+  subject: BBCA
+- key: Pretax income
+  period: 2000 Nov–Dec
+  basis: consolidated
+  unit: IDR thousand
+  value: 312321031
+  source: archive00-income
+  subject: BBCA
+- key: Tax expense
+  period: 2000 Nov–Dec
+  basis: consolidated
+  unit: IDR thousand
+  value: -401556733
+  source: archive00-income
+  subject: BBCA
+- key: Operating cash flow
+  period: 2000 Nov–Dec
+  basis: consolidated
+  unit: IDR thousand
+  value: 1945834418
+  source: archive00-cash
+  subject: BBCA
+- key: Investing cash flow
+  period: 2000 Nov–Dec
+  basis: consolidated
+  unit: IDR thousand
+  value: -62615010
+  source: archive00-cash
+  subject: BBCA
+- key: Financing cash flow
+  period: 2000 Nov–Dec
+  basis: consolidated
+  unit: IDR thousand
+  value: 202939465
+  source: archive00-cash
+  subject: BBCA
+- key: Fixed-asset purchases (outflow)
+  period: 2000 Nov–Dec
+  basis: consolidated
+  unit: IDR thousand
+  value: -69141854
+  source: archive00-cash
+  subject: BBCA
+- key: Net interest and sharia income
+  period: 2026-03
+  basis: consolidated
+  unit: IDR million
+  value: 21108433
+  source: bca_unaudited_consolidated_2026-03-p8
+  subject: BBCA
+- key: Net insurance income
+  period: 2026-03
+  basis: consolidated
+  unit: IDR million
+  value: 80461
+  source: bca_unaudited_consolidated_2026-03-p8
+  subject: BBCA
+- key: Other operating income
+  period: 2026-03
+  basis: consolidated
+  unit: IDR million
+  value: 6793096
+  source: bca_unaudited_consolidated_2026-03-p8
+  subject: BBCA
+- key: Net interest and sharia income
+  period: 2025-03
+  basis: consolidated
+  unit: IDR million
+  value: 21118560
+  source: bca_unaudited_consolidated_2026-03-p8
+  subject: BBCA
+- key: Net insurance income
+  period: 2025-03
+  basis: consolidated
+  unit: IDR million
+  value: 2668
+  source: bca_unaudited_consolidated_2026-03-p8
+  subject: BBCA
+- key: Other operating income
+  period: 2025-03
+  basis: consolidated
+  unit: IDR million
+  value: 6015798
+  source: bca_unaudited_consolidated_2026-03-p8
+  subject: BBCA
+- key: Net interest and sharia income
+  period: 2026-06
+  basis: consolidated
+  unit: IDR million
+  value: 42512568
+  source: bca_unaudited_consolidated_2026-06-p8
+  subject: BBCA
+- key: Net insurance income
+  period: 2026-06
+  basis: consolidated
+  unit: IDR million
+  value: 200284
+  source: bca_unaudited_consolidated_2026-06-p8
+  subject: BBCA
+- key: Other operating income
+  period: 2026-06
+  basis: consolidated
+  unit: IDR million
+  value: 13546022
+  source: bca_unaudited_consolidated_2026-06-p8
+  subject: BBCA
+- key: Net interest and sharia income
+  period: 2025-06
+  basis: consolidated
+  unit: IDR million
+  value: 42584997
+  source: bca_unaudited_consolidated_2026-06-p8
+  subject: BBCA
+- key: Net insurance income
+  period: 2025-06
+  basis: consolidated
+  unit: IDR million
+  value: 87691
+  source: bca_unaudited_consolidated_2026-06-p8
+  subject: BBCA
+- key: Other operating income
+  period: 2025-06
+  basis: consolidated
+  unit: IDR million
+  value: 12303332
+  source: bca_unaudited_consolidated_2026-06-p8
+  subject: BBCA
+- key: Net interest and sharia income
+  period: 2026-09
+  basis: consolidated
+  unit: IDR million
+  value: 65055963
+  source: bca_unaudited_consolidated_2026-09-p8
+  subject: BBCA
+- key: Net insurance income
+  period: 2026-09
+  basis: consolidated
+  unit: IDR million
+  value: 297339
+  source: bca_unaudited_consolidated_2026-09-p8
+  subject: BBCA
+- key: Other operating income
+  period: 2026-09
+  basis: consolidated
+  unit: IDR million
+  value: 20578237
+  source: bca_unaudited_consolidated_2026-09-p8
+  subject: BBCA
+- key: Net interest and sharia income
+  period: 2025-09
+  basis: consolidated
+  unit: IDR million
+  value: 63946397
+  source: bca_unaudited_consolidated_2026-09-p8
+  subject: BBCA
+- key: Net insurance income
+  period: 2025-09
+  basis: consolidated
+  unit: IDR million
+  value: 108681
+  source: bca_unaudited_consolidated_2026-09-p8
+  subject: BBCA
+- key: Other operating income
+  period: 2025-09
+  basis: consolidated
+  unit: IDR million
+  value: 19279112
+  source: bca_unaudited_consolidated_2026-09-p8
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2011'
+  basis: consolidated
+  unit: IDR billion
+  value: 10818
+  source: bca_ar_2015-p24
+  subject: BBCA
+- key: Reported operating income
+  period: '2011'
+  basis: consolidated
+  unit: IDR billion
+  value: 24401
+  source: bca_ar_2015-p24
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2012'
+  basis: consolidated
+  unit: IDR billion
+  value: 11718
+  source: bca_ar_2015-p24
+  subject: BBCA
+- key: Reported operating income
+  period: '2012'
+  basis: consolidated
+  unit: IDR billion
+  value: 28092
+  source: bca_ar_2015-p24
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2013'
+  basis: consolidated
+  unit: IDR billion
+  value: 14256
+  source: bca_ar_2015-p24
+  subject: BBCA
+- key: Reported operating income
+  period: '2013'
+  basis: consolidated
+  unit: IDR billion
+  value: 34622
+  source: bca_ar_2015-p24
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2014'
+  basis: consolidated
+  unit: IDR billion
+  value: 16512
+  source: bca_ar_2015-p24
+  subject: BBCA
+- key: Reported operating income
+  period: '2014'
+  basis: consolidated
+  unit: IDR billion
+  value: 41373
+  source: bca_ar_2015-p24
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2015'
+  basis: consolidated
+  unit: IDR billion
+  value: 18036
+  source: bca_ar_2015-p24
+  subject: BBCA
+- key: Reported operating income
+  period: '2015'
+  basis: consolidated
+  unit: IDR billion
+  value: 47876
+  source: bca_ar_2015-p24
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2016'
+  basis: consolidated
+  unit: IDR billion
+  value: 20632
+  source: bca_ar_2020-p18
+  subject: BBCA
+- key: Reported operating income
+  period: '2016'
+  basis: consolidated
+  unit: IDR billion
+  value: 53779
+  source: bca_ar_2020-p18
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2017'
+  basis: consolidated
+  unit: IDR billion
+  value: 23321
+  source: bca_ar_2020-p18
+  subject: BBCA
+- key: Reported operating income
+  period: '2017'
+  basis: consolidated
+  unit: IDR billion
+  value: 56982
+  source: bca_ar_2020-p18
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2018'
+  basis: consolidated
+  unit: IDR billion
+  value: 25852
+  source: bca_ar_2020-p18
+  subject: BBCA
+- key: Reported operating income
+  period: '2018'
+  basis: consolidated
+  unit: IDR billion
+  value: 63034
+  source: bca_ar_2020-p18
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2019'
+  basis: consolidated
+  unit: IDR billion
+  value: 28570
+  source: bca_ar_2020-p18
+  subject: BBCA
+- key: Reported operating income
+  period: '2019'
+  basis: consolidated
+  unit: IDR billion
+  value: 71623
+  source: bca_ar_2020-p18
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2020'
+  basis: consolidated
+  unit: IDR billion
+  value: 27147
+  source: bca_ar_2020-p18
+  subject: BBCA
+- key: Reported operating income
+  period: '2020'
+  basis: consolidated
+  unit: IDR billion
+  value: 75165
+  source: bca_ar_2020-p18
+  subject: BBCA
+- key: Year-end close
+  period: '2000'
+  basis: market
+  unit: IDR/share
+  value: 41.875
+  source: jsx-close2000
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2000'
+  basis: market
+  unit: IDR/share
+  value: 0
+  source: archive00-cash
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: dividend-record
+- key: Closing common shares ex treasury
+  period: '2000'
+  basis: consolidated
+  unit: shares
+  value: 117759440000
+  source: archive00-balance
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2001'
+  basis: market
+  unit: IDR/share
+  value: 73.75
+  source: bca_ar_2002-p75
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2001'
+  basis: market
+  unit: IDR/share
+  value: 82.9225
+  source: bca_ar_2002-p75
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2002'
+  basis: market
+  unit: IDR/share
+  value: 125.0
+  source: bca_ar_2002-p75
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2002'
+  basis: market
+  unit: IDR/share
+  value: 96.4135
+  source: bca_ar_2002-p75
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2003'
+  basis: market
+  unit: IDR/share
+  value: 166.25
+  source: bca_ar_2003-p4
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2003'
+  basis: market
+  unit: IDR/share
+  value: 104.2
+  source: bca_ar_2003-p4
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2004'
+  basis: market
+  unit: IDR/share
+  value: 297.5
+  source: bca_ar_2004-p7
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2004'
+  basis: market
+  unit: IDR/share
+  value: 113.4
+  source: bca_ar_2004-p7
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2005'
+  basis: market
+  unit: IDR/share
+  value: 340.0
+  source: bca_ar_2005-p7
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2005'
+  basis: market
+  unit: IDR/share
+  value: 128.6
+  source: bca_ar_2005-p7
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2006'
+  basis: market
+  unit: IDR/share
+  value: 520.0
+  source: bca_ar_2006-p14
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2006'
+  basis: market
+  unit: IDR/share
+  value: 146.6
+  source: bca_ar_2006-p14
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2007'
+  basis: market
+  unit: IDR/share
+  value: 730.0
+  source: bca_ar_2008-p15
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2007'
+  basis: market
+  unit: IDR/share
+  value: 166.4
+  source: bca_ar_2008-p15
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2008'
+  basis: market
+  unit: IDR/share
+  value: 650.0
+  source: bca_ar_2008-p15
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2008'
+  basis: market
+  unit: IDR/share
+  value: 188.8
+  source: bca_ar_2008-p15
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2009'
+  basis: market
+  unit: IDR/share
+  value: 970.0
+  source: bca_ar_2009-p9
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2009'
+  basis: market
+  unit: IDR/share
+  value: 228.6
+  source: bca_ar_2009-p9
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2010'
+  basis: market
+  unit: IDR/share
+  value: 1280.0
+  source: bca_ar_2013-p26
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2010'
+  basis: market
+  unit: IDR/share
+  value: 280.0
+  source: bca_ar_2013-p26
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2011'
+  basis: market
+  unit: IDR/share
+  value: 1600.0
+  source: bca_ar_2013-p26
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2011'
+  basis: market
+  unit: IDR/share
+  value: 345.0
+  source: bca_ar_2013-p26
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2012'
+  basis: market
+  unit: IDR/share
+  value: 1820.0
+  source: bca_ar_2013-p26
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2012'
+  basis: market
+  unit: IDR/share
+  value: 424.8
+  source: bca_ar_2013-p26
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2013'
+  basis: market
+  unit: IDR/share
+  value: 1920.0
+  source: bca_ar_2013-p26
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2013'
+  basis: market
+  unit: IDR/share
+  value: 518.4
+  source: bca_ar_2013-p26
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2014'
+  basis: market
+  unit: IDR/share
+  value: 2625.0
+  source: bca_ar_2015-p28
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2014'
+  basis: market
+  unit: IDR/share
+  value: 630.2
+  source: bca_ar_2015-p28
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2015'
+  basis: market
+  unit: IDR/share
+  value: 2660.0
+  source: bca_ar_2015-p28
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2015'
+  basis: market
+  unit: IDR/share
+  value: 725.0
+  source: bca_ar_2015-p28
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2016'
+  basis: market
+  unit: IDR/share
+  value: 3100.0
+  source: bca_ar_2020-p20
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2016'
+  basis: market
+  unit: IDR/share
+  value: 912.0
+  source: bca_ar_2020-p20
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2017'
+  basis: market
+  unit: IDR/share
+  value: 4380.0
+  source: bca_ar_2020-p20
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2017'
+  basis: market
+  unit: IDR/share
+  value: 1065.2
+  source: bca_ar_2020-p20
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2018'
+  basis: market
+  unit: IDR/share
+  value: 5200.0
+  source: bca_ar_2020-p20
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2018'
+  basis: market
+  unit: IDR/share
+  value: 1230.2
+  source: bca_ar_2020-p20
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2019'
+  basis: market
+  unit: IDR/share
+  value: 6685.0
+  source: bca_ar_2020-p20
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2019'
+  basis: market
+  unit: IDR/share
+  value: 1411.8
+  source: bca_ar_2020-p20
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Year-end close
+  period: '2020'
+  basis: market
+  unit: IDR/share
+  value: 6770.0
+  source: bca_ar_2020-p20
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Published book value per share
+  period: '2020'
+  basis: market
+  unit: IDR/share
+  value: 1497.4
+  source: bca_ar_2020-p20
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2001'
+  basis: market
+  unit: IDR/share
+  value: 4.25
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2001'
+  basis: market
+  unit: IDR/share
+  value: 4.25
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2001'
+  basis: market
+  unit: IDR/share
+  value: 11.25
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2002'
+  basis: market
+  unit: IDR/share
+  value: 7.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2002'
+  basis: market
+  unit: IDR/share
+  value: 7.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2002'
+  basis: market
+  unit: IDR/share
+  value: 11.25
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2003'
+  basis: market
+  unit: IDR/share
+  value: 11.25
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2003'
+  basis: market
+  unit: IDR/share
+  value: 11.25
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2003'
+  basis: market
+  unit: IDR/share
+  value: 11.25
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2004'
+  basis: market
+  unit: IDR/share
+  value: 16.25
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2004'
+  basis: market
+  unit: IDR/share
+  value: 16.25
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2004'
+  basis: market
+  unit: IDR/share
+  value: 13.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2005'
+  basis: market
+  unit: IDR/share
+  value: 13.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2005'
+  basis: market
+  unit: IDR/share
+  value: 13.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2005'
+  basis: market
+  unit: IDR/share
+  value: 14.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2006'
+  basis: market
+  unit: IDR/share
+  value: 14.5
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2006'
+  basis: market
+  unit: IDR/share
+  value: 14.5
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2006'
+  basis: market
+  unit: IDR/share
+  value: 17.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2007'
+  basis: market
+  unit: IDR/share
+  value: 17.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2007'
+  basis: market
+  unit: IDR/share
+  value: 17.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2007'
+  basis: market
+  unit: IDR/share
+  value: 18.2
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2008'
+  basis: market
+  unit: IDR/share
+  value: 12.7
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2008'
+  basis: market
+  unit: IDR/share
+  value: 12.7
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2008'
+  basis: market
+  unit: IDR/share
+  value: 20.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2009'
+  basis: market
+  unit: IDR/share
+  value: 28.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2009'
+  basis: market
+  unit: IDR/share
+  value: 28.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2009'
+  basis: market
+  unit: IDR/share
+  value: 22.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2010'
+  basis: market
+  unit: IDR/share
+  value: 22.5
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2010'
+  basis: market
+  unit: IDR/share
+  value: 22.5
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2010'
+  basis: market
+  unit: IDR/share
+  value: 22.5
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2011'
+  basis: market
+  unit: IDR/share
+  value: 22.7
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2011'
+  basis: market
+  unit: IDR/share
+  value: 22.7
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2011'
+  basis: market
+  unit: IDR/share
+  value: 22.7
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2012'
+  basis: market
+  unit: IDR/share
+  value: 22.7
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2012'
+  basis: market
+  unit: IDR/share
+  value: 22.7
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2012'
+  basis: market
+  unit: IDR/share
+  value: 22.9
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2013'
+  basis: market
+  unit: IDR/share
+  value: 23.2
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2013'
+  basis: market
+  unit: IDR/share
+  value: 23.2
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2013'
+  basis: market
+  unit: IDR/share
+  value: 24.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2014'
+  basis: market
+  unit: IDR/share
+  value: 25.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2014'
+  basis: market
+  unit: IDR/share
+  value: 25.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2014'
+  basis: market
+  unit: IDR/share
+  value: 29.6
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2015'
+  basis: market
+  unit: IDR/share
+  value: 30.6
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2015'
+  basis: market
+  unit: IDR/share
+  value: 30.6
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2015'
+  basis: market
+  unit: IDR/share
+  value: 32.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2016'
+  basis: market
+  unit: IDR/share
+  value: 35.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2016'
+  basis: market
+  unit: IDR/share
+  value: 35.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2016'
+  basis: market
+  unit: IDR/share
+  value: 40.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2017'
+  basis: market
+  unit: IDR/share
+  value: 42.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2017'
+  basis: market
+  unit: IDR/share
+  value: 42.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2017'
+  basis: market
+  unit: IDR/share
+  value: 51.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2018'
+  basis: market
+  unit: IDR/share
+  value: 52.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2018'
+  basis: market
+  unit: IDR/share
+  value: 52.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2018'
+  basis: market
+  unit: IDR/share
+  value: 68.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2019'
+  basis: market
+  unit: IDR/share
+  value: 71.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2019'
+  basis: market
+  unit: IDR/share
+  value: 71.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2019'
+  basis: market
+  unit: IDR/share
+  value: 71.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2020'
+  basis: market
+  unit: IDR/share
+  value: 70.6
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2020'
+  basis: market
+  unit: IDR/share
+  value: 70.6
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Fiscal dividends
+  period: '2020'
+  basis: market
+  unit: IDR/share
+  value: 106.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Cash dividends paid
+  period: '2021'
+  basis: market
+  unit: IDR/share
+  value: 111.4
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2021'
+  basis: market
+  unit: IDR/share
+  value: 111.4
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+  corroboration: split
+- key: Dividends earned
+  period: '2022'
+  basis: market
+  unit: IDR/share
+  value: 155.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Dividends earned
+  period: '2023'
+  basis: market
+  unit: IDR/share
+  value: 212.5
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Dividends earned
+  period: '2024'
+  basis: market
+  unit: IDR/share
+  value: 277.5
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Dividends earned
+  period: '2025'
+  basis: market
+  unit: IDR/share
+  value: 305.0
+  source: dividend-record
+  subject: BBCA
+  share_basis: october-2021-split
+- key: CPI growth
+  period: '1998'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 77.63
+  source: bps-dec-early
+  subject: BBCA
+- key: CPI growth
+  period: '1999'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 2.01
+  source: bps-dec-early
+  subject: BBCA
+- key: CPI growth
+  period: '2000'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 9.35
+  source: bps-dec-early
+  subject: BBCA
+- key: CPI growth
+  period: '2001'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 12.55
+  source: bps-dec-early
+  subject: BBCA
+- key: CPI growth
+  period: '2002'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 10.03
+  source: bps-dec-early
+  subject: BBCA
+- key: CPI growth
+  period: '2003'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 5.06
+  source: bps-dec-early
+  subject: BBCA
+- key: CPI growth
+  period: '2004'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 6.4
+  source: bps-dec-early
+  subject: BBCA
+- key: CPI growth
+  period: '2005'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 17.11
+  source: bps-dec-early
+  subject: BBCA
+- key: CPI growth
+  period: '2006'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 6.6
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2007'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 6.59
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2008'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 11.06
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2009'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 2.78
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2010'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 6.96
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2011'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 3.79
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2012'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 4.3
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2013'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 8.38
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2014'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 8.36
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2015'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 3.35
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2016'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 3.02
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2017'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 3.61
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2018'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 3.13
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2019'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 2.72
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2020'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 1.68
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2021'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 1.87
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2022'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 5.51
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2023'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 2.61
+  source: bps-dec-series
+  subject: BBCA
+- key: CPI growth
+  period: '2024'
+  basis: Indonesia CPI
+  unit: '%'
+  value: 1.57
+  source: bps-dec-series
+  subject: BBCA
+- key: Loan at risk
+  period: '2025'
+  basis: consolidated
+  unit: '%'
+  value: 4.8
+  source: lar9m26
+  subject: BBCA
+  corroboration: ratios
+- key: Loan at risk
+  period: 2026-09
+  basis: consolidated
+  unit: '%'
+  value: 4.6
+  source: lar9m26
+  subject: BBCA
+- key: Loan at risk coverage
+  period: 2026-09
+  basis: consolidated
+  unit: '%'
+  value: 71.4
+  source: lar9m26
+  subject: BBCA
+- key: Loan at risk coverage
+  period: '2025'
+  basis: consolidated
+  unit: '%'
+  value: 72
+  source: lar9m26
+  subject: BBCA
+- key: Insurance contract liabilities
+  period: '2024'
+  basis: standalone
+  unit: IDR million
+  value: 2433566
+  source: bca_life_audited_2025-p1
+  subject: BCA Life
+- key: Reinsurance contract assets
+  period: '2024'
+  basis: standalone
+  unit: IDR million
+  value: 210365
+  source: bca_life_audited_2025-p1
+  subject: BCA Life
+- key: Net insurance service result
+  period: '2024'
+  basis: standalone
+  unit: IDR million
+  value: 71083
+  source: bca_life_audited_2025-p1
+  subject: BCA Life
+- key: Insurance contract liabilities
+  period: '2025'
+  basis: standalone
+  unit: IDR million
+  value: 3433422
+  source: bca_life_audited_2025-p1
+  subject: BCA Life
+- key: Reinsurance contract assets
+  period: '2025'
+  basis: standalone
+  unit: IDR million
+  value: 195117
+  source: bca_life_audited_2025-p1
+  subject: BCA Life
+- key: Net insurance service result
+  period: '2025'
+  basis: standalone
+  unit: IDR million
+  value: 39906
+  source: bca_life_audited_2025-p1
+  subject: BCA Life
+- key: Insurance contract liabilities
+  period: '2024'
+  basis: standalone
+  unit: IDR million
+  value: 1014352
+  source: bca_insurance_audited_2025-p1
+  subject: BCA Insurance
+- key: Reinsurance contract assets
+  period: '2024'
+  basis: standalone
+  unit: IDR million
+  value: 230570
+  source: bca_insurance_audited_2025-p1
+  subject: BCA Insurance
+- key: Net insurance service result
+  period: '2024'
+  basis: standalone
+  unit: IDR million
+  value: 279942
+  source: bca_insurance_audited_2025-p1
+  subject: BCA Insurance
+- key: Insurance contract liabilities
+  period: '2025'
+  basis: standalone
+  unit: IDR million
+  value: 1260818
+  source: bca_insurance_audited_2025-p1
+  subject: BCA Insurance
+- key: Reinsurance contract assets
+  period: '2025'
+  basis: standalone
+  unit: IDR million
+  value: 431420
+  source: bca_insurance_audited_2025-p1
+  subject: BCA Insurance
+- key: Net insurance service result
+  period: '2025'
+  basis: standalone
+  unit: IDR million
+  value: 287153
+  source: bca_insurance_audited_2025-p1
+  subject: BCA Insurance
+- key: Outstanding principal
+  period: '2025'
+  basis: Series B
+  unit: IDR million
+  value: 65000
+  source: bond-series-b
+  subject: BBCA01BSBCN1
+  corroboration: bca_audited_2025-p84
+- key: Fixed coupon
+  period: '2025'
+  basis: Series B
+  unit: '%'
+  value: 8
+  source: bond-series-b
+  subject: BBCA01BSBCN1
+  corroboration: bca_audited_2025-p84
+- key: Net income (operating-income presentation)
+  period: '1999'
+  basis: consolidated
+  unit: IDR billion
+  value: 641
+  source: additional-fy2002-p2
+  subject: BBCA
+- key: Reported operating income
+  period: '1999'
+  basis: consolidated
+  unit: IDR billion
+  value: 1858
+  source: additional-fy2002-p2
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2000'
+  basis: consolidated
+  unit: IDR billion
+  value: 1802
+  source: additional-fy2002-p2
+  subject: BBCA
+- key: Reported operating income
+  period: '2000'
+  basis: consolidated
+  unit: IDR billion
+  value: 3245
+  source: additional-fy2002-p2
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2001'
+  basis: consolidated
+  unit: IDR billion
+  value: 3119
+  source: additional-fy2002-p2
+  subject: BBCA
+- key: Reported operating income
+  period: '2001'
+  basis: consolidated
+  unit: IDR billion
+  value: 6184
+  source: additional-fy2002-p2
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2002'
+  basis: consolidated
+  unit: IDR billion
+  value: 2542
+  source: additional-fy2002-p2
+  subject: BBCA
+- key: Reported operating income
+  period: '2002'
+  basis: consolidated
+  unit: IDR billion
+  value: 6648
+  source: additional-fy2002-p2
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2003'
+  basis: consolidated
+  unit: IDR billion
+  value: 2391
+  source: additional-fy2005-p4
+  subject: BBCA
+- key: Reported operating income
+  period: '2003'
+  basis: consolidated
+  unit: IDR billion
+  value: 6772
+  source: additional-fy2005-p4
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2004'
+  basis: consolidated
+  unit: IDR billion
+  value: 3196
+  source: additional-fy2005-p4
+  subject: BBCA
+- key: Reported operating income
+  period: '2004'
+  basis: consolidated
+  unit: IDR billion
+  value: 8331
+  source: additional-fy2005-p4
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2005'
+  basis: consolidated
+  unit: IDR billion
+  value: 3598
+  source: additional-fy2005-p4
+  subject: BBCA
+- key: Reported operating income
+  period: '2005'
+  basis: consolidated
+  unit: IDR billion
+  value: 9632
+  source: additional-fy2005-p4
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2006'
+  basis: consolidated
+  unit: IDR billion
+  value: 4243
+  source: additional-fy2010-p12
+  subject: BBCA
+- key: Reported operating income
+  period: '2006'
+  basis: consolidated
+  unit: IDR billion
+  value: 11708
+  source: additional-fy2010-p12
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2007'
+  basis: consolidated
+  unit: IDR billion
+  value: 4489
+  source: additional-fy2010-p12
+  subject: BBCA
+- key: Reported operating income
+  period: '2007'
+  basis: consolidated
+  unit: IDR billion
+  value: 12425
+  source: additional-fy2010-p12
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2008'
+  basis: consolidated
+  unit: IDR billion
+  value: 5776
+  source: additional-fy2010-p12
+  subject: BBCA
+- key: Reported operating income
+  period: '2008'
+  basis: consolidated
+  unit: IDR billion
+  value: 16219
+  source: additional-fy2010-p12
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2009'
+  basis: consolidated
+  unit: IDR billion
+  value: 6807
+  source: additional-fy2010-p12
+  subject: BBCA
+- key: Reported operating income
+  period: '2009'
+  basis: consolidated
+  unit: IDR billion
+  value: 19346
+  source: additional-fy2010-p12
+  subject: BBCA
+- key: Net income (operating-income presentation)
+  period: '2010'
+  basis: consolidated
+  unit: IDR billion
+  value: 8479
+  source: additional-fy2010-p12
+  subject: BBCA
+- key: Reported operating income
+  period: '2010'
+  basis: consolidated
+  unit: IDR billion
+  value: 20282
+  source: additional-fy2010-p12
+  subject: BBCA
+- key: Loan at risk
+  period: '2024'
+  basis: consolidated
+  unit: '%'
+  value: 5.3
+  source: larfy25
+  subject: BBCA
+  corroboration: ratios
+- key: Loan at risk coverage
+  period: '2024'
+  basis: consolidated
+  unit: '%'
+  value: 76.5
+  source: larfy25
+  subject: BBCA
+- key: Insurance contract liabilities
+  period: '2024-01-01'
+  basis: standalone
+  unit: IDR million
+  value: 2067122
+  source: bca_life_audited_2025-p1
+  subject: BCA Life
+- key: Reinsurance contract assets
+  period: '2024-01-01'
+  basis: standalone
+  unit: IDR million
+  value: 200509
+  source: bca_life_audited_2025-p1
+  subject: BCA Life
+- key: Insurance contract liabilities
+  period: '2024-01-01'
+  basis: standalone
+  unit: IDR million
+  value: 989587
+  source: bca_insurance_audited_2025-p1
+  subject: BCA Insurance
+- key: Reinsurance contract assets
+  period: '2024-01-01'
+  basis: standalone
+  unit: IDR million
+  value: 382129
+  source: bca_insurance_audited_2025-p1
+  subject: BCA Insurance
+- key: Fiscal interim dividend payment
+  period: 2026-06
+  basis: market
+  unit: IDR/share
+  value: 20
+  source: dividend2026-q2
+  subject: BBCA
+  share_basis: october-2021-split
+- key: Fiscal interim dividend payment
+  period: 2026-09
+  basis: market
+  unit: IDR/share
+  value: 25
+  source: dividend2026-q3
+  subject: BBCA
+  share_basis: october-2021-split
+statement_inputs:
+- period: '2024'
+  basis: unconsolidated
+  audit: audited
+  unit: millions
+  source: bank-opening-p139
+  values:
+    total_assets: 1406329890
+- period: '2024'
+  basis: unconsolidated
+  audit: audited
+  unit: millions
+  source: bank-opening-p140
+  values:
+    common_shareholders_equity: 253067690
+- period: '2025'
+  basis: unconsolidated
+  audit: audited
+  unit: millions
+  source: bank-opening-p139
+  values:
+    total_assets: 1537371463
+- period: '2025'
+  basis: unconsolidated
+  audit: audited
+  unit: millions
+  source: bank-opening-p140
+  values:
+    common_shareholders_equity: 271657765
+- period: 2025-10
+  basis: unconsolidated
+  audit: unaudited
+  unit: millions
+  source: oct2025-margin
+  values:
+    revenue: 88932550
+- period: 2025-10
+  basis: unconsolidated
+  audit: unaudited
+  unit: millions
+  source: bca_monthly_published_financial_report_2025-10-p3
+  values:
+    net_income_available_to_common_shareholders: 48256793
+- period: 2025-10
+  basis: unconsolidated
+  audit: unaudited
+  unit: millions
+  source: oct2025-equity
+  values:
+    common_shareholders_equity: 271782303
+- period: 2026-10
+  basis: unconsolidated
+  audit: unaudited
+  unit: millions
+  source: oct2026-margin
+  values:
+    revenue: 91597401
+- period: 2026-10
+  basis: unconsolidated
+  audit: unaudited
+  unit: millions
+  source: bca_monthly_published_financial_report_2026-10-p3
+  values:
+    net_income_available_to_common_shareholders: 50379300
+- period: 2026-10
+  basis: unconsolidated
+  audit: unaudited
+  unit: millions
+  source: oct2026-equity
+  values:
+    common_shareholders_equity: 278390270
+- period: '1998'
+  basis: consolidated
+  audit: audited
+  unit: billions
+  source: additional-fy2002-p2
+  values:
+    revenue: -14490
+- period: '1998'
+  basis: consolidated
+  audit: audited
+  unit: thousands
+  source: archive00-equity
+  values:
+    common_shareholders_equity: -25523599455
+- period: '2003'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: additional-fy2003-p69
+  values:
+    common_shareholders_equity: 12625445
+- period: '2007'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: standalone2007
+  values:
+    common_shareholders_equity: 20446158
+- period: '2007'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: additional-fy2008-p103
+  values:
+    restated_common_shareholders_equity: 20441731
+- period: '2008'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: additional-fy2008-p103
+  values:
+    common_shareholders_equity: 23279310
+- period: '2009'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: additional-fy2009-p127
+  values:
+    common_shareholders_equity: 27856693
+- period: '1999'
+  basis: consolidated
+  audit: audited
+  unit: thousands
+  source: archive00-balance
+  values:
+    total_liabilities: 91329354225
+- period: '2000'
+  basis: consolidated
+  audit: audited
+  unit: thousands
+  source: archive00-balance
+  values:
+    total_liabilities: 89182510442
+- period: '1999'
+  basis: consolidated
+  audit: audited
+  unit: thousands
+  source: archive00-cash
+  values:
+    net_cash_from_operating_activities: 62368147673
+    net_cash_from_investing_activities: -60030557546
+    net_cash_from_financing_activities: -1588285216
+    capital_expenditures: -328323760
+- period: '1999'
+  basis: consolidated
+  audit: audited
+  unit: thousands
+  source: archive00-income
+  values:
+    income_before_tax: 234286261
+    net_income_available_to_common_shareholders: 641292361
+    income_tax_expense: -407006100
+- period: '1999'
+  basis: consolidated
+  audit: audited
+  unit: thousands
+  source: archive00-balance
+  values:
+    common_shareholders_equity: 5121030737
+- period: '1999'
+  basis: consolidated
+  audit: audited
+  unit: thousands
+  source: archive00-eps
+  values:
+    weighted_average_common_shares_outstanding: 2049139997
+- period: '2000'
+  basis: consolidated
+  audit: audited
+  unit: thousands
+  source: archive00-cash
+  values:
+    net_cash_from_operating_activities: 2921091101
+    net_cash_from_investing_activities: 29526736
+    net_cash_from_financing_activities: -2136971069
+    capital_expenditures: -247598111
+- period: '2000'
+  basis: consolidated
+  audit: audited
+  unit: thousands
+  source: archive00-income
+  values:
+    income_before_tax: 1604568465
+    net_income_available_to_common_shareholders: 1802091372
+    income_tax_expense: -197663533
+- period: '2000'
+  basis: consolidated
+  audit: audited
+  unit: thousands
+  source: archive00-balance
+  values:
+    common_shareholders_equity: 7005257295
+- period: '2000'
+  basis: consolidated
+  audit: audited
+  unit: thousands
+  source: archive00-eps
+  values:
+    weighted_average_common_shares_outstanding: 2943986000
+- period: '2001'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2002-p96
+  values:
+    common_shareholders_equity: 9773242
+- period: '2002'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2002-p96
+  values:
+    common_shareholders_equity: 11507910
+- period: '2004'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2005-p80
+  values:
+    common_shareholders_equity: 13925401
+- period: '2005'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2005-p80
+  values:
+    common_shareholders_equity: 15847154
+- period: '2006'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2006-p73
+  values:
+    common_shareholders_equity: 18067360
+- period: '2001'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2002-p171
+  values:
+    weighted_average_common_shares_outstanding: 5893263822
+    net_income_available_to_common_shareholders: 3119167
+- period: '2002'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2002-p170
+  values:
+    weighted_average_common_shares_outstanding: 5967875833
+    net_income_available_to_common_shareholders: 2541552
+- period: '2003'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2003-p139
+  values:
+    weighted_average_common_shares_outstanding: 6058782336
+    net_income_available_to_common_shareholders: 2390855
+- period: '2004'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2005-p150
+  values:
+    weighted_average_common_shares_outstanding: 12285095866
+    net_income_available_to_common_shareholders: 3195421
+- period: '2005'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2005-p150
+  values:
+    weighted_average_common_shares_outstanding: 12310918792
+    net_income_available_to_common_shareholders: 3597400
+- period: '2006'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2006-p144
+  values:
+    weighted_average_common_shares_outstanding: 12303535221
+    net_income_available_to_common_shareholders: 4242692
+- period: '2007'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2008-p173
+  values:
+    weighted_average_common_shares_outstanding: 24564024000
+    net_income_available_to_common_shareholders: 4489252
+- period: '2008'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2008-p172
+  values:
+    weighted_average_common_shares_outstanding: 24427309406
+    net_income_available_to_common_shareholders: 5776139
+- period: '2009'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2009-p194
+  values:
+    weighted_average_common_shares_outstanding: 24365243000
+    net_income_available_to_common_shareholders: 6807242
+- period: '2010'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2011-p232
+  values:
+    weighted_average_common_shares_outstanding: 24365243000
+    net_income_available_to_common_shareholders: 8479273
+- period: '2011'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2011-p232
+  values:
+    weighted_average_common_shares_outstanding: 24365243000
+    net_income_available_to_common_shareholders: 10819309
+- period: '2012'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2013-p447
+  values:
+    weighted_average_common_shares_outstanding: 24401786557
+- period: '2013'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2013-p447
+  values:
+    weighted_average_common_shares_outstanding: 24634859597
+- period: '2001'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2002-p98
+  values:
+    income_tax_expense: 38744
+- period: '2002'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2002-p98
+  values:
+    income_tax_expense: 858435
+- period: '2003'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2003-p71
+  values:
+    income_tax_expense: 748723
+- period: '2004'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2005-p82
+  values:
+    income_tax_expense: 1333099
+- period: '2005'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2005-p82
+  values:
+    income_tax_expense: 1525937
+- period: '2006'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2006-p75
+  values:
+    income_before_tax: 6066603
+    income_tax_expense: 1823794
+- period: '2010'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2011-p149
+  values:
+    income_before_tax: 10653269
+- period: '2011'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2011-p149
+  values:
+    income_before_tax: 13618758
+- period: '2012'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2013-p346
+  values:
+    income_tax_expense: 2967586
+- period: '2013'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2013-p346
+  values:
+    income_tax_expense: 3559367
+- period: '2014'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2015-p406
+  values:
+    income_before_tax: 20741121
+    income_tax_expense: 4229451
+- period: '2015'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2015-p406
+  values:
+    income_before_tax: 22657114
+    income_tax_expense: 4621346
+- period: '2016'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2016-p452
+  values:
+    income_tax_expense: 5206919
+- period: '2010'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2011-p153
+  values:
+    capital_expenditures: -1118823
+- period: '2011'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2011-p153
+  values:
+    capital_expenditures: -1727384
+- period: '2012'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2013-p349
+  values:
+    capital_expenditures: -3211877
+- period: '2006'
+  basis: consolidated
+  audit: audited
+  unit: millions
+  source: bca_ar_2006-p73
+  values:
+    total_liabilities: 158729984
+- period: 2025-03
+  basis: consolidated
+  audit: unaudited
+  unit: millions
+  source: q25-03-p5
+  values:
+    total_assets: 1533763445
+- period: 2025-03
+  basis: consolidated
+  audit: unaudited
+  unit: millions
+  source: q25-03-p6
+  values:
+    total_liabilities: 1278027110
+- period: 2025-03
+  basis: consolidated
+  audit: unaudited
+  unit: millions
+  source: q25-03-p7
+  values:
+    shareholders_equity: 246520509
+    common_shareholders_equity: 246325028
+- period: 2026-03
+  basis: consolidated
+  audit: unaudited
+  unit: millions
+  source: bca_unaudited_consolidated_2026-03-p114
+  values:
+    weighted_average_common_shares_outstanding: 122892706679
+- period: 2025-03
+  basis: consolidated
+  audit: unaudited
+  unit: millions
+  source: bca_unaudited_consolidated_2026-03-p114
+  values:
+    weighted_average_common_shares_outstanding: 123275050000
+- period: 2026-06
+  basis: consolidated
+  audit: unaudited
+  unit: millions
+  source: bca_unaudited_consolidated_2026-06-p109
+  values:
+    weighted_average_common_shares_outstanding: 122872754239
+- period: 2025-06
+  basis: consolidated
+  audit: unaudited
+  unit: millions
+  source: bca_unaudited_consolidated_2026-06-p109
+  values:
+    weighted_average_common_shares_outstanding: 123265266520
+- period: 2026-09
+  basis: consolidated
+  audit: unaudited
+  unit: millions
+  source: bca_unaudited_consolidated_2026-09-p109
+  values:
+    weighted_average_common_shares_outstanding: 122862306362
+- period: 2025-09
+  basis: consolidated
+  audit: unaudited
+  unit: millions
+  source: bca_unaudited_consolidated_2026-09-p109
+  values:
+    weighted_average_common_shares_outstanding: 123259020623
+- period: 2025-10
+  basis: unconsolidated
+  audit: unaudited
+  unit: millions
+  source: bca_monthly_published_financial_report_2025-10-p3
+  values:
+    net_earnings: 48256793
+    income_before_tax: 59243482
+    income_tax_expense: 10986689
+- period: 2026-10
+  basis: unconsolidated
+  audit: unaudited
+  unit: millions
+  source: bca_monthly_published_financial_report_2026-10-p3
+  values:
+    income_tax_expense: 11243302
 history_notes:
-  '1998': FY2002 issuer highlights. Negative equity and loss. Opening balances unavailable.
-  '1999': FY2002 issuer highlights. No standalone audited copy reviewed.
-  '2000': FY2002 issuer highlights. BBCA listed during 2000.
+  '1998': FY2002 issuer highlights. Full FY1998 audited statements and FY1997 opening detail were not verified. Negative equity
+    makes conventional ROE uninformative.
+  '1999': The audited equity statement shows a January opening deficit of IDR 25.524 trillion and closing equity of IDR 5.121 trillion
+    after recapitalization. Their average was negative, so the conventional ROE is omitted. The archive also discloses a tax benefit.
+  '2000': BCA audited archive presents January–October and November–December around the quasi-reorganization. The cash flow
+    bridge reconciles at October 31; income totals agree with the rounded FY2002 highlights. Historical returns span the reorganization.
   '2001': FY2002 consolidated comparative.
   '2004': FY2005 audited comparative.
-  '2006': Rounded FY2006 highlights used for the history table.
-  '2007': FY2008 audited comparative. No standalone FY2007 filing in the analysis dataset.
+  '2006': Audited 2006 statement and note for exact pretax income, balance and EPS inputs. Scanned pages checked against the
+    published totals.
+  '2007': The archived FY2007 as-filed parent equity is used in FY2007 ROE. FY2008 ROE uses its restated opening equity from the FY2008 annual report.
   '2010': FY2011 audited comparative.
   '2012': FY2013 audited comparative.
-  '2013': As filed. FY2015 presents different restated FY2013 opening equity and assets. Historical returns around the
-    restatement are indicative.
-  '2014': FY2015 audited comparative. FY2013 opening data use the as-filed basis.
+  '2013': As filed. The FY2014 returns use the restated opening balances from the FY2015 annual report.
+  '2014': FY2015 audited comparative. Opening and closing balances use the same restated basis.
   '2016': FY2016 annual report financial statements. Audit opinion is on PDF p. 595.
   '2017': FY2018 audited comparative where available.
-  '2020': FY2020 as filed. FY2021 compares fixed-asset acquisitions of IDR 2.28T with FY2020 as-filed IDR 2.67T. EPS
-    uses the 2021 split basis.
+  '2020': FY2020 as filed, with fixed-asset purchases taken from the FY2021 comparative, which separates right-of-use asset
+    purchases. EPS uses the 2021 split basis.
   '2021': 1:5 stock split. Earlier reported EPS has been aligned to this share basis.
   '2023': Uses the dedicated FY2023 audited filing. Group profit and parent profit are distinct.
   '2024': FY2025 audited comparative. ROA and ROE use FY2023 closing balances.
   '2025': FY2025 audited filing. BCA reports no material prior-period effect from adoption of SFAS 117 and 109.
-  2025-09: Nine months through September, comparative column in the 2026 report. September 2025 assets and equity come
-    from the separate September 2025 filing.
+  2025-03: Three-month profit from the March 2026 statement comparative.
+  2025-06: Six-month profit from the June 2026 statement comparative.
+  2026-03: Three months through March. Unaudited.
+  2026-06: Six months through June. Unaudited.
+  2025-09: Nine months through September. Income and weighted-average shares come from the 2026 comparative and balances from
+    the September 2025 filing.
   2026-09: Nine months through September. Unaudited.
-  2026-10: October bank-only publication. The income page reports IDR 50.38T for a period ending October 31 and does
-    not specify the start date. Excluded from the YTD comparison.
+  2026-10: Bank only. January–October net profit agrees with the statement of financial position current-year earnings. Compared
+    with the same period and basis in 2025.
+  2025-10: Bank only. January–October net profit agrees with the statement of financial position current-year earnings; the
+    publication does not include a cash-flow statement.
 sections:
 - title: FY2025 earnings and funding
   status: evidence_reviewed
@@ -1176,18 +4905,20 @@ sections:
   - div
   - agm
   - bps
-- title: Dividend valuation assumptions
-  status: evidence_reviewed
-  finding: The five-year dividend discount scenarios use FY2025 dividend per share as the starting point. Growth for
-    years 1–5 is 3%, 6%, or 9%. Terminal growth is 2%, 3%, or 4% and cost of equity is 12%, 11%, or 10%, respectively.
-    Model inputs are assumptions. The value uses the FY2025 payout confirmed in March 2026, so the comparison to the
-    FY2025 closing price is retrospective.
+- title: Bank dividend valuation assumptions
+  status: scenario
+  finding: The three five-year scenarios start from FY2025 common equity and the low, median and high annual common ROE
+    for FY2021–FY2025. Earnings grow with risk-weighted assets. Growth uses the low, mean and high annual RWA growth rates
+    observed over FY2023–FY2025. Projected dividends are limited by both the payout target and capital available above
+    the modeled CET1 target. Terminal dividends first fund capital required for terminal RWA growth.
   sources:
-  - agm
-  - price
+  - balance
   - car
-  gap: The scenarios hold dividend growth exogenously. They do not forecast payout restrictions or model capital, funding,
-    credit costs, and retained earnings jointly.
+  - km1
+  - price
+  gap: Scenario payout targets of 60%, 65% and 70%, CET1 targets of 29%, 28% and 27%, discount rates of 12%, 11% and
+    10%, terminal growth rates of 2%, 3% and 4%, and weights of 25%, 50% and 25% are modeling assumptions.
+    The model assumes constant shares and excludes future changes in regulatory deductions and capital rules.
 - title: September 2026 versus September 2025
   status: evidence_reviewed
   finding: Consolidated closing assets increased 6.7% year over year. Nine-month consolidated profit increased 4.2%,
@@ -1257,18 +4988,17 @@ rules:
     - funding
     - ratios
   net-profit-margin:
-    status: missing_inputs
-    finding: The banking proxy uses group net income divided by net interest and sharia income plus other operating income.
-      See its FY2024 and FY2025 results above.
+    status: calculated
+    finding: Group net earnings divided by consolidated operating income including insurance as presented by the issuer for
+      FY2025. The bank operating income variant excludes net insurance from its denominator and has its own calculation records.
     sources:
+    - ar
     - income
-    gap: There is no approved generic revenue denominator in the statement data. The proxy excludes separately reported
-      insurance income.
+    gap: The net banking denominator differs from the gross revenue basis typical for nonfinancial companies.
   earnings-per-share:
     status: calculated
-    finding: Rounded basic EPS rose from IDR 445 to 467, about 5%. Parent-attributable profit rose 4.9% while the weighted
-      share count fell about 0.024%, so earnings drove almost all EPS growth. The history aligns EPS to the October 2021
-      share basis.
+    finding: Parent-attributable earnings drove almost all FY2025 EPS growth. The history aligns reported EPS to the
+      October 2021 share basis. Calculations using older as-filed weighted share counts retain their original split basis.
     sources:
     - income
     - eps
@@ -1276,15 +5006,15 @@ rules:
     - buyback
   price-earnings-ratio:
     status: calculated
-    finding: The retrospective earnings multiple used the calendar year-end close and audited basic EPS. The multiple
-      fell from about 21.7× in 2024 to 17.3× in 2025 as EPS grew and the share price fell.
+    finding: The retrospective multiple uses the year-end close and audited basic EPS. It fell in FY2025 as earnings
+      per share grew and the share price fell. Historical closes and EPS are on the October 2021 share basis.
     sources:
     - price
     - eps
   price-to-book-ratio:
     status: calculated
-    finding: Common book value comes from parent equity and closing common shares excluding treasury stock. The annual
-      report publishes 3.8×. Its printed price and book value per share imply roughly 3.53×.
+    finding: FY2025 uses parent equity and closing shares excluding treasury stock. The earlier calculations use the
+      issuer’s book value per share as published. The FY2025 published multiple differs from the independently calculated result.
     sources:
     - balance
     - equity
@@ -1319,8 +5049,8 @@ rules:
     gap: No purchase price or date was provided.
   effective-tax-rate:
     status: calculated
-    finding: Effective tax fell from 19.59% to 19.22%. Cash tax paid was IDR 12.51T against IDR 13.70T of recognized
-      expense. Use the tax note to reconcile current and deferred charges before drawing a conclusion.
+    finding: The effective rate fell in FY2025. The tax note reconciles the accrual to current and deferred tax. Cash tax
+      follows payment timing and appears separately in the cash flow statement.
     sources:
     - income
     - tax
@@ -1414,13 +5144,14 @@ rules:
     - capital
   capital-expenditure-to-net-earnings:
     status: calculated
-    finding: Sum fixed-asset purchases as outflow magnitudes and group earnings across FY2016–FY2025. FY2020 uses the
-      statement as filed. FY2021 reports a different FY2020 comparative amount.
+    finding: The ten-year ratio sums fixed-asset purchases and group earnings for FY2016–FY2025. The FY2021 comparative
+      separates FY2020 fixed-asset purchases of IDR 2.283T from right-of-use acquisitions of IDR 0.391T. The two lines
+      reconcile to the FY2020 as-filed total of IDR 2.674T.
     sources:
     - cash
     - cash20
     - cash21
-    gap: The rollup excludes right-of-use acquisitions and does not identify the maintenance portion.
+    gap: The fixed-assets-only measure excludes right-of-use acquisitions and does not identify the maintenance portion.
   owner-earnings:
     status: requires_manual_estimate
     finding: The disclosed fixed-asset purchases measure only part of maintaining a bank. Reinvestment also includes
@@ -1432,8 +5163,8 @@ rules:
     gap: A sustainable maintenance-capex and incremental-capital estimate is required.
   net-change-in-cash:
     status: calculated
-    finding: FY2025 activity flows sum to IDR 2.109T. A negative IDR 0.042T FX effect makes the increase in closing cash
-      about IDR 2.067T. Both fiscal-year reconciliations close to zero in IDR millions.
+    finding: The three activity flows give cash movement before currency effects. The FX line reconciles the difference
+      with changes in opening and closing cash. The reviewed historical series uses reconciled source subtotals.
     sources:
     - cash
   income-statement:
@@ -1502,13 +5233,15 @@ rules:
     gap: The filings do not quantify entry costs and time for a comparable new bank.
   intrinsic-business-value:
     status: scenario
-    finding: The dividend discount estimates above use the confirmed FY2025 payout. Their range is driven by dividend
-      growth and the spread between cost of equity and terminal growth.
+    finding: The model normalizes common earning power across five audited years and estimates distributable dividends
+      after funding capital needs. The scenario range reflects different observed earnings and asset growth, modeled CET1
+      targets and discount rates. The weighted value uses stated scenario weights.
     sources:
-    - agm
+    - balance
     - car
-    - price
-    gap: Projected payouts depend on earning power and distributable capital.
+    - km1
+    gap: The scenario targets and probabilities are assumptions. Large losses or changing regulatory deductions could
+      require more capital than the model projects.
   cash-flow-statement:
     status: evidence_reviewed
     finding: Deposit inflows, loan deployment, and reverse-repo movements explain much of the FY2025 operating cash change.
@@ -1518,8 +5251,12 @@ rules:
   primary-filings-for-financial-analysis:
     status: evidence_reviewed
     finding: The history distinguishes issuer highlights, comparative columns, detailed audited statements and interim
-      releases. The 2020 capex comparison and FY2025 P/B disagreement illustrate why source cells matter.
+      releases. The FY2014 return inputs use restated opening balances, and the FY2020 capex input uses the
+      reclassified comparative. The interim snapshot incorporates the 2026 quarterly filings and consolidated KM1 disclosures.
     sources:
+    - restated2013
+    - cash21
+    - km1
     - early
     - fy07
     - balance
@@ -1665,12 +5402,12 @@ rules:
     - price
   real-return-after-inflation:
     status: calculated
-    finding: Use the FY2024 and FY2025 year-end closes, cash dividends during calendar 2025 and national December-to-December
-      CPI. The resulting return is before taxes and assumes no reinvestment.
+    finding: Each full calendar holding period uses split-normalized closes, dividends earned during the period and national
+      December-to-December CPI. Returns are before tax and assume no reinvestment.
     sources:
     - price
-    - div
-    - bps
+    - dividend-record
+    - bps-dec-series
   inflation-and-equity-earnings:
     status: evidence_reviewed
     finding: Rounded basic EPS rose about 4.9% versus 2.92% December-to-December CPI. Compare several years and watch
@@ -1853,12 +5590,14 @@ rules:
     - funding
     - guarantee
   credit-covenant-quality-and-remedies:
-    status: requires_security_terms
-    finding: Funding and commitment notes identify exposures, while remedies and covenants depend on a specific instrument
-      and governing documents.
+    status: evidence_reviewed
+    finding: FY2025 Note 24 identifies BBCA Series B, IDR 65 billion principal, 8% fixed quarterly coupon and July 2030 maturity.
+      Disclosed negative covenants address asset pledges, changes to the main business, capital reductions and dilutive combinations. The filing reports compliance at year-end.
     sources:
-    - funding
-    - guarantee
+    - bond-series-b
+    - bca_audited_2025-p84
+    gap: A complete remedies and recovery review requires the executed trusteeship agreement and amendments. The public issue
+      terms do not establish a dated tradable price.
   ongoing-credit-supervision:
     status: investor_framework
     finding: Refresh credit losses, liquidity and regulatory capital with interim filings. Escalate material funding
@@ -1886,12 +5625,13 @@ rules:
     gap: A counterparty-level netting and collateral schedule was not established.
   liquidity-as-financial-optionality:
     status: evidence_reviewed
-    finding: Reported liquid assets and LCR indicate capacity to absorb near-term shocks. Stable funding and the composition
-      of deposits matter alongside cash. Annual flows do not prove availability during a run.
+    finding: September 2026 consolidated high-quality liquid assets of IDR 438.394T covered modeled net outflows of
+      IDR 163.787T by 267.66%. Consolidated LCR fell from 310.93% in December 2025 and NSFR fell from 159.85% to 156.70%.
+      A mechanical stress with a 20% liquid-asset haircut and 50% higher outflows gives coverage of about 143%.
     sources:
+    - km1
     - liquidity
-    - ratios
-    - cash
+    gap: The stress is illustrative. Deposit behavior, additional collateral calls and asset encumbrance could change coverage.
   borrower-repayment-capacity:
     status: evidence_reviewed
     finding: Use portfolio grading, credit-loss allowances, and loan at risk to assess underwriting. Corporate loan growth
@@ -1912,14 +5652,14 @@ rules:
     - income
     gap: A full underwriting cycle and claims-development history were not established.
   insurance-float-cost:
-    status: requires_manual_estimate
-    finding: This formula applies at the insurance subsidiary level. Group temporary syirkah deposits are a different
-      instrument.
+    status: proxy_calculated
+    finding: The FY2024 and FY2025 subsidiary estimates use net insurance service result divided by average insurance contract liabilities
+      net of held reinsurance assets, with the catalog sign convention. Both use the audited PSAK 117 comparatives.
     sources:
-    - life
-    - insurance
-    - subs
-    gap: An underwriting-only result and compatible opening and closing float are required.
+    - bca_life_audited_2025-p1
+    - bca_insurance_audited_2025-p1
+    gap: Contract balances may include future service margins, acquisition costs and discounting effects. Full policyholder
+      float and investment-excluded underwriting economics require a further reserve bridge.
   insurance-float-economics:
     status: evidence_reviewed
     finding: The insurer disclosures distinguish policy obligations, asset backing and solvency. Review claims timing
@@ -1992,10 +5732,12 @@ rules:
     - tax
   intrinsic-value-margin-of-safety:
     status: scenario
-    finding: The comparison uses the conservative dividend value and FY2025 closing price shown above. At the modeled
-      assumptions, the historical price sits above the conservative estimate.
+    finding: The report compares the FY2025 closing price with the capital-constrained lower valuation scenario.
+      The historical comparison uses FY2025 data from disclosures issued after the price date.
     sources:
     - price
-    - agm
-    - capital
-    gap: Other dividend and capital scenarios can change the range. An observed price gap is conditional on the model.
+    - balance
+    - car
+    - km1
+    gap: The margin depends on the earnings, capital targets and discount assumptions. A scenario range cannot eliminate
+      the risk of a permanent loss.

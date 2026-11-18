@@ -39,8 +39,10 @@ func run(args []string) error {
 	reviewDocument := flags.String("document", "", "optional source path relative to data for review export")
 	ocrLanguage := flags.String("ocr-language", "eng+ind", "Tesseract language set")
 	minPageChars := flags.Int("min-page-chars", 60, "OCR pages with fewer non-space characters")
+	skipOCR := flags.Bool("skip-ocr", false, "use PDF text without OCR for documents that have a verified text layer")
 	force := flags.Bool("force", false, "rebuild facts from cached pages and extract any missing pages")
-	analysisFormat := flags.String("format", "markdown", "analysis output format (markdown or json)")
+	analysisFormat := flags.String("format", "markdown", "analysis output format (markdown, json, or facts-hash)")
+	view := flags.String("view", "brief", "analysis report view (brief or evidence)")
 	evidencePath := flags.String("evidence", filepath.Join("data", "analysis", "bbca-fy2025.yaml"), "analysis evidence file")
 	if err := flags.Parse(args[1:]); err != nil {
 		return err
@@ -51,7 +53,7 @@ func run(args []string) error {
 
 	ctx := context.Background()
 	if command == "analysis" {
-		return runAnalysis(ctx, *dbPath, *catalogPath, *evidencePath, *analysisFormat)
+		return runAnalysis(ctx, *dbPath, *catalogPath, *evidencePath, *analysisFormat, *view)
 	}
 	db, err := store.NewSQLite(ctx, *dbPath)
 	if err != nil {
@@ -69,6 +71,7 @@ func run(args []string) error {
 			DataDir: *dataDir, CatalogPath: *catalogPath,
 			ExtractedDir: *extractedDir, OCRLanguage: *ocrLanguage,
 			MinPageChars: *minPageChars, Force: *force,
+			SkipOCR: *skipOCR,
 		})
 		if err != nil {
 			return err
@@ -96,9 +99,12 @@ func run(args []string) error {
 	}
 }
 
-func runAnalysis(ctx context.Context, dbPath, catalogPath, evidencePath, format string) error {
-	if format != "markdown" && format != "json" {
-		return fmt.Errorf("invalid analysis format %q (use markdown or json)", format)
+func runAnalysis(ctx context.Context, dbPath, catalogPath, evidencePath, format, view string) error {
+	if format != "markdown" && format != "json" && format != "facts-hash" {
+		return fmt.Errorf("invalid analysis format %q (use markdown, json, or facts-hash)", format)
+	}
+	if view != "brief" && view != "evidence" {
+		return fmt.Errorf("invalid analysis view %q (use brief or evidence)", view)
 	}
 	path, err := filepath.Abs(dbPath)
 	if err != nil {
@@ -110,18 +116,26 @@ func runAnalysis(ctx context.Context, dbPath, catalogPath, evidencePath, format 
 		return fmt.Errorf("open analysis database %q; see data/README.md for setup: %w", dbPath, err)
 	}
 	defer func() { _ = db.Close() }()
+	if format == "facts-hash" {
+		hash, err := financials.AnalysisFactsHash(ctx, db)
+		if err != nil {
+			return err
+		}
+		_, err = fmt.Fprintln(os.Stdout, hash)
+		return err
+	}
 	report, err := financials.BuildAnalysis(ctx, db, catalogPath, evidencePath)
 	if err != nil {
 		return err
 	}
-	return report.Write(os.Stdout, format)
+	return report.WriteView(os.Stdout, format, view)
 }
 
 func defaultCatalogPath() string {
 	if value := strings.TrimSpace(os.Getenv("BBCA_CATALOG")); value != "" {
 		return value
 	}
-	return filepath.Join("..", "atlas", "business", "fundamental-analysis.yaml")
+	return "fundamental-analysis.yaml"
 }
 
 func defaultDBPath() string {

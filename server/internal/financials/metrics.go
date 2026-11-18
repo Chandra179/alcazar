@@ -32,11 +32,17 @@ func CalculateMetrics(ctx context.Context, db *sql.DB, period string) ([]Metric,
 }
 
 func calculateMetrics(ctx context.Context, tx *sql.Tx, period, basis string) ([]Metric, error) {
+	return calculateMetricsFrom(ctx, tx, period, func(wanted string) ([]periodFact, error) {
+		return approvedFactsForCalculation(ctx, tx, wanted, basis)
+	})
+}
+
+func calculateMetricsFrom(ctx context.Context, tx *sql.Tx, period string, load func(string) ([]periodFact, error)) ([]Metric, error) {
 	entries, err := listCatalog(tx)
 	if err != nil {
 		return nil, err
 	}
-	facts, err := approvedFactsForCalculation(ctx, tx, period, basis)
+	facts, err := load(period)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +55,7 @@ func calculateMetrics(ctx context.Context, tx *sql.Tx, period, basis string) ([]
 		}
 	}
 	if previousPeriod := previousBalancePeriod(period); needsAverageBalances && previousPeriod != "" {
-		previousFacts, err := approvedFactsForCalculation(ctx, tx, previousPeriod, basis)
+		previousFacts, err := load(previousPeriod)
 		if err != nil {
 			return nil, err
 		}
@@ -71,13 +77,18 @@ func calculateMetrics(ctx context.Context, tx *sql.Tx, period, basis string) ([]
 			metrics = append(metrics, metric)
 			continue
 		}
+		if !formulaMatches(entry) {
+			metric.Reason = "The catalog expression differs from the registered calculation."
+			metrics = append(metrics, metric)
+			continue
+		}
 		if definition.status != "" {
 			metric.Status, metric.Reason = definition.status, definition.reason
 			metrics = append(metrics, metric)
 			continue
 		}
 		if definition.years != 0 {
-			metric, err = calculateCapitalExpenditureBurden(ctx, tx, period, basis, definition)
+			metric, err = calculateCapitalExpenditureBurden(period, definition, load)
 			if err != nil {
 				return nil, err
 			}
@@ -113,7 +124,10 @@ func calculateMetrics(ctx context.Context, tx *sql.Tx, period, basis string) ([]
 		value, err := calculate(metricValues(values, required, entry.ID))
 		if err != nil || math.IsNaN(value) || math.IsInf(value, 0) {
 			metric.Status = "not_calculable"
-			metric.Reason = "Inputs do not support a finite result, for example a zero or negative denominator."
+			metric.Reason = "Inputs do not support a finite result."
+			if err != nil {
+				metric.Reason = err.Error()
+			}
 			metrics = append(metrics, metric)
 			continue
 		}
@@ -151,7 +165,7 @@ func calculateMetrics(ctx context.Context, tx *sql.Tx, period, basis string) ([]
 	return metrics, nil
 }
 
-func calculateCapitalExpenditureBurden(ctx context.Context, tx *sql.Tx, period, basis string, definition formulaDefinition) (Metric, error) {
+func calculateCapitalExpenditureBurden(period string, definition formulaDefinition, load func(string) ([]periodFact, error)) (Metric, error) {
 	metric := Metric{EntityID: "capital-expenditure-to-net-earnings", Period: period, Unit: definition.unit}
 	_, _, periodType := periodBounds(period)
 	if periodType != "annual" {
@@ -175,7 +189,7 @@ func calculateCapitalExpenditureBurden(ctx context.Context, tx *sql.Tx, period, 
 
 	for year := startYear; year <= endYear; year++ {
 		annualPeriod := strconv.Itoa(year)
-		facts, err := approvedFactsForCalculation(ctx, tx, annualPeriod, basis)
+		facts, err := load(annualPeriod)
 		if err != nil {
 			return metric, err
 		}
@@ -193,9 +207,15 @@ func calculateCapitalExpenditureBurden(ctx context.Context, tx *sql.Tx, period, 
 				missing = append(missing, windowKey)
 				continue
 			}
+			if input.Fact.Period != annualPeriod || (input.Fact.PeriodType != "" && !samePeriodFlow(input.Fact)) {
+				conflicting = append(conflicting, windowKey+" (statement dates)")
+				continue
+			}
 			inputs[windowKey] = input
 			annual[canonicalKey] = map[string]any{
 				"value":        input.Number,
+				"currency":     input.Fact.Currency,
+				"unit":         input.Fact.Unit,
 				"source_facts": sourceFactReferences(input.Sources),
 			}
 		}
@@ -227,7 +247,8 @@ func calculateCapitalExpenditureBurden(ctx context.Context, tx *sql.Tx, period, 
 		return metric, nil
 	}
 
-	scaleUnit := inputs[inputKeys[0]].Fact.Unit
+	closingInput := inputs["net_earnings@"+period].Fact
+	scaleUnit := closingInput.Unit
 	var totalCapitalExpenditures, totalNetEarnings float64
 	for year := startYear; year <= endYear; year++ {
 		annualPeriod := strconv.Itoa(year)
@@ -236,6 +257,8 @@ func calculateCapitalExpenditureBurden(ctx context.Context, tx *sql.Tx, period, 
 	}
 	metric.Inputs["total_capital_expenditures"] = totalCapitalExpenditures
 	metric.Inputs["total_net_earnings"] = totalNetEarnings
+	metric.Inputs["totals_unit"] = scaleUnit
+	metric.Inputs["totals_currency"] = closingInput.Currency
 	if math.IsNaN(totalCapitalExpenditures) || math.IsInf(totalCapitalExpenditures, 0) ||
 		math.IsNaN(totalNetEarnings) || math.IsInf(totalNetEarnings, 0) {
 		metric.Status = "not_calculable"
@@ -336,6 +359,14 @@ func addAverageBalanceInput(current map[string]periodFact, currentConflicts map[
 		return
 	}
 	beginning, ok := previous[sourceKey]
+	restatedKey := "restated_" + sourceKey
+	if previousConflicts[restatedKey] {
+		currentConflicts[averageKey] = true
+		return
+	}
+	if restated, exists := previous[restatedKey]; exists && restated.Fact.DocumentID == ending.Fact.DocumentID {
+		beginning, ok = restated, true
+	}
 	if !ok {
 		return
 	}
@@ -445,6 +476,7 @@ func metricValues(values map[string]periodFact, required []string, formula strin
 }
 
 func metricInputCompatibility(values map[string]periodFact, required []string, formulaID string) string {
+	var flowStart, flowEnd string
 	for _, key := range required {
 		fact := values[key].Fact
 		if fact.ReportingBasis != "consolidated" && fact.ReportingBasis != "unconsolidated" {
@@ -452,6 +484,17 @@ func metricInputCompatibility(values map[string]periodFact, required []string, f
 		}
 		if fact.AuditedStatus != "audited" && fact.AuditedStatus != "unaudited" {
 			return "Approved inputs include unknown audit status; identify audited or unaudited statements before calculation."
+		}
+		if formulaID != "balance-average" && formulaID != "capital-expenditure-to-net-earnings" &&
+			fact.PeriodType != "instant" && fact.PeriodType != "" {
+			if !samePeriodFlow(fact) {
+				return "Flow dates must match the reviewed reporting period."
+			}
+			if flowStart != "" && formulaID != "interim-net-earnings-yoy" &&
+				(flowStart != fact.PeriodStart || flowEnd != fact.PeriodEnd) {
+				return "Inputs cover different statement dates."
+			}
+			flowStart, flowEnd = fact.PeriodStart, fact.PeriodEnd
 		}
 	}
 	if len(required) < 2 {
@@ -491,6 +534,11 @@ func metricInputCompatibility(values map[string]periodFact, required []string, f
 		}
 	}
 	return ""
+}
+
+func samePeriodFlow(fact Fact) bool {
+	start, end, kind := periodBounds(fact.Period)
+	return start != "" && fact.PeriodType == kind && fact.PeriodStart == start && fact.PeriodEnd == end
 }
 
 func unitScale(unit string) (float64, bool) {

@@ -215,6 +215,10 @@ func ApplyReviewCSV(ctx context.Context, db *sql.DB, filename string) (int, erro
 }
 
 func knownFactKey(key string) bool {
+	switch key {
+	case "restated_total_assets", "restated_common_shareholders_equity", "revenue":
+		return true
+	}
 	for _, alias := range financialAliases {
 		if alias.key == key {
 			return true
@@ -230,7 +234,7 @@ func knownFactKey(key string) bool {
 
 func factPeriodBounds(period, key string) (string, string, string) {
 	start, end, kind := periodBounds(period)
-	if end != "" && statementKeyAllowed("balance", key) {
+	if end != "" && statementKeyAllowed("balance", strings.TrimPrefix(key, "restated_")) {
 		return "", end, "instant"
 	}
 	return start, end, kind

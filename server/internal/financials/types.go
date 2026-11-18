@@ -57,13 +57,15 @@ type Fact struct {
 }
 
 type Metric struct {
-	EntityID string         `json:"entity_id"`
-	Period   string         `json:"period"`
-	Value    *float64       `json:"value,omitempty"`
-	Unit     string         `json:"unit,omitempty"`
-	Status   string         `json:"status"`
-	Reason   string         `json:"reason,omitempty"`
-	Inputs   map[string]any `json:"inputs,omitempty"`
+	EntityID    string         `json:"entity_id"`
+	Period      string         `json:"period"`
+	Value       *float64       `json:"value,omitempty"`
+	Unit        string         `json:"unit,omitempty"`
+	Status      string         `json:"status"`
+	Reason      string         `json:"reason,omitempty"`
+	Inputs      map[string]any `json:"inputs,omitempty"`
+	Basis       string         `json:"basis,omitempty"`
+	RelatedRule string         `json:"related_rule,omitempty"`
 }
 
 type EvidenceRef struct {

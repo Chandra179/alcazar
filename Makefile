@@ -13,7 +13,8 @@ REVIEW_DOCUMENT ?=
 ANALYSIS_DB ?= data/analysis/bbca-analysis.db
 ANALYSIS_FORMAT ?= markdown
 ANALYSIS_EVIDENCE ?= data/analysis/bbca-fy2025.yaml
-ANALYSIS_PDF ?= output/pdf/bbca-fy2025.pdf
+ANALYSIS_VIEW ?= brief
+ANALYSIS_PDF ?= output/pdf/bbca-fy2025$(if $(filter evidence,$(ANALYSIS_VIEW)),-evidence).pdf
 PYTHON ?= python3
 
 .PHONY: all build run test lint fmt tidy verify migrate-up podman-build bbca-import bbca-catalog bbca-review bbca-approve bbca-analysis bbca-analysis-pdf \
@@ -65,15 +66,15 @@ ifeq ($(ANALYSIS_FORMAT),pdf)
 bbca-analysis: bbca-analysis-pdf
 else
 bbca-analysis:
-	@$(GO) run ./server/cmd/bbca analysis --db "$(ANALYSIS_DB)" --format "$(ANALYSIS_FORMAT)" --evidence "$(ANALYSIS_EVIDENCE)"
+	@$(GO) run ./server/cmd/bbca analysis --db "$(ANALYSIS_DB)" --format "$(ANALYSIS_FORMAT)" --view "$(ANALYSIS_VIEW)" --evidence "$(ANALYSIS_EVIDENCE)"
 endif
 
 bbca-analysis-pdf:
 	@set -eu; \
 	input=$$(mktemp); \
 	trap 'rm -f "$$input"' EXIT; \
-	$(GO) run ./server/cmd/bbca analysis --db "$(ANALYSIS_DB)" --format json --evidence "$(ANALYSIS_EVIDENCE)" > "$$input"; \
-	"$(PYTHON)" scripts/bbca_analysis_pdf.py "$$input" "$(ANALYSIS_PDF)"
+	$(GO) run ./server/cmd/bbca analysis --db "$(ANALYSIS_DB)" --format json --view "$(ANALYSIS_VIEW)" --evidence "$(ANALYSIS_EVIDENCE)" > "$$input"; \
+	"$(PYTHON)" scripts/bbca_analysis_pdf.py "$$input" "$(ANALYSIS_PDF)" --view "$(ANALYSIS_VIEW)"
 
 web-install:
 	$(NPM) --prefix web ci

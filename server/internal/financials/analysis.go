@@ -2,11 +2,14 @@ package financials
 
 import (
 	"context"
+	"crypto/sha256"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"io"
 	"math"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -20,13 +23,25 @@ type analysisSource struct {
 }
 
 type analysisObservation struct {
-	Key     string   `yaml:"key" json:"key"`
-	Period  string   `yaml:"period" json:"period"`
-	Basis   string   `yaml:"basis" json:"basis"`
-	Unit    string   `yaml:"unit" json:"unit"`
-	Value   *float64 `yaml:"value" json:"value"`
-	Source  string   `yaml:"source" json:"source"`
-	Subject string   `yaml:"subject" json:"subject"`
+	Key           string   `yaml:"key" json:"key"`
+	Period        string   `yaml:"period" json:"period"`
+	Basis         string   `yaml:"basis" json:"basis"`
+	Unit          string   `yaml:"unit" json:"unit"`
+	Value         *float64 `yaml:"value" json:"value"`
+	Source        string   `yaml:"source" json:"source"`
+	Subject       string   `yaml:"subject" json:"subject"`
+	Corroboration string   `yaml:"corroboration,omitempty" json:"corroboration,omitempty"`
+	ShareBasis    string   `yaml:"share_basis,omitempty" json:"share_basis,omitempty"`
+}
+
+// Reviewed statement inputs cover source rows that the importer did not extract.
+type analysisStatementInput struct {
+	Period string             `yaml:"period"`
+	Basis  string             `yaml:"basis"`
+	Audit  string             `yaml:"audit"`
+	Unit   string             `yaml:"unit"`
+	Source string             `yaml:"source"`
+	Values map[string]float64 `yaml:"values"`
 }
 
 type analysisAssessment struct {
@@ -37,12 +52,14 @@ type analysisAssessment struct {
 }
 
 type analysisEvidence struct {
-	Hash         string                        `yaml:"catalog_hash"`
-	Sources      map[string]analysisSource     `yaml:"sources"`
-	Observations []analysisObservation         `yaml:"observations"`
-	Rules        map[string]analysisAssessment `yaml:"rules"`
-	Sections     []analysisSection             `yaml:"sections"`
-	HistoryNotes map[string]string             `yaml:"history_notes"`
+	FactsHash       string                        `yaml:"facts_hash"`
+	Hash            string                        `yaml:"catalog_hash"`
+	Sources         map[string]analysisSource     `yaml:"sources"`
+	Observations    []analysisObservation         `yaml:"observations"`
+	Rules           map[string]analysisAssessment `yaml:"rules"`
+	Sections        []analysisSection             `yaml:"sections"`
+	HistoryNotes    map[string]string             `yaml:"history_notes"`
+	StatementInputs []analysisStatementInput      `yaml:"statement_inputs"`
 }
 
 type analysisSection struct {
@@ -67,6 +84,7 @@ type analysisPeriod struct {
 
 type AnalysisReport struct {
 	CatalogHash  string                    `json:"catalog_hash"`
+	FactsHash    string                    `json:"facts_hash"`
 	ReviewedHash string                    `json:"reviewed_catalog_hash"`
 	Annual       []analysisPeriod          `json:"history"`
 	Interim      []analysisPeriod          `json:"interim"`
@@ -75,11 +93,34 @@ type AnalysisReport struct {
 	Sources      map[string]analysisSource `json:"sources"`
 	Observations []analysisObservation     `json:"observations"`
 	Results      map[string]Metric         `json:"results"`
+	InterimRisk  []analysisObservation     `json:"interim_risk"`
 	PeerRows     []analysisPeerRow         `json:"peer_comparisons"`
+	Coverage     analysisCoverage          `json:"evidence_coverage"`
+	Brief        []reportSection           `json:"brief_sections"`
+	Appendix     []reportSection           `json:"evidence_sections"`
 }
 
 var historyKeys = []string{"total_assets", "common_shareholders_equity", "shareholders_equity", "net_earnings",
-	"net_income_available_to_common_shareholders", "reported_earnings_per_share"}
+	"net_income_available_to_common_shareholders", "reported_earnings_per_share", "net_cash_from_operating_activities"}
+
+func AnalysisFactsHash(ctx context.Context, db *sql.DB) (string, error) {
+	facts, err := listApprovedFacts(ctx, db, "")
+	if err != nil {
+		return "", err
+	}
+	return approvedFactsHash(facts)
+}
+
+func approvedFactsHash(facts []Fact) (string, error) {
+	if len(facts) == 0 {
+		return "", fmt.Errorf("analysis database has no reviewed facts; see data/README.md for setup")
+	}
+	data, err := json.Marshal(facts)
+	if err != nil {
+		return "", fmt.Errorf("fingerprint approved facts: %w", err)
+	}
+	return fmt.Sprintf("%x", sha256.Sum256(data)), nil
+}
 
 func BuildAnalysis(ctx context.Context, db *sql.DB, catalogPath, evidencePath string) (*AnalysisReport, error) {
 	catalog, hash, err := LoadCatalog(catalogPath)
@@ -89,6 +130,14 @@ func BuildAnalysis(ctx context.Context, db *sql.DB, catalogPath, evidencePath st
 	evidence, err := readAnalysisEvidence(evidencePath)
 	if err != nil {
 		return nil, err
+	}
+	if evidence.Hash != hash {
+		return nil, fmt.Errorf("analysis catalog differs from the reviewed evidence; review the changed rules before updating the evidence catalog hash")
+	}
+	for _, entry := range catalog {
+		if !formulaMatches(entry) {
+			return nil, fmt.Errorf("catalog rule %s differs from the registered calculation", entry.ID)
+		}
 	}
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{ReadOnly: true})
 	if err != nil {
@@ -106,8 +155,12 @@ func BuildAnalysis(ctx context.Context, db *sql.DB, catalogPath, evidencePath st
 	if err != nil {
 		return nil, err
 	}
-	if len(approved) == 0 {
-		return nil, fmt.Errorf("analysis database has no reviewed facts; see data/README.md for setup")
+	factsHash, err := approvedFactsHash(approved)
+	if err != nil {
+		return nil, err
+	}
+	if evidence.FactsHash != factsHash {
+		return nil, fmt.Errorf("approved facts differ from the reviewed analysis snapshot; recheck the evidence and update its facts_hash")
 	}
 	facts := make(map[string][]periodFact)
 	for _, fact := range approved {
@@ -115,53 +168,123 @@ func BuildAnalysis(ctx context.Context, db *sql.DB, catalogPath, evidencePath st
 			facts[fact.Period] = append(facts[fact.Period], periodFact{Fact: fact, Number: n, Sources: []Fact{fact}})
 		}
 	}
+	for _, input := range evidence.StatementInputs {
+		source := evidence.Sources[input.Source]
+		for key, value := range input.Values {
+			if hasApprovedInput(facts[input.Period], input.Basis, key) {
+				continue
+			}
+			start, end, kind := factPeriodBounds(input.Period, key)
+			unit, currency := input.Unit, "IDR"
+			if key == "weighted_average_common_shares_outstanding" {
+				unit, currency = "shares", ""
+			}
+			fact := Fact{CanonicalKey: key, NormalizedValue: strconv.FormatFloat(value, 'f', -1, 64),
+				Period: input.Period, PeriodStart: start, PeriodEnd: end, PeriodType: kind,
+				ReportingBasis: input.Basis, AuditedStatus: input.Audit, Currency: currency, Unit: unit,
+				DocumentID: source.URL, DocumentPath: source.Title, SourceURL: source.URL, SourceLocator: source.Where,
+				Status: "reviewed", ReviewNote: "Reviewed statement input"}
+			facts[input.Period] = append(facts[input.Period], periodFact{Fact: fact, Number: value, Sources: []Fact{fact}})
+		}
+	}
 	report := &AnalysisReport{
-		CatalogHash: hash, ReviewedHash: evidence.Hash, Sections: evidence.Sections,
+		CatalogHash: hash, FactsHash: factsHash, ReviewedHash: evidence.Hash, Sections: evidence.Sections,
 		Sources: evidence.Sources, Observations: evidence.Observations,
 	}
 	for year := 1998; year <= 2025; year++ {
 		period := strconv.Itoa(year)
-		row, err := analysisPeriodFor(ctx, tx, period, "consolidated", facts[period], evidence.HistoryNotes[period])
+		row, err := analysisPeriodFor(ctx, tx, period, "consolidated", facts, evidence.HistoryNotes[period])
 		if err != nil {
 			return nil, err
 		}
 		report.Annual = append(report.Annual, row)
 	}
-	for _, period := range []string{"2025-09", "2026-09", "2026-10"} {
-		basis := "consolidated"
-		if period == "2026-10" {
-			basis = "unconsolidated"
+	for _, period := range interimPeriods(facts) {
+		for _, basis := range []string{"consolidated", "unconsolidated"} {
+			if !hasInterimBasis(facts[period], basis) {
+				continue
+			}
+			row, err := analysisPeriodFor(ctx, tx, period, basis, facts, evidence.HistoryNotes[period])
+			if err != nil {
+				return nil, err
+			}
+			report.Interim = append(report.Interim, row)
 		}
-		row, err := analysisPeriodFor(ctx, tx, period, basis, facts[period], evidence.HistoryNotes[period])
-		if err != nil {
-			return nil, err
+	}
+	addAnnualObservations(report)
+	addInterimGrowth(report.Interim)
+	addInterimMargins(report)
+	for _, item := range evidence.Observations {
+		if item.Subject == "BBCA" && item.Basis == "consolidated" && item.Unit == "%" && strings.HasSuffix(item.Key, " (KM1)") {
+			report.InterimRisk = append(report.InterimRisk, item)
 		}
-		report.Interim = append(report.Interim, row)
 	}
 	report.PeerRows = analysisPeers(evidence.Observations)
 
 	fy25 := report.Annual[len(report.Annual)-1]
 	fy24 := report.Annual[len(report.Annual)-2]
 	report.Results = analysisResults(fy24, fy25, evidence.Observations, facts)
-	if evidence.Hash == hash && len(evidence.Rules) != len(catalog) {
+	addBankValuation(report)
+	addInsurerFloatProxies(report)
+	if len(evidence.Rules) != len(catalog) {
 		return nil, fmt.Errorf("pinned report requires %d rule assessments; got %d", len(catalog), len(evidence.Rules))
 	}
 	for i, entry := range catalog {
 		assessment, ok := evidence.Rules[entry.ID]
 		if !ok {
-			if hash == evidence.Hash {
-				return nil, fmt.Errorf("pinned report lacks assessment for %s", entry.ID)
-			}
-			assessment = analysisAssessment{Status: "unreviewed_rule", Finding: "This entry has no FY2025 assessment in the reviewed evidence pack."}
+			return nil, fmt.Errorf("reviewed evidence lacks assessment for %s", entry.ID)
 		}
 		rule := analysisRule{Number: i + 1, Rule: entry, analysisAssessment: assessment}
-		if metric, exists := report.Results[entry.ID]; entry.Type == "formula" && ok && exists {
+		if metric, exists := report.Results[entry.ID]; entry.Type == "formula" && exists {
 			rule.Metric = &metric
 			rule.Status = metric.Status
 		}
 		report.Rules = append(report.Rules, rule)
 	}
+	report.Coverage, err = buildAnalysisCoverage(ctx, tx, report, evidence.StatementInputs)
+	if err != nil {
+		return nil, err
+	}
+	report.Brief = report.briefSections()
+	report.Appendix, err = report.evidenceSections()
+	if err != nil {
+		return nil, err
+	}
 	return report, tx.Commit()
+}
+
+func addInsurerFloatProxies(report *AnalysisReport) {
+	for _, insurer := range []struct{ name, id string }{
+		{"BCA Life", "bca-life"}, {"BCA Insurance", "bca-insurance"},
+	} {
+		find := func(key, year string) analysisObservation {
+			return report.findObservation(key, insurer.name, year, "standalone", "IDR million")
+		}
+		for _, period := range []struct{ open, close, suffix string }{
+			{"2024-01-01", "2024", "-2024"}, {"2024", "2025", ""},
+		} {
+			open := find("Insurance contract liabilities", period.open)
+			close := find("Insurance contract liabilities", period.close)
+			openRe := find("Reinsurance contract assets", period.open)
+			closeRe := find("Reinsurance contract assets", period.close)
+			result := find("Net insurance service result", period.close)
+			if open.Value == nil || close.Value == nil || openRe.Value == nil || closeRe.Value == nil || result.Value == nil ||
+				open.Source != result.Source || close.Source != result.Source || openRe.Source != result.Source || closeRe.Source != result.Source {
+				continue
+			}
+			average := (*open.Value - *openRe.Value + *close.Value - *closeRe.Value) / 2
+			if average <= 0 {
+				continue
+			}
+			id := "insurance-float-cost-proxy-" + insurer.id
+			metric := derived(id, period.close, "%", -*result.Value/average*100, map[string]any{
+				"opening_liabilities_restated": open, "closing_liabilities": close, "opening_reinsurance_assets_restated": openRe,
+				"closing_reinsurance_assets": closeRe, "net_insurance_service_result": result, "average_net_contract_liabilities": average,
+			})
+			metric.Status, metric.Basis, metric.RelatedRule = "proxy_calculated", insurer.name+" standalone", "insurance-float-cost"
+			report.Results[id+period.suffix] = metric
+		}
+	}
 }
 
 func readAnalysisEvidence(path string) (analysisEvidence, error) {
@@ -208,6 +331,11 @@ func readAnalysisEvidence(path string) (analysisEvidence, error) {
 	seen := make(map[string]bool)
 	for _, item := range evidence.Observations {
 		key := strings.Join([]string{item.Key, item.Subject, item.Period, item.Basis}, "/")
+		if item.Corroboration != "" {
+			if _, ok := evidence.Sources[item.Corroboration]; !ok {
+				return evidence, fmt.Errorf("observation %s references unknown corroboration %s", key, item.Corroboration)
+			}
+		}
 		if _, ok := evidence.Sources[item.Source]; !ok || seen[key] || item.Value == nil ||
 			math.IsNaN(*item.Value) || math.IsInf(*item.Value, 0) || item.Key == "" ||
 			item.Period == "" || item.Basis == "" || item.Unit == "" || item.Subject == "" {
@@ -215,17 +343,91 @@ func readAnalysisEvidence(path string) (analysisEvidence, error) {
 		}
 		seen[key] = true
 	}
+	for _, input := range evidence.StatementInputs {
+		_, _, kind := periodBounds(input.Period)
+		if (kind != "annual" && kind != "interim") || !isMoneyScale(input.Unit) ||
+			(input.Basis != "consolidated" && input.Basis != "unconsolidated") ||
+			(input.Audit != "audited" && input.Audit != "unaudited") || len(input.Values) == 0 {
+			return evidence, fmt.Errorf("invalid reviewed statement inputs for %s", input.Period)
+		}
+		if _, ok := evidence.Sources[input.Source]; !ok {
+			return evidence, fmt.Errorf("unknown statement input source %s", input.Source)
+		}
+		for key, value := range input.Values {
+			scope := strings.Join([]string{"statement", input.Period, input.Basis, key}, "/")
+			if !knownFactKey(key) || seen[scope] || math.IsNaN(value) || math.IsInf(value, 0) {
+				return evidence, fmt.Errorf("duplicate or invalid reviewed input %s", scope)
+			}
+			seen[scope] = true
+		}
+	}
 	return evidence, nil
 }
 
-func analysisPeriodFor(ctx context.Context, tx *sql.Tx, period, basis string, facts []periodFact, note string) (analysisPeriod, error) {
-	row := analysisPeriod{Period: period, Basis: basis, Facts: make(map[string]Fact), Values: make(map[string]Metric), Note: note}
-	var byBasis []periodFact
-	for _, fact := range facts {
-		if fact.Fact.ReportingBasis == basis {
-			byBasis = append(byBasis, fact)
+func hasApprovedInput(facts []periodFact, basis, key string) bool {
+	for _, item := range facts {
+		if item.Fact.ReportingBasis == basis && item.Fact.CanonicalKey == key {
+			return true
 		}
 	}
+	return false
+}
+
+func interimPeriods(facts map[string][]periodFact) []string {
+	var periods []string
+	for period := range facts {
+		if _, _, kind := periodBounds(period); kind == "interim" {
+			periods = append(periods, period)
+		}
+	}
+	sort.Strings(periods)
+	return periods
+}
+
+func hasInterimBasis(facts []periodFact, basis string) bool {
+	for _, fact := range facts {
+		if fact.Fact.ReportingBasis == basis {
+			return true
+		}
+	}
+	return false
+}
+
+func addInterimGrowth(rows []analysisPeriod) {
+	earnings := make(map[[2]string]periodFact)
+	for _, row := range rows {
+		fact := row.Facts["net_earnings"]
+		if value, ok := parseCanonicalNumber(fact.NormalizedValue); ok && fact.PeriodType == "interim" && samePeriodFlow(fact) {
+			earnings[[2]string{row.Period, row.Basis}] = periodFact{Fact: fact, Number: value}
+		}
+	}
+	const id = "interim-net-earnings-yoy"
+	for _, row := range rows {
+		year, _ := strconv.Atoi(row.Period[:4])
+		priorPeriod := strconv.Itoa(year-1) + row.Period[4:]
+		current, currentOK := earnings[[2]string{row.Period, row.Basis}]
+		prior, priorOK := earnings[[2]string{priorPeriod, row.Basis}]
+		inputs := map[string]periodFact{"current": current, "prior": prior}
+		if currentOK && priorOK && prior.Number > 0 &&
+			metricInputCompatibility(inputs, []string{"current", "prior"}, id) == "" {
+			value := (current.Number/numberAtUnit(prior, current.Fact.Unit) - 1) * 100
+			row.Values[id] = derived(id, row.Period, "%", value, map[string]any{"current": current.Fact, "prior": prior.Fact})
+		}
+	}
+}
+
+func analysisPeriodFor(ctx context.Context, tx *sql.Tx, period, basis string, facts map[string][]periodFact, note string) (analysisPeriod, error) {
+	row := analysisPeriod{Period: period, Basis: basis, Facts: make(map[string]Fact), Values: make(map[string]Metric), Note: note}
+	load := func(wanted string) ([]periodFact, error) {
+		var byBasis []periodFact
+		for _, fact := range facts[wanted] {
+			if fact.Fact.ReportingBasis == basis {
+				byBasis = append(byBasis, fact)
+			}
+		}
+		return byBasis, nil
+	}
+	byBasis, _ := load(period)
 	selected, conflicts := numericInputs(byBasis)
 	for _, key := range historyKeys {
 		if item, ok := selected[key]; ok && !conflicts[key] && item.Fact.ReportingBasis == basis {
@@ -234,10 +436,7 @@ func analysisPeriodFor(ctx context.Context, tx *sql.Tx, period, basis string, fa
 			row.Note = strings.TrimSpace(row.Note + " Conflicting approved " + key + ".")
 		}
 	}
-	if basis == "unconsolidated" {
-		return row, nil
-	}
-	metrics, err := calculateMetrics(ctx, tx, period, basis)
+	metrics, err := calculateMetricsFrom(ctx, tx, period, load)
 	if err != nil {
 		return row, err
 	}
@@ -294,73 +493,8 @@ func analysisResults(fy24, fy25 analysisPeriod, items []analysisObservation, fac
 		}
 		return 0, nil, false
 	}
-	market := func(key, period, unit string) (float64, any, bool) { return obs(key, period, "market", unit) }
-	close25, c25, closeOK := market("Year-end close", "2025", "IDR/share")
-	close24, c24, priorOK := market("Year-end close", "2024", "IDR/share")
-	paid, paidRef, paidOK := market("Cash dividends paid", "2025", "IDR/share")
-	dps, dpsRef, dpsOK := market("Fiscal dividends", "2025", "IDR/share")
-	shares, sharesRef, sharesOK := obs("Closing common shares ex treasury", "2025", "consolidated", "shares")
-	inflation, inflationRef, inflationOK := obs("CPI growth", "2025", "Indonesia CPI", "%")
-	earnings := results["earnings-per-share"]
-	equity, equityOK := fy25.Facts["common_shareholders_equity"]
-	book, bookOK := parseCanonicalNumber(equity.NormalizedValue)
-	scale, scaleOK := unitScale(equity.Unit)
-	for id, reason := range map[string]string{
-		"price-earnings-ratio":        "Requires a positive year-end close and approved FY2025 EPS.",
-		"price-to-book-ratio":         "Requires a positive year-end close, approved consolidated common equity, and closing shares excluding treasury stock.",
-		"dividend-yield":              "Requires a positive year-end close and cash dividends paid during 2025.",
-		"real-return-after-inflation": "Requires both year-end closes, matching calendar dividends, and matching-period national CPI growth.",
-		"nominal-shareholder-return":  "Requires both year-end closes and matching calendar dividends.",
-		"fiscal-dividend-payout":      "Requires confirmed fiscal dividends and approved FY2025 EPS.",
-		"margin-of-safety":            "Requires a positive year-end close and a conservative dividend value.",
-	} {
-		results[id] = Metric{EntityID: id, Period: "2025", Status: "missing_inputs", Reason: reason}
-	}
-	for _, scenario := range dividendScenarios {
-		id := "dividend-value-" + scenario.name
-		results[id] = Metric{EntityID: id, Period: "2025", Status: "missing_inputs", Reason: "Requires positive confirmed fiscal dividends."}
-	}
-	if closeOK && close25 > 0 {
-		if earnings.Value != nil && *earnings.Value > 0 {
-			results["price-earnings-ratio"] = derived("price-earnings-ratio", "2025", "×", close25 / *earnings.Value, map[string]any{"close": c25, "eps": earnings})
-		}
-		if equityOK && bookOK && scaleOK && book > 0 && sharesOK && shares > 0 {
-			bvps := book * scale / shares
-			results["price-to-book-ratio"] = derived("price-to-book-ratio", "2025", "×", close25/bvps, map[string]any{"close": c25, "common_equity": equity, "shares": sharesRef, "book_value_per_share": bvps})
-		}
-		if paidOK && paid >= 0 {
-			results["dividend-yield"] = derived("dividend-yield", "2025", "%", paid/close25*100, map[string]any{"close": c25, "cash_dividends_paid": paidRef})
-		}
-		if priorOK && close24 > 0 && paidOK && paid >= 0 {
-			nominal := (close25+paid)/close24 - 1
-			results["nominal-shareholder-return"] = derived("nominal-shareholder-return", "2025", "%", nominal*100, map[string]any{"opening_close": c24, "ending_close": c25, "cash_dividends_paid": paidRef})
-			if inflationOK && inflation > -100 {
-				results["real-return-after-inflation"] = derived("real-return-after-inflation", "2025", "%", ((1+nominal)/(1+inflation/100)-1)*100, map[string]any{
-					"nominal_return": results["nominal-shareholder-return"], "inflation": inflationRef})
-			}
-		}
-	}
-	if dpsOK && dps > 0 {
-		if earnings.Value != nil && *earnings.Value > 0 {
-			results["fiscal-dividend-payout"] = derived("fiscal-dividend-payout", "2025", "%", dps / *earnings.Value * 100, map[string]any{"DPS": dpsRef, "EPS": earnings})
-		}
-		for _, scenario := range dividendScenarios {
-			value := dividendValue(dps, scenario.growth, scenario.terminal, scenario.discount)
-			id := "dividend-value-" + scenario.name
-			results[id] = derived(id, "2025", "IDR/share", value, map[string]any{
-				"fiscal_dividends": dpsRef, "years": 5, "growth": scenario.growth, "terminal_growth": scenario.terminal, "cost_of_equity": scenario.discount})
-			if scenario.name == "conservative" && closeOK && close25 > 0 {
-				results["margin-of-safety"] = derived("margin-of-safety", "2025", "%", (1-close25/value)*100,
-					map[string]any{"close": c25, "conservative_value": results[id]})
-			}
-		}
-		base := dividendScenarios[1]
-		for _, r := range []float64{0.10, 0.11, 0.12} {
-			for _, g := range []float64{0.02, 0.03, 0.04} {
-				id := fmt.Sprintf("sensitivity-%.0f-%.0f", r*100, g*100)
-				results[id] = derived(id, "2025", "IDR/share", dividendValue(dps, base.growth, g, r), map[string]any{"cost_of_equity": r, "terminal_growth": g, "fiscal_dividends": dpsRef})
-			}
-		}
+	for id, metric := range annualMarketMetrics(&AnalysisReport{Observations: items}, fy25, fy24.Period) {
+		results[id] = metric
 	}
 	for _, row := range []analysisPeriod{fy24, fy25} {
 		period := row.Period
@@ -396,46 +530,6 @@ func analysisResults(fy24, fy25 analysisPeriod, items []analysisObservation, fac
 		}
 	}
 	return results
-}
-
-var dividendScenarios = []struct {
-	name                       string
-	growth, terminal, discount float64
-}{
-	{"conservative", .03, .02, .12},
-	{"base", .06, .03, .11},
-	{"favorable", .09, .04, .10},
-}
-
-func dividendValue(dps, growth, terminal, discount float64) float64 {
-	value := 0.0
-	for year := 1; year <= 5; year++ {
-		dps *= 1 + growth
-		value += dps / math.Pow(1+discount, float64(year))
-	}
-	return value + dps*(1+terminal)/(discount-terminal)/math.Pow(1+discount, 5)
-}
-
-func historyFact(fact Fact, money bool) string {
-	n, ok := parseCanonicalNumber(fact.NormalizedValue)
-	if !ok {
-		return "—"
-	}
-	if money {
-		if scale, ok := unitScale(fact.Unit); ok {
-			n = n * scale / 1e12
-		} else {
-			return "—"
-		}
-	}
-	return fmt.Sprintf("[%.2f](%s#page=%d)", n, fact.SourceURL, fact.PageNumber)
-}
-
-func percentMetric(metric Metric) string {
-	if metric.Value == nil {
-		return "—"
-	}
-	return fmt.Sprintf("%.2f", *metric.Value)
 }
 
 func displayKey(s string) string {

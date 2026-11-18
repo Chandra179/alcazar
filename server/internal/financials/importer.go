@@ -24,6 +24,7 @@ type ImportOptions struct {
 	ExtractedDir string
 	OCRLanguage  string
 	MinPageChars int
+	SkipOCR      bool
 	Force        bool
 }
 
@@ -369,7 +370,7 @@ func extractPDF(ctx context.Context, filename string, options ImportOptions) ([]
 	pages := make([]Page, 0, len(chunks))
 	for index, pageText := range chunks {
 		method := "pdftotext"
-		if nonSpaceCount(pageText) < options.MinPageChars {
+		if !options.SkipOCR && nonSpaceCount(pageText) < options.MinPageChars {
 			ocrText, ocrErr := ocrPDFPage(ctx, filename, index+1, options.OCRLanguage)
 			if ocrErr != nil {
 				return nil, fmt.Errorf("OCR page %d: %w", index+1, ocrErr)

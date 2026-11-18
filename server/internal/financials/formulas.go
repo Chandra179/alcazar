@@ -1,6 +1,9 @@
 package financials
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type formulaDefinition struct {
 	inputs               []string
@@ -87,4 +90,25 @@ var formulasRequiringExternalData = map[string]string{
 
 var formulasRequiringManualEstimate = map[string]string{
 	"owner-earnings": "Requires normalized earnings, maintenance capital expenditures, and incremental working-capital estimates that are not directly reported facts.",
+}
+
+// The catalog documents the formulas. Match each expression before using its Go implementation.
+var implementedExpressions = map[string]string{
+	"net-profit-margin":                   "(net_earnings / revenue) * 100",
+	"effective-tax-rate":                  "(income_tax_expense / income_before_tax) * 100",
+	"total-liabilities-to-equity":         "total_liabilities / shareholders_equity",
+	"return-on-assets":                    "(net_earnings / average_total_assets) * 100",
+	"return-on-equity":                    "(net_income_available_to_common_shareholders / average_common_shareholders_equity) * 100",
+	"earnings-per-share":                  "net_income_available_to_common_shareholders / weighted_average_common_shares_outstanding",
+	"net-change-in-cash":                  "net_cash_from_operating_activities + net_cash_from_investing_activities + net_cash_from_financing_activities",
+	"capital-expenditure-to-net-earnings": "(sum(capital_expenditures over period) / sum(net_earnings over same period)) * 100",
+	"price-earnings-ratio":                "share_price / earnings_per_share",
+	"price-to-book-ratio":                 "market_price_per_share / book_value_per_common_share",
+	"dividend-yield":                      "(annual_dividends_per_share / share_price) * 100",
+	"real-return-after-inflation":         "(((1 + nominal_return_rate) / (1 + inflation_rate)) - 1) * 100",
+}
+
+func formulaMatches(entry CatalogEntry) bool {
+	expression, implemented := implementedExpressions[entry.ID]
+	return !implemented || entry.Type == "formula" && strings.Join(strings.Fields(expression), "") == strings.Join(strings.Fields(entry.Formula), "")
 }
