@@ -4829,6 +4829,370 @@ statement_inputs:
   source: bca_monthly_published_financial_report_2026-10-p3
   values:
     income_tax_expense: 11243302
+year_story_sources:
+  story-2002:
+    title: 2002 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=89
+    where: PDF p. 89, yearly business review
+  story-2003:
+    title: 2003 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2003.pdf#page=1
+    where: PDF p. 1, yearly business review
+  story-2004:
+    title: 2004 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2004.pdf#page=4
+    where: PDF p. 4, yearly business review
+  story-2005:
+    title: 2005 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2005.pdf#page=4
+    where: PDF p. 4, yearly business review
+  story-2006:
+    title: 2006 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2006.pdf#page=11
+    where: PDF p. 11, yearly business review
+  story-2008:
+    title: 2008 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2008.pdf#page=12
+    where: PDF p. 12, yearly business review
+  story-2009:
+    title: 2009 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2009.pdf#page=6
+    where: PDF p. 6, yearly business review
+  story-2010:
+    title: 2010 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2010.pdf#page=12
+    where: PDF p. 12, yearly business review
+  story-2011:
+    title: 2011 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2011.pdf#page=12
+    where: PDF p. 12, yearly business review
+  story-2012:
+    title: 2012 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2012.pdf#page=18
+    where: PDF p. 18, yearly business review
+  story-2013:
+    title: 2013 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2013.pdf#page=22
+    where: PDF p. 22, yearly business review
+  story-2014:
+    title: 2014 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/annual_report2014_eng.pdf#page=20
+    where: PDF p. 20, yearly business review
+  story-2015:
+    title: 2015 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/BCA-AR-2015-Eng.pdf#page=24
+    where: PDF p. 24, yearly business review
+  story-2016:
+    title: 2016 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/20170315-buku-bca-ar16-EN.pdf#page=14
+    where: PDF p. 14, yearly business review
+  story-2017:
+    title: 2017 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/20180323-laporan-tahunan-2017-EN.pdf#page=26
+    where: PDF p. 26, yearly business review
+  story-2018:
+    title: 2018 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/20190313-ar-bca-eng.pdf#page=12
+    where: PDF p. 12, yearly business review
+  story-2019:
+    title: 2019 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/20200311-AR-BCA19-ENG.pdf#page=18
+    where: PDF p. 18, yearly business review
+  story-2020:
+    title: BCA 2020 results
+    url: https://www.bca.co.id/en/tentang-bca/media-riset/pressroom/siaran-pers/2021/02/19/04/08/Hasil-Kinerja-Sepanjang-Tahun-2020-Kinerja-Solid-dan-Berkelanjutan-di-Masa-Pandemi
+    where: Published annual results on lending, loan relief, and charges
+  story-2021:
+    title: 2021 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2022/20220217-buku-ar-bca-2021-EN.pdf#page=20
+    where: PDF p. 20, yearly business review
+  story-2022:
+    title: 2022 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/20230216-bca-ar-2022-inggris.pdf#page=18
+    where: PDF p. 18, yearly business review
+  story-2023:
+    title: 2023 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2024/20240215-buku-bca-ar-2023-eng-website.pdf#page=18
+    where: PDF p. 18, yearly business review
+  story-2024:
+    title: 2024 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2025/20250306-BCA-AR-2024-ENG.pdf#page=20
+    where: PDF p. 20, yearly business review
+  story-2025:
+    title: 2025 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=15
+    where: PDF p. 15, yearly business review
+  story-2000:
+    title: Audited 2000 statements
+    url: https://studylibid.com/doc/1976703/pt-bank-central-asia-tbk-dan-anak-perusahaan
+    where: Notes 1 and 37, restored oversight, public offering and quasi-reorganization
+  story-milestones:
+    title: BCA milestones
+    url: https://www.bca.co.id/en/tentang-bca/korporasi/sejarah-bca
+    where: 1998 takeover and 1999 recapitalization
+  story-2026-september:
+    title: September 2026 group results
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2026-billingual.pdf#page=8
+    where: PDF pp. 8–9, nine-month group earnings and comparable prior-year figures
+year_stories:
+  '2026':
+    title: Profit grew in both updates
+    bank: >-
+      Group profit growth picked up in September after a slower first half.
+    impact: >-
+      The September and October releases cover different businesses and time spans. Each compares profit
+      with its own prior-year period, so October is a separate check on the bank’s performance.
+    sources: [story-2026-september, oct]
+  '2025':
+    title: BCA earned more while its shares fell
+    bank: >-
+      BCA lent more and earned more from its operations. It also booked higher charges for potential
+      losses, which held back profit growth.
+    impact: >-
+      Dividends cushioned part of the loss. By year-end, investors were paying less for each rupiah of
+      annual profit than they had a year earlier.
+    sources: [story-2025]
+  '2024':
+    title: More lending helped grow the business
+    bank: >-
+      BCA lent more and brought in more income from its everyday banking business.
+    impact: >-
+      The shares gained much less than profit grew. Dividend payments added to the gain for shareholders
+      who held through the year.
+    sources: [story-2024]
+  '2023':
+    title: Interest income and lower loss charges lifted profit
+    bank: >-
+      BCA earned more interest after funding costs, while the amount charged against earnings for
+      potential losses fell.
+    impact: >-
+      A bigger loan book and lower loss charges helped more of the bank's income reach the bottom line.
+      Shareholders also saw a gain in the share price and received dividends.
+    sources: [story-2023]
+  '2022':
+    title: Profit climbed as loss charges eased
+    bank: >-
+      Interest income after funding costs rose. Charges for potential losses fell sharply from the
+      previous year.
+    impact: >-
+      BCA made more from banking and gave up less of that income to cover possible losses. That
+      combination supported a strong rise in profit after the pandemic disruption.
+    sources: [story-2022]
+  '2021':
+    title: Profit recovered and BCA split its shares
+    bank: >-
+      Customer deposits grew and charges for potential losses eased as BCA continued working with
+      borrowers affected by the pandemic.
+    impact: >-
+      The October stock split gave holders five shares for each share they previously owned. Price
+      changes here account for the split so the larger share count does not appear as an investment
+      loss.
+    sources: [story-2021]
+  '2020':
+    title: The pandemic interrupted profit growth
+    bank: >-
+      BCA reworked payment terms for affected borrowers. Lending contracted on the bank's published
+      comparison and charges for potential losses rose.
+    impact: >-
+      Loan relief gave borrowers more time to pay. Higher loss charges reduced current profit even as
+      customer deposits grew. The shares ended the year slightly higher.
+    sources: [story-2020]
+  '2019':
+    title: More deposits and interest income
+    bank: >-
+      Balances in current and savings accounts rose, and BCA earned more interest after paying its own
+      interest costs.
+    impact: >-
+      Money in everyday customer accounts can be a low-cost source of funding. That helps support
+      lending and interest income when the bank can find borrowers on suitable terms.
+    sources: [story-2019]
+  '2018':
+    title: Savings and current accounts grew
+    bank: >-
+      Customers held more money in savings and current accounts. Income from lending and other
+      investments also rose after funding costs.
+    impact: >-
+      Money in those accounts helps fund the business. Growth in both deposits and net interest income
+      gave BCA more low-cost funding to put to work and more income after paying interest.
+    sources: [story-2018]
+  '2017':
+    title: Profit outgrew net interest income
+    bank: >-
+      The bank extended more credit and attracted more deposits. Its interest income after funding costs
+      grew more slowly than profit.
+    impact: >-
+      A growing loan book can support future income. The different growth rates show why overall profit
+      depends on more than the amount the bank earns after interest costs.
+    sources: [story-2017]
+  '2016':
+    title: Interest income rose despite larger loss charges
+    bank: >-
+      BCA earned more interest after funding costs and attracted more customer deposits. Charges for
+      potential losses also increased.
+    impact: >-
+      Higher income helped the bank absorb the extra charges and still earn more. The year illustrates
+      how possible loan losses can take a bite out of the benefits of growth.
+    sources: [story-2016]
+  '2015':
+    title: Profit grew while the share price barely moved
+    bank: >-
+      Interest income after funding costs increased, but charges for potential losses also grew.
+    impact: >-
+      The bank finished the year with more profit, while the share price ended near where it started.
+      Cash dividends made up a substantial share of a holder's gain.
+    sources: [story-2015]
+  '2014':
+    title: Interest income and deposits rose
+    bank: >-
+      BCA attracted more customer deposits and earned more interest after paying its funding costs.
+    impact: >-
+      The bank had more funding to work with, and more income remained after paying interest.
+      Shareholders saw a large price gain alongside the improvement in annual profit.
+    sources: [story-2014]
+  '2013':
+    title: The bank kept more of its interest income
+    bank: >-
+      BCA's income after funding costs climbed. Customer deposits also increased over the year.
+    impact: >-
+      For a bank, the difference between interest earned and interest paid is a major source of profit.
+      BCA's profit rose strongly even though the share price moved by much less.
+    sources: [story-2013]
+  '2012':
+    title: Lending grew and the share of problem loans fell
+    bank: >-
+      The loan book expanded faster than customer deposits. The bank's reported share of loans in
+      trouble fell.
+    impact: >-
+      Lending can lift income, but growing loans faster than deposits makes the funding mix worth
+      watching. Reported loan trouble was low at year-end.
+    sources: [story-2012]
+  '2011':
+    title: Lending expanded and profit climbed
+    bank: >-
+      The loan book grew faster than customer deposits. The bank reported a slightly smaller share of
+      problem loans at year-end.
+    impact: >-
+      More lending gave BCA more opportunities to earn interest. Deposit growth helped finance that
+      expansion, while the share of problem loans gave readers a way to judge its early risks.
+    sources: [story-2011]
+  '2010':
+    title: Loan growth picked up
+    bank: >-
+      BCA expanded lending faster than its customer deposits grew. The bank reported a slightly lower
+      share of problem loans.
+    impact: >-
+      The loan book was becoming a bigger part of how BCA put customer deposits to work. That creates
+      more room to earn interest and more exposure to whether borrowers repay.
+    sources: [story-2010]
+  '2009':
+    title: Deposits grew faster than lending
+    bank: >-
+      After the global financial crisis, BCA attracted more customer deposits. Loans and interest income
+      after funding costs also rose.
+    impact: >-
+      The bank gained more customer funding than it used for additional loans. Shareholders had a strong
+      positive year following the prior year's negative return.
+    sources: [story-2009]
+  '2008':
+    title: The bank grew through a difficult market
+    bank: >-
+      During the global financial crisis, BCA's loan book expanded and its reported share of problem
+      loans fell. The bank also split each share into two.
+    impact: >-
+      Better annual results did not prevent a market loss. Holders ended the year down even after
+      dividends, with share prices adjusted for the split.
+    sources: [story-2008]
+  '2007':
+    title: Lending and customer deposits both expanded
+    bank: >-
+      BCA's loan book grew faster than its customer deposits. The bank reported a smaller share of
+      problem loans.
+    impact: >-
+      More lending gave the bank room to earn additional interest. The reported improvement in loan
+      quality was encouraging as the amount outstanding expanded.
+    sources: [story-2008]
+  '2006':
+    title: Customer deposits recovered
+    bank: >-
+      Customer deposits rose after falling the year before. BCA's loan book and interest income after
+      funding costs also grew.
+    impact: >-
+      More customer funding supported further lending. The bank also reported a smaller share of problem
+      loans than it had a year earlier.
+    sources: [story-2006]
+  '2005':
+    title: More lending came with more signs of strain
+    bank: >-
+      The bank lent more and earned more interest after funding costs. The share of problem loans edged
+      up from the previous year.
+    impact: >-
+      Higher lending helped grow the business, while the increase in problem loans illustrated the need
+      to watch who can repay. The shares still ended the year higher.
+    sources: [story-2005]
+  '2004':
+    title: The lending recovery gathered pace
+    bank: >-
+      BCA lent more, earned more net interest and reported a smaller share of problem loans. It also
+      carried out a two-for-one split in June.
+    impact: >-
+      The business earned more on a larger lending base. The large share-price gain shown here accounts
+      for the split, which by itself only changed the number of shares each investor held.
+    sources: [story-2004]
+  '2003':
+    title: Lending expanded while profit slipped
+    bank: >-
+      The bank made more loans and attracted more deposits, but income after funding costs declined
+      slightly.
+    impact: >-
+      Growing the loan book did not translate into higher profit that year. Shareholders saw the
+      opposite direction in the market, where the share price rose and cash dividends added to the
+      return.
+    sources: [story-2003]
+  '2002':
+    title: The bank grew as a tax charge weighed on profit
+    bank: >-
+      BCA expanded lending and attracted more deposits. The annual report explains that a charge for
+      deferred tax reduced reported profit.
+    impact: >-
+      The tax charge reduced accounting profit without taking the same amount out of cash that year. The
+      shares rose despite the decline in reported profit.
+    sources: [story-2002]
+  '2001':
+    title: The bank lent more in its first full year on the exchange
+    bank: >-
+      BCA expanded lending and earned more interest after funding costs. The bank split its
+      shares two for one in May.
+    impact: >-
+      The year marked a step toward normal banking after restructuring. It also provides the first full
+      calendar year in this report for comparing the share move with the return including dividends.
+    sources: [bca_ar_2002-p2]
+  '2000':
+    title: BBCA began trading publicly
+    bank: >-
+      BCA regained normal bank supervision and listed publicly in May. It also reorganized its accounts
+      in October to start with a balance sheet that reflected the restructuring.
+    impact: >-
+      Investors could now buy the shares on the exchange. The October accounting change is important
+      when comparing this year's results and balances with the years around it.
+    sources: [story-2000]
+  '1999':
+    title: Government support restored positive equity
+    bank: >-
+      The government recapitalized BCA, restoring positive year-end equity after the prior year's
+      deficit.
+    impact: >-
+      The fresh capital helped rebuild the bank's ability to absorb losses. This was a recapitalization
+      year, so a conventional return on average equity would be misleading.
+    sources: [archive00-equity, story-milestones]
+  '1998':
+    title: A rush of withdrawals led to a takeover
+    bank: >-
+      Customers rushed to withdraw money during the Asian financial crisis. A government agency took
+      control and put the bank into a restructuring program.
+    impact: >-
+      The losses left BCA with negative equity, meaning the bank's recorded obligations and other claims
+      exceeded its assets. Restoring the bank's ability to absorb losses became the priority.
+    sources: [bca_ar_2002-p2, story-milestones]
 history_notes:
   '1998': FY2002 issuer highlights. Full FY1998 audited statements and FY1997 opening detail were not verified. Negative equity
     makes conventional ROE uninformative.

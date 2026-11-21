@@ -19,7 +19,7 @@ try:
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
     from reportlab.platypus import (
-        LongTable, Paragraph, SimpleDocTemplate, TableStyle,
+        KeepTogether, LongTable, Paragraph, SimpleDocTemplate, TableStyle,
     )
 except ModuleNotFoundError as exc:
     if exc.name != "reportlab":
@@ -48,6 +48,8 @@ STYLES = {
                               spaceBefore=11, spaceAfter=9, textColor=NAVY, keepWithNext=True),
     "heading": ParagraphStyle("heading", fontName=BOLD, fontSize=12, leading=15,
                               spaceBefore=9, spaceAfter=3, textColor=NAVY, keepWithNext=True),
+    "year": ParagraphStyle("year", fontName=BOLD, fontSize=16, leading=21,
+                           spaceBefore=13, spaceAfter=6, textColor=NAVY, keepWithNext=True),
     "eyebrow": ParagraphStyle("eyebrow", fontName=BOLD, fontSize=9, leading=12,
                               spaceAfter=5, textColor=TEAL, keepWithNext=True),
     "body": ParagraphStyle("body", fontSize=10, leading=14, spaceAfter=7, textColor=NAVY),
@@ -75,7 +77,8 @@ def link(reference):
 
 
 def cell_content(cell):
-    return " ".join([plain(cell.get("text", "")), *(link(ref) for ref in cell.get("links", []))]).strip()
+    label = f'<b>{plain(cell["label"])}.</b> ' if cell.get("label") else ""
+    return label + " ".join([plain(cell.get("text", "")), *(link(ref) for ref in cell.get("links", []))]).strip()
 
 
 class PDFDocument(SimpleDocTemplate):
@@ -90,8 +93,12 @@ class PDFDocument(SimpleDocTemplate):
 class AnalysisPDF:
     def __init__(self, report, view):
         self.view = view
-        self.sections = report["brief_sections" if view == "brief" else "evidence_sections"]
-        self.title = "BBCA fundamental analysis" if view == "brief" else "BBCA evidence companion"
+        section_key, self.title = {
+            "brief": ("brief_sections", "BBCA fundamental analysis"),
+            "evidence": ("evidence_sections", "BBCA evidence companion"),
+            "yearly": ("yearly_sections", "BBCA Year by Year"),
+        }[view]
+        self.sections = report[section_key]
         self.story = []
 
     def paragraph(self, text, style="body"):
@@ -133,21 +140,27 @@ class AnalysisPDF:
         self.story.append(grid)
 
     def render(self, destination):
-        self.paragraph(plain("FY2025"), "eyebrow")
+        edition = "1998-2026" if self.view == "yearly" else "FY2025"
+        self.paragraph(plain(edition), "eyebrow")
         self.paragraph(plain(self.title), "title")
         for section in self.sections:
             anchor = section.get("id", "")
+            year = anchor.startswith("year-")
+            start = len(self.story)
             if section.get("title"):
-                self.paragraph(plain(section["title"]), "heading" if anchor.startswith("calc-") else "section")
+                heading_style = "year" if year else "heading" if anchor.startswith("calc-") else "section"
+                self.paragraph(plain(section["title"]), heading_style)
                 self.story[-1].anchor = anchor
             for cell in section.get("paragraphs", []):
-                style = "note" if anchor.startswith("calc-") else "body"
+                style = "sources" if year and not cell.get("text") else "note" if anchor.startswith("calc-") else "body"
                 self.paragraph(cell_content(cell), style)
             for table in section.get("tables", []):
                 self.table(table)
+            if year:
+                self.story[start:] = [KeepTogether(self.story[start:])]
 
         doc = PDFDocument(str(destination), pagesize=A4, leftMargin=44, rightMargin=44,
-                          topMargin=49, bottomMargin=47, title=self.title + " - FY2025",
+                          topMargin=49, bottomMargin=47, title=self.title + " - " + edition,
                           author="Alcazar")
 
         def page(canvas, _doc):
@@ -156,7 +169,7 @@ class AnalysisPDF:
             canvas.line(44, 35, A4[0] - 44, 35)
             canvas.setFont(FONT, 8)
             canvas.setFillColor(MUTED)
-            canvas.drawString(44, 23, "BBCA  /  FY2025  /  " + self.view.upper())
+            canvas.drawString(44, 23, f"BBCA  /  {edition}  /  {self.view.upper()}")
             canvas.drawRightString(A4[0] - 44, 23, str(canvas.getPageNumber()))
 
         doc.build(self.story, onFirstPage=page, onLaterPages=page)
@@ -168,7 +181,7 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("report", type=Path, help="BBCA analysis JSON")
     cli.add_argument("output", type=Path, help="destination PDF")
-    cli.add_argument("--view", choices=("brief", "evidence"), default="brief")
+    cli.add_argument("--view", choices=("brief", "evidence", "yearly"), default="brief")
     args = cli.parse_args()
     with args.report.open(encoding="utf-8") as stream:
         report = json.load(stream)

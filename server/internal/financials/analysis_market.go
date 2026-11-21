@@ -33,6 +33,13 @@ func addAnnualObservations(report *AnalysisReport) {
 			row.Values["earnings-per-share"] = derived("earnings-per-share", period, "currency per share", n*1e6 / *shares.Value,
 				map[string]any{"parent_earnings": earnings, "split_adjusted_weighted_average_shares": shares})
 		}
+		if _, matched := matchingAnnualEPS(report, row); !matched {
+			adjusted := find("Basic EPS on 2025 share basis", "consolidated", "IDR/share")
+			if adjusted.Value != nil && adjusted.ShareBasis == analysisShareBasis {
+				row.Values["earnings-per-share"] = derived("earnings-per-share", period, "currency per share", *adjusted.Value,
+					map[string]any{"reported_eps_on_split_adjusted_basis": adjusted})
+			}
+		}
 
 		for id, metric := range annualMarketMetrics(report, row, previousBalancePeriod(period)) {
 			row.Values[id] = metric
@@ -90,6 +97,18 @@ func (r *AnalysisReport) operatingIncome(period string) (bank, group operatingIn
 const analysisShareBasis = "october-2021-split"
 const bbcaListingYear = "2000"
 
+func (r *AnalysisReport) marketShareObservation(key, period string) analysisObservation {
+	item := r.findObservation(key, "BBCA", period, "market", "IDR/share")
+	if item.ShareBasis != analysisShareBasis {
+		return analysisObservation{}
+	}
+	return item
+}
+
+func shareholderReturn(open, close, dividends float64) float64 {
+	return (close+dividends)/open - 1
+}
+
 func matchingAnnualEPS(report *AnalysisReport, row analysisPeriod) (Metric, bool) {
 	exact := row.Values["earnings-per-share"]
 	shares := report.findObservation("Split-adjusted weighted average shares", "BBCA", row.Period, "consolidated", "shares")
@@ -108,11 +127,7 @@ func matchingAnnualEPS(report *AnalysisReport, row analysisPeriod) (Metric, bool
 func annualMarketMetrics(report *AnalysisReport, row analysisPeriod, prior string) map[string]Metric {
 	period := row.Period
 	find := func(key, year string) analysisObservation {
-		item := report.findObservation(key, "BBCA", year, "market", "IDR/share")
-		if item.ShareBasis != analysisShareBasis {
-			return analysisObservation{}
-		}
-		return item
+		return report.marketShareObservation(key, year)
 	}
 	results := make(map[string]Metric)
 	for id, reason := range map[string]string{
@@ -180,7 +195,7 @@ func annualMarketMetrics(report *AnalysisReport, row analysisPeriod, prior strin
 	}
 	open, earned := find("Year-end close", prior), find("Dividends earned", period)
 	if open.Value != nil && *open.Value > 0 && earned.Value != nil && *earned.Value >= 0 {
-		nominal := (*close.Value+*earned.Value) / *open.Value - 1
+		nominal := shareholderReturn(*open.Value, *close.Value, *earned.Value)
 		nominalMetric := derived("nominal-shareholder-return", period, "%", nominal*100,
 			map[string]any{"opening_close": open, "ending_close": close, "dividends_earned": earned})
 		results["nominal-shareholder-return"] = nominalMetric

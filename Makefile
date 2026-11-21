@@ -14,7 +14,7 @@ ANALYSIS_DB ?= data/analysis/bbca-analysis.db
 ANALYSIS_FORMAT ?= markdown
 ANALYSIS_EVIDENCE ?= data/analysis/bbca-fy2025.yaml
 ANALYSIS_VIEW ?= brief
-ANALYSIS_PDF ?= output/pdf/bbca-fy2025$(if $(filter evidence,$(ANALYSIS_VIEW)),-evidence).pdf
+ANALYSIS_PDF ?= output/pdf/bbca-fy2025$(if $(filter-out brief,$(ANALYSIS_VIEW)),-$(ANALYSIS_VIEW)).pdf
 PYTHON ?= python3
 
 .PHONY: all build run test lint fmt tidy verify migrate-up podman-build bbca-import bbca-catalog bbca-review bbca-approve bbca-analysis bbca-analysis-pdf \

@@ -2,8 +2,33 @@ package financials
 
 import (
 	"math"
+	"strings"
 	"testing"
 )
+
+func TestYearlyStockSummarySeparatesPriceFromDividendReturn(t *testing.T) {
+	close := func(year string, price float64) analysisObservation {
+		return analysisObservation{Key: "Year-end close", Period: year, Subject: "BBCA", Basis: "market",
+			Unit: "IDR/share", ShareBasis: analysisShareBasis, Value: &price}
+	}
+	ret := -13.385
+	row := analysisPeriod{Period: "2025", Values: map[string]Metric{"nominal-shareholder-return": {Value: &ret}}}
+	report := AnalysisReport{Observations: []analysisObservation{close("2024", 9675)}}
+	if got := report.yearlyStockSummary(row, close("2025", 8075)); got != "The share price fell 16.5%. Return with dividends was -13.4%." {
+		t.Fatalf("wrong 2025 market summary: %s", got)
+	}
+	report.Observations[0].ShareBasis = "as-filed"
+	if got := report.yearlyStockSummary(row, close("2025", 8075)); !strings.Contains(got, "unavailable") || strings.Contains(got, "%") {
+		t.Fatalf("used a mismatched opening price: %s", got)
+	}
+	if got := report.yearlyStockSummary(analysisPeriod{Period: "2000"}, close("2000", 41.875)); !strings.Contains(got, "Rp41.875") || !strings.Contains(got, "no full-calendar return") {
+		t.Fatalf("wrong listing-year summary: %s", got)
+	}
+	report.Observations = []analysisObservation{close("2011", 1600)}
+	if got := report.yearlyStockSummary(analysisPeriod{Period: "2012"}, close("2012", 1820)); !strings.Contains(got, "rose 13.8%") {
+		t.Fatalf("rounded the 2012 price change incorrectly: %s", got)
+	}
+}
 
 func TestAnalysisMarketResultsUseMatchingInputs(t *testing.T) {
 	eps := 466.8529777572306

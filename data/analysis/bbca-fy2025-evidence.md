@@ -158,7 +158,7 @@ Rule mappings include the measures exposed by each source and the catalog assess
 | 7 · depreciation-to-gross-profit | not_applicable | Fixed assets are depreciated and include right-of-use assets. Review the asset note and use a multi-year purchases-to-earnings comparison for the capital burden. Formula (depreciation_expense / gross_profit) * 100. [BCA audited FY2025 · PDF 69–70](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=69) [BCA audited FY2025 · PDF 13–14](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=13) |  |
 | 8 · interest-to-operating-income | not_applicable | Funding interest is a banking input cost. Compare interest expense with earning assets, deposit mix, and NIM. Stress deposit repricing and credit costs together. Formula (interest_expense / operating_income) * 100. [BCA audited FY2025 · PDF 9–10](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=9) [BCA audited FY2025 · PDF 71–72](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=71) [BCA FY2025 annual report · PDF 16](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=16) |  |
 | 9 · net-profit-margin | calculated | Group net earnings divided by consolidated operating income including insurance as presented by the issuer for FY2025. The bank operating income variant excludes net insurance from its denominator and has its own calculation records. Formula (net_earnings / revenue) * 100. The net banking denominator differs from the gross revenue basis typical for nonfinancial companies. [BCA FY2025 annual report · PDF 15–16](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=15) [BCA audited FY2025 · PDF 9–10](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=9) |  [1999](#calc-net-profit-margin-1999-consolidated) [2000](#calc-net-profit-margin-2000-consolidated) [2001](#calc-net-profit-margin-2001-consolidated) [2002](#calc-net-profit-margin-2002-consolidated) [2003](#calc-net-profit-margin-2003-consolidated) [2004](#calc-net-profit-margin-2004-consolidated) [2005](#calc-net-profit-margin-2005-consolidated) [2006](#calc-net-profit-margin-2006-consolidated) [2007](#calc-net-profit-margin-2007-consolidated) [2008](#calc-net-profit-margin-2008-consolidated) [2009](#calc-net-profit-margin-2009-consolidated) [2010](#calc-net-profit-margin-2010-consolidated) [2011](#calc-net-profit-margin-2011-consolidated) [2012](#calc-net-profit-margin-2012-consolidated) [2013](#calc-net-profit-margin-2013-consolidated) [2014](#calc-net-profit-margin-2014-consolidated) [2015](#calc-net-profit-margin-2015-consolidated) [2016](#calc-net-profit-margin-2016-consolidated) [2017](#calc-net-profit-margin-2017-consolidated) [2018](#calc-net-profit-margin-2018-consolidated) [2019](#calc-net-profit-margin-2019-consolidated) [2020](#calc-net-profit-margin-2020-consolidated) [2021](#calc-net-profit-margin-2021-consolidated) [2022](#calc-net-profit-margin-2022-consolidated) [2023](#calc-net-profit-margin-2023-consolidated) [2024](#calc-net-profit-margin-2024-consolidated) [2025-03](#calc-net-profit-margin-2025-03-consolidated) [2025-06](#calc-net-profit-margin-2025-06-consolidated) [2025-09](#calc-net-profit-margin-2025-09-consolidated) [2025-10](#calc-net-profit-margin-2025-10-unconsolidated) [2025](#calc-net-profit-margin-2025-consolidated) [2026-03](#calc-net-profit-margin-2026-03-consolidated) [2026-06](#calc-net-profit-margin-2026-06-consolidated) [2026-09](#calc-net-profit-margin-2026-09-consolidated) [2026-10](#calc-net-profit-margin-2026-10-unconsolidated) |
-| 10 · earnings-per-share | calculated | Parent-attributable earnings drove almost all FY2025 EPS growth. The history aligns reported EPS to the October 2021 share basis. Calculations using older as-filed weighted share counts retain their original split basis. Formula net_income_available_to_common_shareholders / weighted_average_common_shares_outstanding. [BCA audited FY2025 · PDF 9–10](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=9) [BCA audited FY2025 · PDF 91](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=91) [BCA share listing chronology · listing and splits table](https://www.bca.co.id/en/tentang-bca/Hubungan-Investor/Informasi-Saham/Kronologis-Pencatatan-Saham) [BCA FY2025 annual report · PDF 415](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=415) |  [1999](#calc-earnings-per-share-1999-consolidated) [2000](#calc-earnings-per-share-2000-consolidated) [2001](#calc-earnings-per-share-2001-consolidated) [2002](#calc-earnings-per-share-2002-consolidated) [2003](#calc-earnings-per-share-2003-consolidated) [2004](#calc-earnings-per-share-2004-consolidated) [2005](#calc-earnings-per-share-2005-consolidated) [2006](#calc-earnings-per-share-2006-consolidated) [2007](#calc-earnings-per-share-2007-consolidated) [2008](#calc-earnings-per-share-2008-consolidated) [2009](#calc-earnings-per-share-2009-consolidated) [2010](#calc-earnings-per-share-2010-consolidated) [2011](#calc-earnings-per-share-2011-consolidated) [2012](#calc-earnings-per-share-2012-consolidated) [2013](#calc-earnings-per-share-2013-consolidated) [2014](#calc-earnings-per-share-2014-consolidated) [2015](#calc-earnings-per-share-2015-consolidated) [2016](#calc-earnings-per-share-2016-consolidated) [2017](#calc-earnings-per-share-2017-consolidated) [2018](#calc-earnings-per-share-2018-consolidated) [2019](#calc-earnings-per-share-2019-consolidated) [2020](#calc-earnings-per-share-2020-consolidated) [2021](#calc-earnings-per-share-2021-consolidated) [2022](#calc-earnings-per-share-2022-consolidated) [2023](#calc-earnings-per-share-2023-consolidated) [2024](#calc-earnings-per-share-2024-consolidated) [2025-03](#calc-earnings-per-share-2025-03-consolidated) [2025-06](#calc-earnings-per-share-2025-06-consolidated) [2025-09](#calc-earnings-per-share-2025-09-consolidated) [2025](#calc-earnings-per-share-2025-consolidated) [2026-03](#calc-earnings-per-share-2026-03-consolidated) [2026-06](#calc-earnings-per-share-2026-06-consolidated) [2026-09](#calc-earnings-per-share-2026-09-consolidated) |
+| 10 · earnings-per-share | calculated | Parent-attributable earnings drove almost all FY2025 EPS growth. The history aligns reported EPS to the October 2021 share basis. Calculations using older as-filed weighted share counts retain their original split basis. Formula net_income_available_to_common_shareholders / weighted_average_common_shares_outstanding. [BCA audited FY2025 · PDF 9–10](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=9) [BCA audited FY2025 · PDF 91](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=91) [BCA share listing chronology · listing and splits table](https://www.bca.co.id/en/tentang-bca/Hubungan-Investor/Informasi-Saham/Kronologis-Pencatatan-Saham) [BCA FY2025 annual report · PDF 415](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=415) |  [1998](#calc-earnings-per-share-1998-consolidated) [1999](#calc-earnings-per-share-1999-consolidated) [2000](#calc-earnings-per-share-2000-consolidated) [2001](#calc-earnings-per-share-2001-consolidated) [2002](#calc-earnings-per-share-2002-consolidated) [2003](#calc-earnings-per-share-2003-consolidated) [2004](#calc-earnings-per-share-2004-consolidated) [2005](#calc-earnings-per-share-2005-consolidated) [2006](#calc-earnings-per-share-2006-consolidated) [2007](#calc-earnings-per-share-2007-consolidated) [2008](#calc-earnings-per-share-2008-consolidated) [2009](#calc-earnings-per-share-2009-consolidated) [2010](#calc-earnings-per-share-2010-consolidated) [2011](#calc-earnings-per-share-2011-consolidated) [2012](#calc-earnings-per-share-2012-consolidated) [2013](#calc-earnings-per-share-2013-consolidated) [2014](#calc-earnings-per-share-2014-consolidated) [2015](#calc-earnings-per-share-2015-consolidated) [2016](#calc-earnings-per-share-2016-consolidated) [2017](#calc-earnings-per-share-2017-consolidated) [2018](#calc-earnings-per-share-2018-consolidated) [2019](#calc-earnings-per-share-2019-consolidated) [2020](#calc-earnings-per-share-2020-consolidated) [2021](#calc-earnings-per-share-2021-consolidated) [2022](#calc-earnings-per-share-2022-consolidated) [2023](#calc-earnings-per-share-2023-consolidated) [2024](#calc-earnings-per-share-2024-consolidated) [2025-03](#calc-earnings-per-share-2025-03-consolidated) [2025-06](#calc-earnings-per-share-2025-06-consolidated) [2025-09](#calc-earnings-per-share-2025-09-consolidated) [2025](#calc-earnings-per-share-2025-consolidated) [2026-03](#calc-earnings-per-share-2026-03-consolidated) [2026-06](#calc-earnings-per-share-2026-06-consolidated) [2026-09](#calc-earnings-per-share-2026-09-consolidated) |
 | 11 · price-earnings-ratio | calculated | The retrospective multiple uses the year-end close and audited basic EPS. It fell in FY2025 as earnings per share grew and the share price fell. Historical closes and EPS are on the October 2021 share basis. Formula share_price / earnings_per_share. [BCA FY2025 annual report · PDF 17](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=17) [BCA audited FY2025 · PDF 91](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=91) |  [2000](#calc-price-earnings-ratio-2000-consolidated) [2001](#calc-price-earnings-ratio-2001-consolidated) [2002](#calc-price-earnings-ratio-2002-consolidated) [2003](#calc-price-earnings-ratio-2003-consolidated) [2004](#calc-price-earnings-ratio-2004-consolidated) [2005](#calc-price-earnings-ratio-2005-consolidated) [2006](#calc-price-earnings-ratio-2006-consolidated) [2007](#calc-price-earnings-ratio-2007-consolidated) [2008](#calc-price-earnings-ratio-2008-consolidated) [2009](#calc-price-earnings-ratio-2009-consolidated) [2010](#calc-price-earnings-ratio-2010-consolidated) [2011](#calc-price-earnings-ratio-2011-consolidated) [2012](#calc-price-earnings-ratio-2012-consolidated) [2013](#calc-price-earnings-ratio-2013-consolidated) [2014](#calc-price-earnings-ratio-2014-consolidated) [2015](#calc-price-earnings-ratio-2015-consolidated) [2016](#calc-price-earnings-ratio-2016-consolidated) [2017](#calc-price-earnings-ratio-2017-consolidated) [2018](#calc-price-earnings-ratio-2018-consolidated) [2019](#calc-price-earnings-ratio-2019-consolidated) [2020](#calc-price-earnings-ratio-2020-consolidated) [2021](#calc-price-earnings-ratio-2021-consolidated) [2022](#calc-price-earnings-ratio-2022-consolidated) [2023](#calc-price-earnings-ratio-2023-consolidated) [2024](#calc-price-earnings-ratio-2024-consolidated) [2025](#calc-price-earnings-ratio-2025-consolidated) |
 | 12 · price-to-book-ratio | calculated | FY2025 uses parent equity and closing shares excluding treasury stock. The earlier calculations use the issuer’s book value per share as published. The FY2025 published multiple differs from the independently calculated result. Formula market_price_per_share / book_value_per_common_share. The cause of the published P/B discrepancy remains unresolved. [BCA audited FY2025 · PDF 7–8](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=7) [BCA audited FY2025 · PDF 85–86](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=85) [BCA FY2025 annual report · PDF 17](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=17) [BCA FY2025 annual report · PDF 415](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=415) |  [2000](#calc-price-to-book-ratio-2000-consolidated) [2001](#calc-price-to-book-ratio-2001-consolidated) [2002](#calc-price-to-book-ratio-2002-consolidated) [2003](#calc-price-to-book-ratio-2003-consolidated) [2004](#calc-price-to-book-ratio-2004-consolidated) [2005](#calc-price-to-book-ratio-2005-consolidated) [2006](#calc-price-to-book-ratio-2006-consolidated) [2007](#calc-price-to-book-ratio-2007-consolidated) [2008](#calc-price-to-book-ratio-2008-consolidated) [2009](#calc-price-to-book-ratio-2009-consolidated) [2010](#calc-price-to-book-ratio-2010-consolidated) [2011](#calc-price-to-book-ratio-2011-consolidated) [2012](#calc-price-to-book-ratio-2012-consolidated) [2013](#calc-price-to-book-ratio-2013-consolidated) [2014](#calc-price-to-book-ratio-2014-consolidated) [2015](#calc-price-to-book-ratio-2015-consolidated) [2016](#calc-price-to-book-ratio-2016-consolidated) [2017](#calc-price-to-book-ratio-2017-consolidated) [2018](#calc-price-to-book-ratio-2018-consolidated) [2019](#calc-price-to-book-ratio-2019-consolidated) [2020](#calc-price-to-book-ratio-2020-consolidated) [2021](#calc-price-to-book-ratio-2021-consolidated) [2022](#calc-price-to-book-ratio-2022-consolidated) [2023](#calc-price-to-book-ratio-2023-consolidated) [2024](#calc-price-to-book-ratio-2024-consolidated) [2025](#calc-price-to-book-ratio-2025-consolidated) |
 | 13 · dividend-yield | calculated | Calendar 2025 payments were IDR 250 final for FY2024 and IDR 55 interim for FY2025. The trailing yield uses those payments and the FY2025 close. The FY2025 final payment belongs to the 2026 cash calendar. Formula (annual_dividends_per_share / share_price) * 100. [BCA FY2025 annual report · PDF 17](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=17) [BCA dividend history · payment date and amount columns](https://www.bca.co.id/en/tentang-bca/Hubungan-Investor/Informasi-Saham/Riwayat-Deviden) [BCA annual meeting FY2025 dividend notice · FY2025 resolution, March 2026](https://www.bca.co.id/-/media/Feature/Report/File/Berita-Investor/2026/20260313-Pengumuman-Dividen-Final-Tahun-Buku-2025-EN.pdf) |  [2000](#calc-dividend-yield-2000-consolidated) [2001](#calc-dividend-yield-2001-consolidated) [2002](#calc-dividend-yield-2002-consolidated) [2003](#calc-dividend-yield-2003-consolidated) [2004](#calc-dividend-yield-2004-consolidated) [2005](#calc-dividend-yield-2005-consolidated) [2006](#calc-dividend-yield-2006-consolidated) [2007](#calc-dividend-yield-2007-consolidated) [2008](#calc-dividend-yield-2008-consolidated) [2009](#calc-dividend-yield-2009-consolidated) [2010](#calc-dividend-yield-2010-consolidated) [2011](#calc-dividend-yield-2011-consolidated) [2012](#calc-dividend-yield-2012-consolidated) [2013](#calc-dividend-yield-2013-consolidated) [2014](#calc-dividend-yield-2014-consolidated) [2015](#calc-dividend-yield-2015-consolidated) [2016](#calc-dividend-yield-2016-consolidated) [2017](#calc-dividend-yield-2017-consolidated) [2018](#calc-dividend-yield-2018-consolidated) [2019](#calc-dividend-yield-2019-consolidated) [2020](#calc-dividend-yield-2020-consolidated) [2021](#calc-dividend-yield-2021-consolidated) [2022](#calc-dividend-yield-2022-consolidated) [2023](#calc-dividend-yield-2023-consolidated) [2024](#calc-dividend-yield-2024-consolidated) [2025](#calc-dividend-yield-2025-consolidated) |
@@ -267,7 +267,6 @@ Rule mappings include the measures exposed by each source and the catalog assess
 | capital expenditure to net earnings | consolidated | 2005 | Missing capital expenditures for 1996, 1997, 1998. Missing net earnings for 1996, 1997 |
 | capital expenditure to net earnings | consolidated | 2006 | Missing capital expenditures for 1997, 1998. Missing net earnings for 1997 |
 | capital expenditure to net earnings | consolidated | 2007 | Missing capital expenditures for 1998 |
-| earnings per share | consolidated | 1998 | Missing inputs net_income_available_to_common_shareholders, weighted_average_common_shares_outstanding |
 | earnings per share | bank only | 2025-10, 2026-10 | The monthly publication omits the weighted-average shares for the January–October period. |
 | effective tax rate | consolidated | 1998 | Missing inputs income_tax_expense |
 | fiscal dividend payout | consolidated | 2000 | Requires reviewed fiscal dividends and positive EPS on the same split basis. |
@@ -1705,236 +1704,225 @@ Values use the cited input units. Linked inputs refer to another calculation in 
 | cash_dividends_paid | 305  IDR/share [BCA dividend history · payment date and amount columns](https://www.bca.co.id/en/tentang-bca/Hubungan-Investor/Informasi-Saham/Riwayat-Deviden) |
 | close | 8075  IDR/share [BCA FY2025 annual report · PDF 17](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=17) |
 
+<a id="calc-earnings-per-share-1998-consolidated"></a>
+
+## earnings per share · 1998 · consolidated
+
+-355.05 IDR/share
+
+| Input | Reviewed value or reference |
+| --- | --- |
+| reported_eps_on_split_adjusted_basis | -355.05  IDR/share [BCA FY2002 annual report · PDF 2](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=2) |
+
 <a id="calc-earnings-per-share-1999-consolidated"></a>
 
 ## earnings per share · 1999 · consolidated
 
-312.96 IDR/share
+7.85 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 6.41292361e+08 IDR thousands [BCA audited FY1999 and FY2000 split periods (Global Reports mirror) Statement p. 8, consolidated income after minority interests and tax components](https://studylibid.com/doc/1976703/pt-bank-central-asia-tbk-dan-anak-perusahaan) |
-| weighted_average_common_shares_outstanding | 2.049139997e+09  shares [BCA audited FY1999 and FY2000 split periods (Global Reports mirror) Note 2w, basic EPS weighted shares](https://studylibid.com/doc/1976703/pt-bank-central-asia-tbk-dan-anak-perusahaan) |
+| reported_eps_on_split_adjusted_basis | 7.85  IDR/share [BCA FY2002 annual report · PDF 2](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=2) |
 
 <a id="calc-earnings-per-share-2000-consolidated"></a>
 
 ## earnings per share · 2000 · consolidated
 
-612.13 IDR/share
+15.30 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 1.802091372e+09 IDR thousands [BCA audited FY1999 and FY2000 split periods (Global Reports mirror) Statement p. 8, consolidated income after minority interests and tax components](https://studylibid.com/doc/1976703/pt-bank-central-asia-tbk-dan-anak-perusahaan) |
-| weighted_average_common_shares_outstanding | 2.943986e+09  shares [BCA audited FY1999 and FY2000 split periods (Global Reports mirror) Note 2w, basic EPS weighted shares](https://studylibid.com/doc/1976703/pt-bank-central-asia-tbk-dan-anak-perusahaan) |
+| reported_eps_on_split_adjusted_basis | 15.3  IDR/share [BCA FY2002 annual report · PDF 2](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=2) |
 
 <a id="calc-earnings-per-share-2001-consolidated"></a>
 
 ## earnings per share · 2001 · consolidated
 
-529.28 IDR/share
+26.45 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 3.119167e+06 IDR millions [BCA annual report FY2002 PDF p. 171, basic EPS, general reserve and cash-dividend notes](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=171) |
-| weighted_average_common_shares_outstanding | 5.893263822e+09  shares [BCA annual report FY2002 PDF p. 171, basic EPS, general reserve and cash-dividend notes](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=171) |
+| reported_eps_on_split_adjusted_basis | 26.45  IDR/share [BCA FY2002 annual report · PDF 2](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=2) |
 
 <a id="calc-earnings-per-share-2002-consolidated"></a>
 
 ## earnings per share · 2002 · consolidated
 
-425.87 IDR/share
+21.30 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 2.541552e+06 IDR millions [BCA annual report FY2002 PDF p. 170, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=170) |
-| weighted_average_common_shares_outstanding | 5.967875833e+09  shares [BCA annual report FY2002 PDF p. 170, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=170) |
+| reported_eps_on_split_adjusted_basis | 21.3  IDR/share [BCA FY2002 annual report · PDF 2](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2002.pdf#page=2) |
 
 <a id="calc-earnings-per-share-2003-consolidated"></a>
 
 ## earnings per share · 2003 · consolidated
 
-394.61 IDR/share
+19.75 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 2.390855e+06 IDR millions [BCA annual report FY2003 PDF p. 139, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2003.pdf#page=139) |
-| weighted_average_common_shares_outstanding | 6.058782336e+09  shares [BCA annual report FY2003 PDF p. 139, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2003.pdf#page=139) |
+| reported_eps_on_split_adjusted_basis | 19.75  IDR/share [BCA FY2003 annual report · PDF 1](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2003.pdf#page=1) |
 
 <a id="calc-earnings-per-share-2004-consolidated"></a>
 
 ## earnings per share · 2004 · consolidated
 
-260.11 IDR/share
+26.00 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 3.195421e+06 IDR millions [BCA annual report FY2005 PDF p. 150, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2005.pdf#page=150) |
-| weighted_average_common_shares_outstanding | 1.2285095866e+10  shares [BCA annual report FY2005 PDF p. 150, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2005.pdf#page=150) |
+| reported_eps_on_split_adjusted_basis | 26  IDR/share [BCA FY2008 annual report · PDF 12](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2008.pdf#page=12) |
 
 <a id="calc-earnings-per-share-2005-consolidated"></a>
 
 ## earnings per share · 2005 · consolidated
 
-292.21 IDR/share
+29.20 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 3.5974e+06 IDR millions [BCA annual report FY2005 PDF p. 150, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2005.pdf#page=150) |
-| weighted_average_common_shares_outstanding | 1.2310918792e+10  shares [BCA annual report FY2005 PDF p. 150, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2005.pdf#page=150) |
+| reported_eps_on_split_adjusted_basis | 29.2  IDR/share [BCA FY2008 annual report · PDF 12](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2008.pdf#page=12) |
 
 <a id="calc-earnings-per-share-2006-consolidated"></a>
 
 ## earnings per share · 2006 · consolidated
 
-344.84 IDR/share
+34.60 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 4.242692e+06 IDR millions [BCA annual report FY2006 PDF p. 144, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2006.pdf#page=144) |
-| weighted_average_common_shares_outstanding | 1.2303535221e+10  shares [BCA annual report FY2006 PDF p. 144, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2006.pdf#page=144) |
+| reported_eps_on_split_adjusted_basis | 34.6  IDR/share [BCA FY2008 annual report · PDF 12](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2008.pdf#page=12) |
 
 <a id="calc-earnings-per-share-2007-consolidated"></a>
 
 ## earnings per share · 2007 · consolidated
 
-182.76 IDR/share
+36.60 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 4.489252e+06 IDR millions [BCA annual report FY2008 PDF p. 173, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2008.pdf#page=173) |
-| weighted_average_common_shares_outstanding | 2.4564024e+10  shares [BCA annual report FY2008 PDF p. 173, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2008.pdf#page=173) |
+| reported_eps_on_split_adjusted_basis | 36.6  IDR/share [BCA FY2008 annual report · PDF 12](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2008.pdf#page=12) |
 
 <a id="calc-earnings-per-share-2008-consolidated"></a>
 
 ## earnings per share · 2008 · consolidated
 
-236.46 IDR/share
+47.20 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 5.776139e+06 IDR millions [BCA annual report FY2008 PDF p. 172, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2008.pdf#page=172) |
-| weighted_average_common_shares_outstanding | 2.4427309406e+10  shares [BCA annual report FY2008 PDF p. 172, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2008.pdf#page=172) |
+| reported_eps_on_split_adjusted_basis | 47.2  IDR/share [BCA FY2008 annual report · PDF 12](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2008.pdf#page=12) |
 
 <a id="calc-earnings-per-share-2009-consolidated"></a>
 
 ## earnings per share · 2009 · consolidated
 
-279.38 IDR/share
+55.80 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 6.807242e+06 IDR millions [BCA annual report FY2009 PDF p. 194, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2009.pdf#page=194) |
-| weighted_average_common_shares_outstanding | 2.4365243e+10  shares [BCA annual report FY2009 PDF p. 194, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2009.pdf#page=194) |
+| reported_eps_on_split_adjusted_basis | 55.8  IDR/share [BCA FY2012 annual report · PDF 18](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2012.pdf#page=18) |
 
 <a id="calc-earnings-per-share-2010-consolidated"></a>
 
 ## earnings per share · 2010 · consolidated
 
-348.01 IDR/share
+69.60 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 8.479273e+06 IDR millions [BCA annual report FY2011 PDF p. 232, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2011.pdf#page=232) |
-| weighted_average_common_shares_outstanding | 2.4365243e+10  shares [BCA annual report FY2011 PDF p. 232, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2011.pdf#page=232) |
+| reported_eps_on_split_adjusted_basis | 69.6  IDR/share [BCA FY2012 annual report · PDF 18](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2012.pdf#page=18) |
 
 <a id="calc-earnings-per-share-2011-consolidated"></a>
 
 ## earnings per share · 2011 · consolidated
 
-444.05 IDR/share
+88.80 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 1.0819309e+07 IDR millions [BCA annual report FY2011 PDF p. 232, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2011.pdf#page=232) |
-| weighted_average_common_shares_outstanding | 2.4365243e+10  shares [BCA annual report FY2011 PDF p. 232, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2011.pdf#page=232) |
+| reported_eps_on_split_adjusted_basis | 88.8  IDR/share [BCA FY2012 annual report · PDF 18](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2012.pdf#page=18) |
 
 <a id="calc-earnings-per-share-2012-consolidated"></a>
 
 ## earnings per share · 2012 · consolidated
 
-480.36 IDR/share
+96.00 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 1.1721717e+07 IDR millions [BCA_AR_2013.pdf page:346/income/row:45/column:2](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2013.pdf#page=346) |
-| weighted_average_common_shares_outstanding | 2.4401786557e+10  shares [BCA annual report FY2013 PDF p. 447, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2013.pdf#page=447) |
+| reported_eps_on_split_adjusted_basis | 96  IDR/share [BCA FY2012 annual report · PDF 18](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2012.pdf#page=18) |
 
 <a id="calc-earnings-per-share-2013-consolidated"></a>
 
 ## earnings per share · 2013 · consolidated
 
-578.60 IDR/share
+115.80 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 1.4253831e+07 IDR millions [BCA_AR_2013.pdf page:346/income/row:45/column:1](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2013.pdf#page=346) |
-| weighted_average_common_shares_outstanding | 2.4634859597e+10  shares [BCA annual report FY2013 PDF p. 447, audited basic EPS note, weighted average adjusted for the disclosed split where applicable](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/AR-2013.pdf#page=447) |
+| reported_eps_on_split_adjusted_basis | 115.8  IDR/share [BCA FY2015 annual report · PDF 24](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/BCA-AR-2015-Eng.pdf#page=24) |
 
 <a id="calc-earnings-per-share-2014-consolidated"></a>
 
 ## earnings per share · 2014 · consolidated
 
-668.66 IDR/share
+133.80 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 1.6485858e+07 IDR millions [BCA_AR_2015.pdf page:406/income/row:48/column:2](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/BCA-AR-2015-Eng.pdf#page=406) |
-| weighted_average_common_shares_outstanding | 2.465501e+10  shares [BCA_AR_2015.pdf page:509/eps_note/row:60/column:2](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/BCA-AR-2015-Eng.pdf#page=509) |
+| reported_eps_on_split_adjusted_basis | 133.8  IDR/share [BCA FY2015 annual report · PDF 24](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/BCA-AR-2015-Eng.pdf#page=24) |
 
 <a id="calc-earnings-per-share-2015-consolidated"></a>
 
 ## earnings per share · 2015 · consolidated
 
-730.83 IDR/share
+146.20 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 1.8018653e+07 IDR millions [BCA_AR_2015.pdf page:406/income/row:48/column:1](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/BCA-AR-2015-Eng.pdf#page=406) |
-| weighted_average_common_shares_outstanding | 2.465501e+10  shares [BCA_AR_2015.pdf page:509/eps_note/row:60/column:1](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/BCA-AR-2015-Eng.pdf#page=509) |
+| reported_eps_on_split_adjusted_basis | 146.2  IDR/share [BCA FY2015 annual report · PDF 24](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/BCA-AR-2015-Eng.pdf#page=24) |
 
 <a id="calc-earnings-per-share-2016-consolidated"></a>
 
 ## earnings per share · 2016 · consolidated
 
-835.76 IDR/share
+167.20 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 2.0605736e+07 IDR millions [BCA_AR_2016.pdf page:452/income/row:52/column:1](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/20170315-buku-bca-ar16-EN.pdf#page=452) |
-| weighted_average_common_shares_outstanding | 2.465501e+10  shares [BCA_AR_2016.pdf page:557/eps_note/row:42/column:1](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/20170315-buku-bca-ar16-EN.pdf#page=557) |
+| reported_eps_on_split_adjusted_basis | 167.2  IDR/share [BCA FY2020 annual report · PDF 18](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/20210226AR-2020-BCAInggris-Medium-Res.pdf#page=18) |
 
 <a id="calc-earnings-per-share-2017-consolidated"></a>
 
 ## earnings per share · 2017 · consolidated
 
-945.45 IDR/share
+189.00 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 2.3309994e+07 IDR millions [BCA_audited_2018.pdf page:7/income/row:13/column:2](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2018.pdf#page=7) |
-| weighted_average_common_shares_outstanding | 2.465501e+10  shares [BCA_audited_2018.pdf page:102/eps_note/row:39/column:2](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2018.pdf#page=102) |
+| reported_eps_on_split_adjusted_basis | 189  IDR/share [BCA FY2020 annual report · PDF 18](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/20210226AR-2020-BCAInggris-Medium-Res.pdf#page=18) |
 
 <a id="calc-earnings-per-share-2018-consolidated"></a>
 
 ## earnings per share · 2018 · consolidated
 
-1048.68 IDR/share
+210.00 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 2.5855154e+07 IDR millions [BCA_audited_2018.pdf page:7/income/row:13/column:1](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2018.pdf#page=7) |
-| weighted_average_common_shares_outstanding | 2.465501e+10  shares [BCA_audited_2018.pdf page:102/eps_note/row:39/column:1](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2018.pdf#page=102) |
+| reported_eps_on_split_adjusted_basis | 210  IDR/share [BCA FY2021 annual report · PDF 20](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2022/20220217-buku-ar-bca-2021-EN.pdf#page=20) |
 
 <a id="calc-earnings-per-share-2019-consolidated"></a>
 
 ## earnings per share · 2019 · consolidated
 
-1158.59 IDR/share
+232.00 IDR/share
 
 | Input | Reviewed value or reference |
 | --- | --- |
-| net_income_available_to_common_shareholders | 2.8565053e+07 IDR millions [BCA_audited_2019.pdf page:7/income/row:12/column:1](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2019.pdf#page=7) |
-| weighted_average_common_shares_outstanding | 2.465501e+10  shares [BCA_audited_2019.pdf page:108/eps_note/row:54/column:1](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2019.pdf#page=108) |
+| reported_eps_on_split_adjusted_basis | 232  IDR/share [BCA FY2021 annual report · PDF 20](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Tahunan/2022/20220217-buku-ar-bca-2021-EN.pdf#page=20) |
 
 <a id="calc-earnings-per-share-2020-consolidated"></a>
 

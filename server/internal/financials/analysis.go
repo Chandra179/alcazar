@@ -52,14 +52,16 @@ type analysisAssessment struct {
 }
 
 type analysisEvidence struct {
-	FactsHash       string                        `yaml:"facts_hash"`
-	Hash            string                        `yaml:"catalog_hash"`
-	Sources         map[string]analysisSource     `yaml:"sources"`
-	Observations    []analysisObservation         `yaml:"observations"`
-	Rules           map[string]analysisAssessment `yaml:"rules"`
-	Sections        []analysisSection             `yaml:"sections"`
-	HistoryNotes    map[string]string             `yaml:"history_notes"`
-	StatementInputs []analysisStatementInput      `yaml:"statement_inputs"`
+	FactsHash        string                        `yaml:"facts_hash"`
+	Hash             string                        `yaml:"catalog_hash"`
+	Sources          map[string]analysisSource     `yaml:"sources"`
+	Observations     []analysisObservation         `yaml:"observations"`
+	Rules            map[string]analysisAssessment `yaml:"rules"`
+	Sections         []analysisSection             `yaml:"sections"`
+	HistoryNotes     map[string]string             `yaml:"history_notes"`
+	StatementInputs  []analysisStatementInput      `yaml:"statement_inputs"`
+	YearStories      map[string]analysisYearStory  `yaml:"year_stories"`
+	YearStorySources map[string]analysisSource     `yaml:"year_story_sources"`
 }
 
 type analysisSection struct {
@@ -98,6 +100,7 @@ type AnalysisReport struct {
 	Coverage     analysisCoverage          `json:"evidence_coverage"`
 	Brief        []reportSection           `json:"brief_sections"`
 	Appendix     []reportSection           `json:"evidence_sections"`
+	Yearly       []reportSection           `json:"yearly_sections,omitempty"`
 }
 
 var historyKeys = []string{"total_assets", "common_shareholders_equity", "shareholders_equity", "net_earnings",
@@ -246,6 +249,10 @@ func BuildAnalysis(ctx context.Context, db *sql.DB, catalogPath, evidencePath st
 		return nil, err
 	}
 	report.Brief = report.briefSections()
+	report.Yearly, err = report.yearlySections(evidence.YearStories, evidence.YearStorySources)
+	if err != nil {
+		return nil, err
+	}
 	report.Appendix, err = report.evidenceSections()
 	if err != nil {
 		return nil, err

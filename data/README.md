@@ -72,12 +72,15 @@ If `lux.db` already contains the matching initial 40-document import and has no 
 ```sh
 make bbca-analysis
 make bbca-analysis ANALYSIS_VIEW=evidence
+make bbca-analysis ANALYSIS_VIEW=yearly
 make bbca-analysis ANALYSIS_FORMAT=json > /tmp/bbca-fy2025.json
 ```
 
 The Markdown and JSON commands write to stdout and open the database read-only. The default catalog is the repository-root `fundamental-analysis.yaml`. Native CLI invocations also accept `--catalog` or `BBCA_CATALOG`. The report requires the catalog in SQLite, the supplied YAML, and its reviewed evidence hash to agree. A change to a supported formula requires a matching code change. Numeric narrative and rule assessments are pinned to the approved fact set, including its source references. To update the snapshot, recheck assessments and source observations against the new facts, then record the output of `make bbca-analysis ANALYSIS_FORMAT=facts-hash` as `facts_hash` in the evidence file. `ANALYSIS_DB` and `ANALYSIS_EVIDENCE` override the report inputs.
 
-To upgrade a previously reviewed analysis database, rebuild the dedicated snapshot from the unreviewed import and reapply the updated decision CSV. Keep the previous database as a backup until the new report succeeds. The restated opening cells are stored as alternate facts for the audited comparison so the as-filed historical totals retain their own source basis. The consolidated KM1 table links reviewed values to both the capital PDF and the matching workbook cells. The JSON carries the same two report views alongside the existing facts, observations, rule assessments and metric fields. The evidence view combines equivalent candidate values within compatible period, basis, audit status and units. Source and status remain visible for each candidate. The grouping does not approve pending facts.
+To upgrade a previously reviewed analysis database, rebuild the dedicated snapshot from the unreviewed import and reapply the updated decision CSV. Keep the previous database as a backup until the new report succeeds. The restated opening cells are stored as alternate facts for the audited comparison so the as-filed historical totals retain their own source basis. The consolidated KM1 table links reviewed values to both the capital PDF and the matching workbook cells. The JSON carries all available report views alongside the existing facts, observations, rule assessments and metric fields. The evidence view combines equivalent candidate values within compatible period, basis, audit status and units. Source and status remain visible for each candidate. The grouping does not approve pending facts.
+
+The yearly report summarizes each year in ordinary language, with business changes, stock performance, and what each meant for shareholders. The English [yearly report](analysis/bbca-fy2025-yearly.md) uses narrative and source references from the reviewed evidence YAML. The report calculates price changes from split-adjusted closes and reuses the reviewed holding-period return. Year-to-date returns require a reviewed period-end close and dividends earned through the same date on that share basis.
 
 ### PDF export
 
@@ -88,9 +91,10 @@ python3 -m venv .venv-bbca-pdf
 .venv-bbca-pdf/bin/python -m pip install reportlab==4.4.9
 make bbca-analysis-pdf PYTHON=.venv-bbca-pdf/bin/python
 make bbca-analysis-pdf ANALYSIS_VIEW=evidence PYTHON=.venv-bbca-pdf/bin/python
+make bbca-analysis-pdf ANALYSIS_VIEW=yearly PYTHON=.venv-bbca-pdf/bin/python
 ```
 
-If `python3` already has ReportLab, run `make bbca-analysis-pdf` or `make bbca-analysis ANALYSIS_FORMAT=pdf`. The default destination for the brief is `output/pdf/bbca-fy2025.pdf`. The evidence view writes `output/pdf/bbca-fy2025-evidence.pdf`. Set `ANALYSIS_PDF=/path/to/report.pdf` to choose another file. Use `PYTHON` to select an existing interpreter with ReportLab. PDF export uses the same dedicated analysis database and evidence as Markdown and JSON.
+If `python3` already has ReportLab, run `make bbca-analysis-pdf` or `make bbca-analysis ANALYSIS_FORMAT=pdf`. The default destination for the brief is `output/pdf/bbca-fy2025.pdf`. The evidence and yearly views add `-evidence` and `-yearly` to the filename. Set `ANALYSIS_PDF=/path/to/report.pdf` to choose another file. Use `PYTHON` to select an existing interpreter with ReportLab. PDF export uses the same dedicated analysis database and evidence as Markdown and JSON.
 
 ## Official source pages
 

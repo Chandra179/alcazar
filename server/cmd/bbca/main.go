@@ -42,7 +42,7 @@ func run(args []string) error {
 	skipOCR := flags.Bool("skip-ocr", false, "use PDF text without OCR for documents that have a verified text layer")
 	force := flags.Bool("force", false, "rebuild facts from cached pages and extract any missing pages")
 	analysisFormat := flags.String("format", "markdown", "analysis output format (markdown, json, or facts-hash)")
-	view := flags.String("view", "brief", "analysis report view (brief or evidence)")
+	view := flags.String("view", "brief", "analysis report view (brief, evidence, or yearly)")
 	evidencePath := flags.String("evidence", filepath.Join("data", "analysis", "bbca-fy2025.yaml"), "analysis evidence file")
 	if err := flags.Parse(args[1:]); err != nil {
 		return err
@@ -103,8 +103,8 @@ func runAnalysis(ctx context.Context, dbPath, catalogPath, evidencePath, format,
 	if format != "markdown" && format != "json" && format != "facts-hash" {
 		return fmt.Errorf("invalid analysis format %q (use markdown, json, or facts-hash)", format)
 	}
-	if view != "brief" && view != "evidence" {
-		return fmt.Errorf("invalid analysis view %q (use brief or evidence)", view)
+	if view != "brief" && view != "evidence" && view != "yearly" {
+		return fmt.Errorf("invalid analysis view %q (use brief, evidence, or yearly)", view)
 	}
 	path, err := filepath.Abs(dbPath)
 	if err != nil {

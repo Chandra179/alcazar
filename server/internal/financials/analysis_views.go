@@ -17,6 +17,7 @@ type reportLink struct {
 type reportCell struct {
 	Text  string       `json:"text"`
 	Links []reportLink `json:"links,omitempty"`
+	Label string       `json:"label,omitempty"`
 }
 
 type reportTable struct {

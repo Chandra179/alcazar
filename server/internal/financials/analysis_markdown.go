@@ -19,6 +19,12 @@ func (r *AnalysisReport) WriteView(w io.Writer, format, view string) error {
 	case "evidence":
 		title = "BBCA evidence companion · FY2025"
 		sections = r.Appendix
+	case "yearly":
+		if len(r.Yearly) == 0 {
+			return fmt.Errorf("the reviewed evidence has no yearly stories")
+		}
+		title = "BBCA Year by Year"
+		sections = r.Yearly
 	default:
 		return fmt.Errorf("unknown analysis view %q", view)
 	}
@@ -64,6 +70,9 @@ func (r *AnalysisReport) WriteView(w io.Writer, format, view string) error {
 
 func markdownCell(cell reportCell) string {
 	var out []string
+	if cell.Label != "" {
+		out = append(out, "**"+cell.Label+".**")
+	}
 	out = append(out, cell.Text)
 	for _, link := range cell.Links {
 		out = append(out, fmt.Sprintf("[%s](%s)", link.Text, link.URL))
