@@ -36,15 +36,27 @@ func (r *AnalysisReport) WriteView(w io.Writer, format, view string) error {
 	case "markdown":
 		var out strings.Builder
 		fmt.Fprintln(&out, "# "+title)
-		for _, section := range sections {
+		for index, section := range sections {
+			if view == "yearly" && index > 0 {
+				fmt.Fprintln(&out, "\n---")
+			}
 			if section.ID != "" {
 				fmt.Fprintf(&out, "\n<a id=\"%s\"></a>\n", section.ID)
 			}
 			if section.Title != "" {
 				fmt.Fprintln(&out, "\n## "+section.Title)
 			}
+			var trailing []reportCell
 			for _, line := range section.Paragraphs {
-				fmt.Fprintln(&out, "\n"+markdownCell(line))
+				if view == "yearly" && strings.HasPrefix(section.ID, "year-") && line.Label == "Sources" {
+					trailing = append(trailing, line)
+					continue
+				}
+				prefix := "\n"
+				if view == "yearly" && strings.HasPrefix(section.ID, "year-") {
+					prefix = "\n- "
+				}
+				fmt.Fprintln(&out, prefix+markdownCell(line))
 			}
 			for _, table := range section.Tables {
 				if table.Title != "" {
@@ -53,12 +65,28 @@ func (r *AnalysisReport) WriteView(w io.Writer, format, view string) error {
 				fmt.Fprintf(&out, "\n| %s |\n", strings.Join(table.Headers, " | "))
 				fmt.Fprintf(&out, "|%s\n", strings.Repeat(" --- |", len(table.Headers)))
 				for _, row := range table.Rows {
+					group := len(row) > 0 && row[0].Text != ""
+					for _, cell := range row[1:] {
+						if cell.Text != "" || len(cell.Links) > 0 {
+							group = false
+							break
+						}
+					}
 					cells := make([]string, 0, len(row))
 					for _, cell := range row {
+						if view == "yearly" {
+							cell.Links = nil
+						}
 						cells = append(cells, strings.ReplaceAll(markdownCell(cell), "|", "\\|"))
+					}
+					if group {
+						cells[0] = "**" + cells[0] + "**"
 					}
 					fmt.Fprintf(&out, "| %s |\n", strings.Join(cells, " | "))
 				}
+			}
+			for _, line := range trailing {
+				fmt.Fprintln(&out, "\n"+markdownCell(line))
 			}
 		}
 		_, err := io.WriteString(w, out.String())

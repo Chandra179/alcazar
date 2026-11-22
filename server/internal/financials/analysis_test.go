@@ -14,19 +14,93 @@ func TestYearlyStockSummarySeparatesPriceFromDividendReturn(t *testing.T) {
 	ret := -13.385
 	row := analysisPeriod{Period: "2025", Values: map[string]Metric{"nominal-shareholder-return": {Value: &ret}}}
 	report := AnalysisReport{Observations: []analysisObservation{close("2024", 9675)}}
-	if got := report.yearlyStockSummary(row, close("2025", 8075)); got != "The share price fell 16.5%. Return with dividends was -13.4%." {
+	if got := report.yearlyStockSummary(row, close("2025", 8075)); !strings.Contains(got, "share price fell") || !strings.Contains(got, "dividends softened") || strings.Contains(got, "%") {
 		t.Fatalf("wrong 2025 market summary: %s", got)
 	}
 	report.Observations[0].ShareBasis = "as-filed"
-	if got := report.yearlyStockSummary(row, close("2025", 8075)); !strings.Contains(got, "unavailable") || strings.Contains(got, "%") {
+	if got := report.yearlyStockSummary(row, close("2025", 8075)); !strings.Contains(got, "could not be verified") || strings.Contains(got, "%") {
 		t.Fatalf("used a mismatched opening price: %s", got)
 	}
-	if got := report.yearlyStockSummary(analysisPeriod{Period: "2000"}, close("2000", 41.875)); !strings.Contains(got, "Rp41.875") || !strings.Contains(got, "no full-calendar return") {
+	if got := report.yearlyStockSummary(analysisPeriod{Period: "2000"}, close("2000", 41.875)); !strings.Contains(got, "closing price is shown in the table") || !strings.Contains(got, "no full-calendar shareholder return") {
 		t.Fatalf("wrong listing-year summary: %s", got)
 	}
 	report.Observations = []analysisObservation{close("2011", 1600)}
-	if got := report.yearlyStockSummary(analysisPeriod{Period: "2012"}, close("2012", 1820)); !strings.Contains(got, "rose 13.8%") {
+	if got := report.yearlyStockSummary(analysisPeriod{Period: "2012"}, close("2012", 1820)); !strings.Contains(got, "share price rose") {
 		t.Fatalf("rounded the 2012 price change incorrectly: %s", got)
+	}
+}
+
+func TestYearlyComparisonTableKeepsReportingScopesSeparate(t *testing.T) {
+	point := func(key, period, basis, unit string, value float64) analysisObservation {
+		return analysisObservation{Key: key, Period: period, Subject: "BBCA", Basis: basis, Unit: unit, Value: &value, Source: "annual"}
+	}
+	fact := func(period, value string) Fact {
+		start, end, kind := periodBounds(period)
+		return Fact{Period: period, PeriodStart: start, PeriodEnd: end, PeriodType: kind,
+			NormalizedValue: value, Unit: "millions", Currency: "IDR", ReportingBasis: "consolidated",
+			AuditedStatus: "audited", SourceURL: "https://example.test/annual.pdf"}
+	}
+	eps := 467.0
+	row24 := analysisPeriod{Period: "2024", Facts: map[string]Fact{"net_earnings": fact("2024", "-1000000")}, Values: map[string]Metric{}}
+	row25 := analysisPeriod{Period: "2025", Facts: map[string]Fact{"net_earnings": fact("2025", "1200000")}, Values: map[string]Metric{
+		"earnings-per-share": {Value: &eps, Status: "calculated"},
+	}}
+	r := AnalysisReport{Annual: []analysisPeriod{row24, row25}, Sources: map[string]analysisSource{"annual": {Title: "Annual report", URL: "https://example.test/annual.pdf"}},
+		Observations: []analysisObservation{
+			point("Gross NPL", "2024", "bank only", "%", 1.8), point("Gross NPL", "2025", "bank only", "%", 1.7),
+			point("Loan at risk", "2024", "bank only", "%", 5.3), point("Loan at risk", "2025", "consolidated", "%", 4.8),
+		}}
+	table := r.yearlyComparisonTable(1)
+	joined := ""
+	for _, row := range table.Rows {
+		for _, cell := range row {
+			joined += cell.Text + " "
+		}
+	}
+	if !strings.Contains(joined, "Gross non-performing loans (bank only)") || !strings.Contains(joined, "-0.10 pp") {
+		t.Fatalf("missing comparable bank-only NPL row: %s", joined)
+	}
+	if !strings.Contains(joined, "Loans at risk (group)") || !strings.Contains(joined, "level only") {
+		t.Fatalf("a bank-only prior value was mixed with the group value: %s", joined)
+	}
+	if !strings.Contains(joined, "negative to positive") {
+		t.Fatalf("profit transition was represented as a misleading growth rate: %s", joined)
+	}
+}
+
+func TestYearlySectionsHaveCoverAnnualInterimAndFinalGlossary(t *testing.T) {
+	stories := map[string]analysisYearStory{
+		"2025": {Title: "A year", Bank: "The bank grew.", Impact: "It mattered.", Sources: []string{"annual"}},
+		"2026": {Title: "So far", Bank: "The bank is growing.", Impact: "It matters now.", Sources: []string{"annual"}},
+	}
+	source := analysisSource{Title: "Annual report", URL: "https://example.test/annual.pdf", Where: "pages 1–2"}
+	r := AnalysisReport{Annual: []analysisPeriod{{Period: "2025", Facts: map[string]Fact{}, Values: map[string]Metric{}}}}
+	sections, err := r.yearlySections(stories, map[string]analysisSource{"annual": source})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(sections) != 4 || sections[0].ID != "yearly-cover" || sections[1].ID != "year-2025" ||
+		sections[2].ID != "year-2026" || sections[3].ID != "yearly-glossary" {
+		t.Fatalf("yearly report section order is wrong: %#v", sections)
+	}
+	if len(sections[1].Tables) != 1 || sections[1].Tables[0].Headers[0] != "Measure" {
+		t.Fatalf("annual year card has no comparison table: %#v", sections[1].Tables)
+	}
+}
+
+func TestYearStoryLinksDoNotRepeatOneFiling(t *testing.T) {
+	links := yearStoryLinks(map[string]analysisSource{
+		"annual": {Title: "2025 annual report", URL: "https://example.test/bca.pdf#page=15"},
+		"price":  {Title: "BCA share-price records", URL: "https://example.test/bca.pdf#page=17"},
+	}, []string{"annual"}, "price")
+	if len(links) != 1 || !strings.Contains(links[0].Text, "share-price records") || !strings.HasSuffix(links[0].URL, "#page=17") {
+		t.Fatalf("same-filing references were not consolidated: %#v", links)
+	}
+}
+
+func TestYearlyMoneyFormattingAddsThousandsSeparators(t *testing.T) {
+	if got := commaNumber(1133.61, 2); got != "1,133.61" {
+		t.Fatalf("unexpected formatted amount: %s", got)
 	}
 }
 

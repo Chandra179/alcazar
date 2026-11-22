@@ -19,7 +19,7 @@ try:
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
     from reportlab.platypus import (
-        KeepTogether, LongTable, Paragraph, SimpleDocTemplate, TableStyle,
+        KeepTogether, LongTable, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle,
     )
 except ModuleNotFoundError as exc:
     if exc.name != "reportlab":
@@ -43,6 +43,7 @@ pdfmetrics.registerFontFamily(FONT, normal=FONT, bold=BOLD)
 
 STYLES = {
     "title": ParagraphStyle("title", fontName=BOLD, fontSize=31, leading=37, spaceAfter=9, textColor=NAVY),
+    "cover_title": ParagraphStyle("cover_title", fontName=BOLD, fontSize=40, leading=45, spaceAfter=14, textColor=NAVY),
     "deck": ParagraphStyle("deck", fontSize=13, leading=19, textColor=MUTED, spaceAfter=16),
     "section": ParagraphStyle("section", fontName=BOLD, fontSize=22, leading=26,
                               spaceBefore=11, spaceAfter=9, textColor=NAVY, keepWithNext=True),
@@ -50,6 +51,12 @@ STYLES = {
                               spaceBefore=9, spaceAfter=3, textColor=NAVY, keepWithNext=True),
     "year": ParagraphStyle("year", fontName=BOLD, fontSize=16, leading=21,
                            spaceBefore=13, spaceAfter=6, textColor=NAVY, keepWithNext=True),
+    "year_number": ParagraphStyle("year_number", fontName=BOLD, fontSize=25, leading=29,
+                                   textColor=NAVY, keepWithNext=True),
+    "year_headline": ParagraphStyle("year_headline", fontName=BOLD, fontSize=13, leading=17,
+                                     textColor=NAVY, keepWithNext=True),
+    "year_glossary": ParagraphStyle("year_glossary", fontName=BOLD, fontSize=25, leading=30,
+                                     spaceAfter=3, textColor=NAVY, keepWithNext=True),
     "eyebrow": ParagraphStyle("eyebrow", fontName=BOLD, fontSize=9, leading=12,
                               spaceAfter=5, textColor=TEAL, keepWithNext=True),
     "body": ParagraphStyle("body", fontSize=10, leading=14, spaceAfter=7, textColor=NAVY),
@@ -58,6 +65,14 @@ STYLES = {
     "cell": ParagraphStyle("cell", fontSize=8.1, leading=10.6, textColor=NAVY),
     "number": ParagraphStyle("number", fontSize=8.1, leading=10.6, textColor=NAVY, alignment=TA_RIGHT),
     "header": ParagraphStyle("header", fontName=BOLD, fontSize=8, leading=10, textColor=WHITE),
+    "year_header": ParagraphStyle("year_header", fontName=BOLD, fontSize=7.8, leading=10, textColor=MUTED),
+    "year_cell": ParagraphStyle("year_cell", fontSize=8.15, leading=10.5, textColor=NAVY),
+    "year_number_cell": ParagraphStyle("year_number_cell", fontSize=8.15, leading=10.5,
+                                        textColor=NAVY, alignment=TA_RIGHT),
+    "year_group": ParagraphStyle("year_group", fontName=BOLD, fontSize=8.3, leading=10.8,
+                                  textColor=TEAL),
+    "year_bullet": ParagraphStyle("year_bullet", fontSize=9.2, leading=12.1,
+                                   leftIndent=10, firstLineIndent=0, spaceAfter=4, textColor=MUTED),
 }
 for style in STYLES.values():
     if style.fontName == "Helvetica":
@@ -85,9 +100,11 @@ class PDFDocument(SimpleDocTemplate):
     def afterFlowable(self, flowable):
         anchor = getattr(flowable, "anchor", "")
         if anchor:
-            self.canv.bookmarkHorizontalAbsolute(anchor, self.frame._y + flowable.height)
+            height = getattr(flowable, "height", getattr(flowable, "_height", 0))
+            self.canv.bookmarkHorizontalAbsolute(anchor, self.frame._y + height)
             if not anchor.startswith("calc-"):
-                self.canv.addOutlineEntry(flowable.getPlainText(), anchor, level=0)
+                title = flowable.getPlainText() if hasattr(flowable, "getPlainText") else getattr(flowable, "anchor_title", anchor)
+                self.canv.addOutlineEntry(title, anchor, level=0)
 
 
 class AnalysisPDF:
@@ -109,7 +126,11 @@ class AnalysisPDF:
         if not table.get("rows"):
             return
         if table.get("title"):
-            self.paragraph(plain(table["title"]), "heading")
+            style = "eyebrow" if self.view == "yearly" and table["title"] == "In this report" else "heading"
+            self.paragraph(plain(table["title"]), style)
+        if self.view == "yearly":
+            self.yearly_table(table)
+            return
         widths = {
             "Catalog rules": [.28, .20, .25, .27],
             "Evidence and gaps": [.19, .16, .50, .15],
@@ -139,8 +160,156 @@ class AnalysisPDF:
         ]))
         self.story.append(grid)
 
+    def yearly_table(self, table):
+        headers = table["headers"]
+        is_year_table = headers[:1] == ["Measure"] and len(headers) == 4
+        is_glossary = headers[:1] == ["Term"] and len(headers) == 2
+        is_cover = headers[:1] == ["Section"] and len(headers) == 3
+        if is_year_table:
+            fractions = [.54, .15, .15, .16]
+        elif is_glossary:
+            fractions = [.21, .79]
+        elif is_cover:
+            fractions = [.28, .57, .15]
+        else:
+            fractions = [1 / len(headers)] * len(headers)
+
+        cells = [[Paragraph(plain(header), STYLES["year_header"]) for header in headers]]
+        group_rows = []
+        for row_index, row in enumerate(table["rows"], 1):
+            group = len(row) > 1 and bool(row[0].get("text")) and all(
+                not cell.get("text") and not cell.get("links") for cell in row[1:]
+            )
+            if group:
+                group_rows.append(row_index)
+            rendered = []
+            for column_index, cell in enumerate(row):
+                if group:
+                    style = "year_group"
+                elif is_year_table and column_index > 0:
+                    style = "year_number_cell"
+                else:
+                    style = "year_cell"
+                content = cell_content(cell)
+                if group:
+                    content = plain(cell.get("text", ""))
+                elif is_year_table:
+                    content = plain(cell.get("text", ""))
+                rendered.append(Paragraph(content, STYLES[style]))
+            cells.append(rendered)
+        grid = LongTable(cells, colWidths=[WIDTH * fraction for fraction in fractions],
+                         repeatRows=1, hAlign="LEFT", spaceAfter=7)
+        style = [
+            ("BACKGROUND", (0, 0), (-1, 0), WHITE),
+            ("LINEBELOW", (0, 0), (-1, 0), 0.7, LINE),
+            ("LINEBELOW", (0, -1), (-1, -1), 0.5, LINE),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ("TOPPADDING", (0, 0), (-1, -1), 4),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+            ("LINEBELOW", (0, 1), (-1, -1), 0.25, LINE),
+        ]
+        if is_cover:
+            style.extend([
+                ("TOPPADDING", (0, 1), (-1, -1), 12),
+                ("BOTTOMPADDING", (0, 1), (-1, -1), 12),
+                ("LINEBELOW", (0, 1), (-1, -1), 0.45, LINE),
+            ])
+        if is_glossary:
+            for row_index in group_rows:
+                style.extend([
+                    ("LINEBELOW", (0, row_index), (-1, row_index), 0.45, LINE),
+                    ("TOPPADDING", (0, row_index), (-1, row_index), 7),
+                    ("BOTTOMPADDING", (0, row_index), (-1, row_index), 3),
+                ])
+        if is_year_table:
+            for row_index in group_rows:
+                style.extend([
+                    ("LINEBELOW", (0, row_index), (-1, row_index), 0.4, LINE),
+                    ("TOPPADDING", (0, row_index), (-1, row_index), 7),
+                    ("BOTTOMPADDING", (0, row_index), (-1, row_index), 2),
+                ])
+        grid.setStyle(TableStyle(style))
+        self.story.append(grid)
+
+    def yearly_cover(self, section):
+        self.story.append(Spacer(1, 112))
+        self.paragraph("BBCA<br/>Year by Year", "cover_title")
+        self.paragraph(plain(section.get("paragraphs", [{}])[0].get("text", "")), "deck")
+        for table in section.get("tables", []):
+            self.table(table)
+
+    def yearly_section(self, section):
+        anchor = section.get("id", "")
+        if anchor == "yearly-cover":
+            self.yearly_cover(section)
+            return
+        if anchor == "yearly-glossary":
+            self.paragraph(plain(section.get("title", "Table legend and glossary")), "year_glossary")
+            for cell in section.get("paragraphs", []):
+                self.paragraph(cell_content(cell), "deck")
+            for table in section.get("tables", []):
+                self.table(table)
+            return
+
+        title = section.get("title", "")
+        year, separator, headline = title.partition(" — ")
+        heading = Table([
+            [Paragraph(plain(year), STYLES["year_number"]), Paragraph(plain(headline if separator else title), STYLES["year_headline"])],
+        ], colWidths=[92, WIDTH - 92], hAlign="LEFT")
+        heading.setStyle(TableStyle([
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("LEFTPADDING", (0, 0), (-1, -1), 0),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+            ("TOPPADDING", (0, 0), (-1, -1), 0),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+        ]))
+        heading.anchor = anchor
+        heading.anchor_title = title
+        self.story.append(heading)
+        sources = []
+        for cell in section.get("paragraphs", []):
+            if cell.get("label") == "Sources":
+                sources.append(cell)
+                continue
+            style = "sources" if cell.get("label") == "Sources" else "year_bullet"
+            bullet = None if style == "sources" else "•"
+            self.story.append(Paragraph(cell_content(cell), STYLES[style], bulletText=bullet))
+        if section.get("tables"):
+            self.story.append(Spacer(1, 12))
+        for table in section.get("tables", []):
+            self.table(table)
+        for cell in sources:
+            self.story.append(Paragraph(cell_content(cell), STYLES["sources"]))
+
     def render(self, destination):
         edition = "1998-2026" if self.view == "yearly" else "FY2025"
+        if self.view == "yearly":
+            for index, section in enumerate(self.sections):
+                if index:
+                    self.story.append(PageBreak())
+                self.yearly_section(section)
+
+            doc = PDFDocument(str(destination), pagesize=A4, leftMargin=44, rightMargin=44,
+                              topMargin=49, bottomMargin=47, title=self.title + " - " + edition,
+                              author="Alcazar")
+
+            def year_page(canvas, _doc):
+                canvas.setStrokeColor(TEAL)
+                canvas.setLineWidth(1.35)
+                canvas.line(44, A4[1] - 35, A4[0] - 44, A4[1] - 35)
+                canvas.setStrokeColor(LINE)
+                canvas.setLineWidth(0.6)
+                canvas.line(44, 35, A4[0] - 44, 35)
+                canvas.setFont(FONT, 8)
+                canvas.setFillColor(MUTED)
+                canvas.drawString(44, 23, "BBCA fundamentals · year-by-year comparison")
+                canvas.drawRightString(A4[0] - 44, 23, f"{canvas.getPageNumber():02d} / {len(self.sections):02d}")
+
+            doc.build(self.story, onFirstPage=year_page, onLaterPages=year_page)
+            if doc.page != len(self.sections):
+                raise ValueError(f"yearly report expected one page per section ({len(self.sections)}), got {doc.page}")
+            return
+
         self.paragraph(plain(edition), "eyebrow")
         self.paragraph(plain(self.title), "title")
         for section in self.sections:
