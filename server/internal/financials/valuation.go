@@ -14,6 +14,7 @@ type bankValuationScenario struct {
 	Name                            string
 	ROE, Growth, Terminal, Discount float64
 	Payout, CapitalTarget, Weight   float64
+	RWAGrowth                       *float64
 }
 
 type bankValuationYear struct {
@@ -27,11 +28,15 @@ type bankValuationYear struct {
 
 func bankDividendValue(inputs bankValuationInputs, scenario bankValuationScenario) (float64, []bankValuationYear, float64) {
 	earnings, rwa, capital := inputs.CommonEquity*scenario.ROE, inputs.RWA, inputs.CET1
+	growth := scenario.Growth
+	if scenario.RWAGrowth != nil {
+		growth = *scenario.RWAGrowth
+	}
 	var forecast []bankValuationYear
 	value := 0.0
 	for year := 1; year <= 5; year++ {
 		earnings *= 1 + scenario.Growth
-		rwa *= 1 + scenario.Growth
+		rwa *= 1 + growth
 		required := rwa * scenario.CapitalTarget
 		dividend := min(earnings*scenario.Payout, max(0, capital+earnings-required))
 		capital += earnings - dividend
@@ -100,9 +105,9 @@ func addBankValuation(report *AnalysisReport) {
 	firstGrowth := *rwa[1].Value / *rwa[0].Value - 1
 	lastGrowth := *rwa[2].Value / *rwa[1].Value - 1
 	scenarios := []bankValuationScenario{
-		{"conservative", roe[0], min(firstGrowth, lastGrowth), .02, .12, .60, .29, .25},
-		{"base", roe[2], (firstGrowth + lastGrowth) / 2, .03, .11, .65, .28, .50},
-		{"favorable", roe[4], max(firstGrowth, lastGrowth), .04, .10, .70, .27, .25},
+		{"conservative", roe[0], min(firstGrowth, lastGrowth), .02, .12, .60, .29, .25, nil},
+		{"base", roe[2], (firstGrowth + lastGrowth) / 2, .03, .11, .65, .28, .50, nil},
+		{"favorable", roe[4], max(firstGrowth, lastGrowth), .04, .10, .70, .27, .25, nil},
 	}
 	weighted := 0.0
 	var values []Metric

@@ -1,0 +1,1492 @@
+catalog_hash: 3ac5eaa6fea410b0c6951928d95aeb3f3fe8407b54e7bce398604f35c0a35b80
+facts_hash: 7a871d482bc0f2ee4e0b05b4dcbc2843f9cd229e8eec43393f25d305d48a7cec
+sources:
+  fy2018-loans:
+    title: BCA audited financial statements FY2018
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2018.pdf#page=64
+    where: 'Printed PDF p. 64, Note 12: gross loans and loan-loss allowance.'
+  fy2018-credit:
+    title: BCA audited financial statements FY2018
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2018.pdf#page=101
+    where: 'PDF p. 101, note on impairment losses: loan-specific impairment expense.'
+  fy2018-deposits:
+    title: BCA audited financial statements FY2018
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2018.pdf#page=5
+    where: 'Printed PDF p. 5, consolidated statement of financial position: customer deposits (sharia deposits shown
+      separately).'
+  fy2018-deposit-cost:
+    title: BCA audited financial statements FY2018
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2018.pdf#page=100
+    where: 'Printed PDF p. 100, note on interest and sharia expenses: interest expense on customer deposits.'
+  fy2019-loans:
+    title: BCA audited financial statements FY2019
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2019.pdf#page=68
+    where: 'Printed PDF p. 68, Note 12: gross loans and loan-loss allowance.'
+  fy2019-credit:
+    title: BCA audited financial statements FY2019
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2019.pdf#page=107
+    where: 'PDF p. 107, note on impairment losses: loan-specific impairment expense.'
+  fy2019-deposits:
+    title: BCA audited financial statements FY2019
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2019.pdf#page=5
+    where: 'Printed PDF p. 5, consolidated statement of financial position: customer deposits (sharia deposits shown
+      separately).'
+  fy2019-deposit-cost:
+    title: BCA audited financial statements FY2019
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2019.pdf#page=106
+    where: 'Printed PDF p. 106, note on interest and sharia expenses: interest expense on customer deposits.'
+  fy2020-loans:
+    title: BCA audited financial statements FY2020
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2020.pdf#page=78
+    where: 'Printed PDF p. 78, Note 12: gross loans and loan-loss allowance.'
+  fy2020-credit:
+    title: BCA audited financial statements FY2020
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2020.pdf#page=119
+    where: 'PDF p. 119, note on impairment losses: loan-specific impairment expense.'
+  fy2020-deposits:
+    title: BCA audited financial statements FY2020
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2020.pdf#page=5
+    where: 'Printed PDF p. 5, consolidated statement of financial position: customer deposits (sharia deposits shown
+      separately).'
+  fy2020-deposit-cost:
+    title: BCA audited financial statements FY2020
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2020.pdf#page=118
+    where: 'Printed PDF p. 118, note on interest and sharia expenses: interest expense on customer deposits.'
+  fy2021-loans:
+    title: BCA audited financial statements FY2021
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2021.pdf#page=70
+    where: 'Printed PDF p. 70, Note 12: gross loans and loan-loss allowance.'
+  fy2021-credit:
+    title: BCA audited financial statements FY2021
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2021.pdf#page=113
+    where: 'PDF p. 113, note on impairment losses: loan-specific impairment expense.'
+  fy2021-deposits:
+    title: BCA audited financial statements FY2021
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2021.pdf#page=5
+    where: 'Printed PDF p. 5, consolidated statement of financial position: customer deposits (sharia deposits shown
+      separately).'
+  fy2021-deposit-cost:
+    title: BCA audited financial statements FY2021
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2021.pdf#page=112
+    where: 'Printed PDF p. 112, note on interest and sharia expenses: interest expense on customer deposits.'
+  fy2022-loans:
+    title: BCA audited financial statements FY2022
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2022.pdf#page=72
+    where: 'Printed PDF p. 72, Note 12: gross loans and loan-loss allowance.'
+  fy2022-credit:
+    title: BCA audited financial statements FY2023
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2024/20240125-final-lk-bca-1223-english.pdf#page=112
+    where: 'Printed PDF p. 112, note on impairment losses: loan-specific impairment expense.'
+  fy2022-deposits:
+    title: BCA audited financial statements FY2022
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2022.pdf#page=8
+    where: 'PDF p. 8, consolidated statement of financial position: customer deposits (sharia deposits shown
+      separately).'
+  fy2022-deposit-cost:
+    title: BCA audited financial statements FY2022
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2022.pdf#page=113
+    where: 'Printed PDF p. 113, note on interest and sharia expenses: interest expense on customer deposits.'
+  fy2023-loans:
+    title: BCA audited financial statements FY2023
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2024/20240125-final-lk-bca-1223-english.pdf#page=71
+    where: 'Printed PDF p. 71, Note 12: gross loans and loan-loss allowance.'
+  fy2023-credit:
+    title: BCA audited financial statements FY2023
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2024/20240125-final-lk-bca-1223-english.pdf#page=112
+    where: 'Printed PDF p. 112, note on impairment losses: loan-specific impairment expense.'
+  fy2023-deposits:
+    title: BCA audited financial statements FY2023
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2024/20240125-final-lk-bca-1223-english.pdf#page=9
+    where: 'Printed PDF p. 9, consolidated statement of financial position: customer deposits (sharia deposits shown
+      separately).'
+  fy2023-deposit-cost:
+    title: BCA audited financial statements FY2023
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2024/20240125-final-lk-bca-1223-english.pdf#page=111
+    where: 'Printed PDF p. 111, note on interest and sharia expenses: interest expense on customer deposits.'
+  fy2024-loans:
+    title: BCA audited financial statements FY2024
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2025/20250123-audited-financial-statements-bca-1224-english.pdf#page=71
+    where: 'Printed PDF p. 71, Note 12: gross loans and loan-loss allowance.'
+  fy2024-credit:
+    title: BCA audited financial statements FY2024
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2025/20250123-audited-financial-statements-bca-1224-english.pdf#page=111
+    where: 'Printed PDF p. 111, note on impairment losses: loan-specific impairment expense.'
+  fy2024-deposits:
+    title: BCA audited financial statements FY2024
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2025/20250123-audited-financial-statements-bca-1224-english.pdf#page=9
+    where: 'Printed PDF p. 9, consolidated statement of financial position: customer deposits (sharia deposits shown
+      separately).'
+  fy2024-deposit-cost:
+    title: BCA audited financial statements FY2024
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2025/20250123-audited-financial-statements-bca-1224-english.pdf#page=110
+    where: 'Printed PDF p. 110, note on interest and sharia expenses: interest expense on customer deposits.'
+  fy2025-loans:
+    title: BCA audited financial statements FY2025
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=55
+    where: 'Printed PDF p. 55, Note 12: gross loans and loan-loss allowance.'
+  fy2025-credit:
+    title: BCA audited financial statements FY2025
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=90
+    where: 'Printed PDF p. 90, note on impairment losses: loan-specific impairment expense.'
+  fy2025-deposits:
+    title: BCA audited financial statements FY2025
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=8
+    where: 'Printed PDF p. 8, consolidated statement of financial position: customer deposits (sharia deposits shown
+      separately).'
+  fy2025-deposit-cost:
+    title: BCA audited financial statements FY2025
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=89
+    where: 'Printed PDF p. 89, note on interest and sharia expenses: interest expense on customer deposits.'
+  2025-06-loans:
+    title: BCA consolidated interim statements 2025-06
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/07/20250730-Laporan-Keuangan-Konsolidasi-PT-BCA-Tbk-Billingual.pdf#page=83
+    where: 'PDF p. 83, Note 12: gross bank loans and allowance.'
+  2025-06-credit:
+    title: BCA consolidated interim statements 2025-06
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/07/20250730-Laporan-Keuangan-Konsolidasi-PT-BCA-Tbk-Billingual.pdf#page=133
+    where: 'PDF p. 133, Note 32: loan-specific YTD impairment expense.'
+  2025-06-deposits:
+    title: BCA consolidated interim statements 2025-06
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/07/20250730-Laporan-Keuangan-Konsolidasi-PT-BCA-Tbk-Billingual.pdf#page=6
+    where: 'PDF p. 6, consolidated statement of financial position: customer deposits; sharia deposits are
+      presented separately.'
+  2025-06-deposit-cost:
+    title: BCA consolidated interim statements 2025-06
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/07/20250730-Laporan-Keuangan-Konsolidasi-PT-BCA-Tbk-Billingual.pdf#page=131
+    where: PDF p. 131, interest expense on customer deposits.
+  2025-09-loans:
+    title: BCA consolidated interim statements 2025-09
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/10/20251020-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2025-billingual.pdf#page=83
+    where: 'PDF p. 83, Note 12: gross bank loans and allowance.'
+  2025-09-credit:
+    title: BCA consolidated interim statements 2025-09
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/10/20251020-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2025-billingual.pdf#page=135
+    where: 'PDF p. 135, Note 32: loan-specific YTD impairment expense.'
+  2025-09-deposits:
+    title: BCA consolidated interim statements 2025-09
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/10/20251020-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2025-billingual.pdf#page=6
+    where: 'PDF p. 6, consolidated statement of financial position: customer deposits; sharia deposits are
+      presented separately.'
+  2025-09-deposit-cost:
+    title: BCA consolidated interim statements 2025-09
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/10/20251020-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2025-billingual.pdf#page=133
+    where: PDF p. 133, interest expense on customer deposits.
+  2026-03-loans:
+    title: BCA consolidated interim statements 2026-03
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260423-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-31-maret-2026-billingual.pdf#page=69
+    where: 'PDF p. 69, Note 12: gross bank loans and loan-loss allowance, current date and December comparative.'
+  2026-03-credit:
+    title: BCA consolidated interim statements 2026-03
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260423-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-31-maret-2026-billingual.pdf#page=113
+    where: 'PDF p. 113, Note 32: loan-specific impairment expense for the YTD period.'
+  2026-03-npl:
+    title: BCA consolidated interim statements 2026-03
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260423-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-31-maret-2026-billingual.pdf#page=171
+    where: 'PDF p. 171, Note 49: gross non-performing loans of the Bank.'
+  2026-03-deposits:
+    title: BCA consolidated interim statements 2026-03
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260423-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-31-maret-2026-billingual.pdf#page=6
+    where: 'PDF p. 6, consolidated customer deposits, with sharia deposits shown separately.'
+  2026-03-deposit-cost:
+    title: BCA consolidated interim statements 2026-03
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260423-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-31-maret-2026-billingual.pdf#page=112
+    where: PDF p. 112, interest expense on customer deposits for the YTD period.
+  2026-06-loans:
+    title: BCA consolidated interim statements 2026-06
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260728-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-juni-2026-billingual.pdf#page=67
+    where: 'PDF p. 67, Note 12: gross bank loans and loan-loss allowance, current date and December comparative.'
+  2026-06-credit:
+    title: BCA consolidated interim statements 2026-06
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260728-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-juni-2026-billingual.pdf#page=108
+    where: 'PDF p. 108, Note 32: loan-specific impairment expense for the YTD period.'
+  2026-06-npl:
+    title: BCA consolidated interim statements 2026-06
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260728-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-juni-2026-billingual.pdf#page=162
+    where: 'PDF p. 162, Note 49: gross non-performing loans of the Bank.'
+  2026-06-deposits:
+    title: BCA consolidated interim statements 2026-06
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260728-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-juni-2026-billingual.pdf#page=6
+    where: 'PDF p. 6, consolidated customer deposits, with sharia deposits shown separately.'
+  2026-06-deposit-cost:
+    title: BCA consolidated interim statements 2026-06
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260728-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-juni-2026-billingual.pdf#page=106
+    where: PDF p. 106, interest expense on customer deposits for the YTD period.
+  2026-09-loans:
+    title: BCA consolidated interim statements 2026-09
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2026-billingual.pdf#page=67
+    where: 'PDF p. 67, Note 12: gross bank loans and loan-loss allowance, current date and December comparative.'
+  2026-09-credit:
+    title: BCA consolidated interim statements 2026-09
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2026-billingual.pdf#page=108
+    where: 'PDF p. 108, Note 32: loan-specific impairment expense for the YTD period.'
+  2026-09-npl:
+    title: BCA consolidated interim statements 2026-09
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2026-billingual.pdf#page=165
+    where: 'PDF p. 165, Note 49: gross non-performing loans of the Bank.'
+  2026-09-deposits:
+    title: BCA consolidated interim statements 2026-09
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2026-billingual.pdf#page=6
+    where: 'PDF p. 6, consolidated customer deposits, current date and December 2025 comparative.'
+  2026-09-deposit-cost:
+    title: BCA consolidated interim statements 2026-09
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2026-billingual.pdf#page=106
+    where: PDF p. 106, interest expense on customer deposits for the YTD period.
+  ojk-bank-publications:
+    title: OJK Bank Financial Publications
+    url: https://ojk.go.id/id/kanal/perbankan/data-dan-statistik/laporan-keuangan-perbankan/Default.aspx
+    where: Official OJK portal for bank public financial reports; an OJK-series reconciliation is not included in
+      this reviewed snapshot.
+  ojk-banking-directory:
+    title: OJK Indonesian Banking Directory
+    url: https://ojk.go.id/id/kanal/perbankan/data-dan-statistik/direktori-perbankan-indonesia-baru/default.aspx
+    where: OJK describes bank-level financial data categories including asset quality, regulatory capital, financial
+      ratios, loss allowances, and derivatives; used as a disclosure map, not as a BBCA numeric input.
+  buffett-1990:
+    title: Warren Buffett, Berkshire Hathaway 1990 letter
+    url: https://www.berkshirehathaway.com/letters/1990.html
+    where: Discussion of bank management, leverage, earning power, and fair purchase prices; interpretive principle
+      only.
+  buffett-2002:
+    title: Warren Buffett, Berkshire Hathaway 2002 letter
+    url: https://www.berkshirehathaway.com/letters/2002pdf.pdf
+    where: Discussion of derivative exposures, counterparty concentration, and contagion; interpretive principle
+      only.
+  fy2018-npl:
+    title: BCA audited financial statements FY2018
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2018.pdf#page=69
+    where: 'Printed PDF p. 69, regulatory credit-quality disclosure: gross non-performing loans of the Bank.'
+  fy2019-npl:
+    title: BCA audited financial statements FY2019
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2019.pdf#page=73
+    where: 'Printed PDF p. 73, regulatory credit-quality disclosure: gross non-performing loans of the Bank.'
+  fy2020-npl:
+    title: BCA audited financial statements FY2020
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2020.pdf#page=84
+    where: 'Printed PDF p. 84, regulatory credit-quality disclosure: gross non-performing loans of the Bank.'
+  fy2021-npl:
+    title: BCA audited financial statements FY2021
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2023/audited-financial-report-pt-bca-tbk-december-2021.pdf#page=76
+    where: 'Printed PDF p. 76, regulatory credit-quality disclosure: gross non-performing loans of the Bank.'
+  fy2022-npl:
+    title: BCA audited financial statements FY2023
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2024/20240125-final-lk-bca-1223-english.pdf#page=77
+    where: 'Printed PDF p. 77, regulatory credit-quality disclosure: gross non-performing loans of the Bank.'
+  fy2023-npl:
+    title: BCA audited financial statements FY2023
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2024/20240125-final-lk-bca-1223-english.pdf#page=77
+    where: 'Printed PDF p. 77, regulatory credit-quality disclosure: gross non-performing loans of the Bank.'
+  fy2024-npl:
+    title: BCA audited financial statements FY2024
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2025/20250123-audited-financial-statements-bca-1224-english.pdf#page=163
+    where: 'Printed PDF p. 163, regulatory credit-quality disclosure: gross non-performing loans of the Bank.'
+  fy2025-npl:
+    title: BCA audited financial statements FY2025
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=134
+    where: 'Printed PDF p. 134, regulatory credit-quality disclosure: gross non-performing loans of the Bank.'
+  2025-06-npl:
+    title: BCA consolidated interim statements 2025-06
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/07/20250730-Laporan-Keuangan-Konsolidasi-PT-BCA-Tbk-Billingual.pdf#page=202
+    where: 'PDF p. 202, Note 50: gross non-performing loans of the Bank.'
+  2025-09-npl:
+    title: BCA consolidated interim statements 2025-09
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2025/10/20251020-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2025-billingual.pdf#page=203
+    where: 'PDF p. 203, Note 50: gross non-performing loans of the Bank.'
+  bank-fy2025-capital:
+    title: BCA audited financial statements FY2025
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=122
+    where: Printed PDF pp. 122–123, capital adequacy and regulatory-capital disclosure.
+  bank-fy2025-liquidity:
+    title: BCA audited financial statements FY2025
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=112
+    where: Printed PDF pp. 112–114, liquidity risk and contractual maturity disclosures.
+  bank-2026-09-capital-risk:
+    title: BCA September 2026 capital and risk exposure disclosure
+    url: https://www.bca.co.id/-/media/Files/laporan-exposure/20261027-capital-and-risk-exposure-publication-report-30-september-2026-pdf.pdf#page=2
+    where: Printed PDF p. 2, consolidated KM1 capital and liquidity ratios.
+  bank-loan-stages:
+    title: BCA September 2026 interim statements
+    url: https://pustaka.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2026-billingual.pdf#page=68
+    where: PDF pp. 68–69, Note 12, gross Bank loans by stage and industry.
+  bank-group-equity-sep26:
+    title: BCA September 2026 interim statements
+    url: https://pustaka.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2026-billingual.pdf#page=7
+    where: PDF p. 7, equity attributable to owners of parent.
+  bank-group-shares-sep26:
+    title: BCA September 2026 interim statements
+    url: https://pustaka.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2026-billingual.pdf#page=102
+    where: PDF p. 102, issued share count after excluding treasury shares.
+  bank-group-loans-sep26:
+    title: BCA 9M26 investor presentation
+    url: https://pustaka.bca.co.id/-/media/Feature/Report/File/Berita-Investor/2026/20261027-9m26-corporate-presentation.pdf#page=13
+    where: PDF p. 13, total outstanding group loans including financing.
+  bank-fy25-irrbb:
+    title: BCA 2025 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan%20Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=166
+    where: PDF p. 166, consolidated all-currency interest rate shock sensitivities.
+  bank-fy25-remuneration:
+    title: BCA 2025 annual report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan%20Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=312
+    where: PDF p. 312, variable remuneration deferral, malus and clawback policy.
+  bank-ojk-disclosures:
+    title: OJK bank disclosure circular
+    url: https://ojk.go.id/id/regulasi/Pages/29-SEOJK03-2025-Transparansi-dan-Publikasi-Laporan-Bank-Umum-Konvensional.aspx
+    where: Conventional bank disclosure circular effective February 2026.
+  bank-imf-stress:
+    title: IMF Indonesia stress testing note
+    url: https://www.imf.org/-/media/files/publications/cr/2025/english/1idnea2025003-print-pdf.pdf
+    where: System-wide solvency and funding stress methodology.
+  bank-bi-rate:
+    title: Bank Indonesia policy rate history
+    url: https://www.bi.go.id/id/statistik/indikator/bi-rate.aspx
+    where: Dated BI-Rate series for funding repricing research.
+  bank-peer-bni:
+    title: BNI 3Q26 corporate presentation
+    url: https://www.bni.co.id/Portals/1/BNI/Perusahaan/HubunganInvestor/Docs/2026/BBNI-Corporate-Presentation-3Q26.pdf#page=18
+    where: PDF p. 18, consolidated CASA ratio.
+  bank-peer-bri:
+    title: BRI 3Q26 results
+    url: https://www.bri.co.id/web/guest/id/news-detail/2739
+    where: Issuer-reported September 2026 CASA ratio.
+  bank-peer-mandiri:
+    title: Bank Mandiri 3Q26 results
+    url: https://www.bankmandiri.co.id/documents/38265486/0/3Q26%2BAnalyst%2BMeeting%2B-%2BLong%2BForm%2B%2811%29.pdf/f49c0191-00d0-81cd-ce60-29373a0af1f9?t=1793175245796
+    where: Key profitability ratios, CASA on consolidated basis excluding BSI.
+  bank-buffett-retention:
+    title: Buffett’s 1984 shareholder letter
+    url: https://www.berkshirehathaway.com/letters/1984.html
+    where: Dividend policy and returns on incremental retained capital.
+  bank-equity-valuation:
+    title: Damodaran, Valuing Financial Service Firms
+    url: https://pages.stern.nyu.edu/~adamodar/pdfiles/papers/finfirm09.pdf
+    where: Equity cash flow and residual income approaches.
+  bank-bca-sep26-funding:
+    title: BCA 9M26 investor presentation
+    url: https://pustaka.bca.co.id/-/media/Feature/Report/File/Berita-Investor/2026/20261027-9m26-corporate-presentation.pdf#page=12
+    where: PDF p. 12, CASA to total funding.
+observations:
+- key: Gross loans and financing
+  period: '2017'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 467508825.0
+  source: fy2018-loans
+  subject: BBCA
+  period_end: '2017-12-31'
+- key: Customer deposits
+  period: '2017'
+  period_type: balance
+  basis: consolidated
+  unit: IDR million
+  value: 581115442.0
+  source: fy2018-deposits
+  subject: BBCA
+  period_end: '2017-12-31'
+- key: Loan impairment expense on loans
+  period: '2018'
+  period_type: annual
+  basis: unconsolidated
+  unit: IDR million
+  value: 2645057.0
+  source: fy2018-credit
+  subject: BBCA
+  period_start: '2018-01-01'
+  period_end: '2018-12-31'
+- key: Gross loans and financing
+  period: '2018'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 538099448.0
+  source: fy2018-loans
+  subject: BBCA
+  period_end: '2018-12-31'
+- key: Loan loss allowance
+  period: '2018'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 13568986.0
+  source: fy2018-loans
+  subject: BBCA
+  period_end: '2018-12-31'
+- key: Gross non-performing loan amount
+  period: '2018'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 7593637.0
+  source: fy2018-npl
+  subject: BBCA
+  period_end: '2018-12-31'
+- key: Interest expense on customer deposits
+  period: '2018'
+  period_type: annual
+  basis: consolidated
+  unit: IDR million
+  value: 9680798.0
+  source: fy2018-deposit-cost
+  subject: BBCA
+  period_start: '2018-01-01'
+  period_end: '2018-12-31'
+- key: Customer deposits
+  period: '2018'
+  period_type: balance
+  basis: consolidated
+  unit: IDR million
+  value: 629812017.0
+  source: fy2018-deposits
+  subject: BBCA
+  period_end: '2018-12-31'
+- key: Loan impairment expense on loans
+  period: '2019'
+  period_type: annual
+  basis: unconsolidated
+  unit: IDR million
+  value: 4268790.0
+  source: fy2019-credit
+  subject: BBCA
+  period_start: '2019-01-01'
+  period_end: '2019-12-31'
+- key: Gross loans and financing
+  period: '2019'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 586939583.0
+  source: fy2019-loans
+  subject: BBCA
+  period_end: '2019-12-31'
+- key: Loan loss allowance
+  period: '2019'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 14905584.0
+  source: fy2019-loans
+  subject: BBCA
+  period_end: '2019-12-31'
+- key: Gross non-performing loan amount
+  period: '2019'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 7876926.0
+  source: fy2019-npl
+  subject: BBCA
+  period_end: '2019-12-31'
+- key: Interest expense on customer deposits
+  period: '2019'
+  period_type: annual
+  basis: consolidated
+  unit: IDR million
+  value: 11405559.0
+  source: fy2019-deposit-cost
+  subject: BBCA
+  period_start: '2019-01-01'
+  period_end: '2019-12-31'
+- key: Customer deposits
+  period: '2019'
+  period_type: balance
+  basis: consolidated
+  unit: IDR million
+  value: 698980068.0
+  source: fy2019-deposits
+  subject: BBCA
+  period_end: '2019-12-31'
+- key: Loan impairment expense on loans
+  period: '2020'
+  period_type: annual
+  basis: unconsolidated
+  unit: IDR million
+  value: 9712629.0
+  source: fy2020-credit
+  subject: BBCA
+  period_start: '2020-01-01'
+  period_end: '2020-12-31'
+- key: Gross loans and financing
+  period: '2020'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 574589608.0
+  source: fy2020-loans
+  subject: BBCA
+  period_end: '2020-12-31'
+- key: Loan loss allowance
+  period: '2020'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 26945942.0
+  source: fy2020-loans
+  subject: BBCA
+  period_end: '2020-12-31'
+- key: Gross non-performing loan amount
+  period: '2020'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 10326712.0
+  source: fy2020-npl
+  subject: BBCA
+  period_end: '2020-12-31'
+- key: Interest expense on customer deposits
+  period: '2020'
+  period_type: annual
+  basis: consolidated
+  unit: IDR million
+  value: 9157514.0
+  source: fy2020-deposit-cost
+  subject: BBCA
+  period_start: '2020-01-01'
+  period_end: '2020-12-31'
+- key: Customer deposits
+  period: '2020'
+  period_type: balance
+  basis: consolidated
+  unit: IDR million
+  value: 834283843.0
+  source: fy2020-deposits
+  subject: BBCA
+  period_end: '2020-12-31'
+- key: Loan impairment expense on loans
+  period: '2021'
+  period_type: annual
+  basis: unconsolidated
+  unit: IDR million
+  value: 9112248.0
+  source: fy2021-credit
+  subject: BBCA
+  period_start: '2021-01-01'
+  period_end: '2021-12-31'
+- key: Gross loans and financing
+  period: '2021'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 622013305.0
+  source: fy2021-loans
+  subject: BBCA
+  period_end: '2021-12-31'
+- key: Loan loss allowance
+  period: '2021'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 32199727.0
+  source: fy2021-loans
+  subject: BBCA
+  period_end: '2021-12-31'
+- key: Gross non-performing loan amount
+  period: '2021'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 13411713.0
+  source: fy2021-npl
+  subject: BBCA
+  period_end: '2021-12-31'
+- key: Interest expense on customer deposits
+  period: '2021'
+  period_type: annual
+  basis: consolidated
+  unit: IDR million
+  value: 7380393.0
+  source: fy2021-deposit-cost
+  subject: BBCA
+  period_start: '2021-01-01'
+  period_end: '2021-12-31'
+- key: Customer deposits
+  period: '2021'
+  period_type: balance
+  basis: consolidated
+  unit: IDR million
+  value: 968606744.0
+  source: fy2021-deposits
+  subject: BBCA
+  period_end: '2021-12-31'
+- key: Loan impairment expense on loans
+  period: '2022'
+  period_type: annual
+  basis: unconsolidated
+  unit: IDR million
+  value: 4512020.0
+  source: fy2022-credit
+  subject: BBCA
+  period_start: '2022-01-01'
+  period_end: '2022-12-31'
+- key: Gross loans and financing
+  period: '2022'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 694936522.0
+  source: fy2022-loans
+  subject: BBCA
+  period_end: '2022-12-31'
+- key: Loan loss allowance
+  period: '2022'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 33947518.0
+  source: fy2022-loans
+  subject: BBCA
+  period_end: '2022-12-31'
+- key: Gross non-performing loan amount
+  period: '2022'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 11795528.0
+  source: fy2022-npl
+  subject: BBCA
+  period_end: '2022-12-31'
+- key: Interest expense on customer deposits
+  period: '2022'
+  period_type: annual
+  basis: consolidated
+  unit: IDR million
+  value: 5849622.0
+  source: fy2022-deposit-cost
+  subject: BBCA
+  period_start: '2022-01-01'
+  period_end: '2022-12-31'
+- key: Customer deposits
+  period: '2022'
+  period_type: balance
+  basis: consolidated
+  unit: IDR million
+  value: 1030451783.0
+  source: fy2022-deposits
+  subject: BBCA
+  period_end: '2022-12-31'
+- key: Loan impairment expense on loans
+  period: '2023'
+  period_type: annual
+  basis: unconsolidated
+  unit: IDR million
+  value: 1910139.0
+  source: fy2023-credit
+  subject: BBCA
+  period_start: '2023-01-01'
+  period_end: '2023-12-31'
+- key: Gross loans and financing
+  period: '2023'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 792196714.0
+  source: fy2023-loans
+  subject: BBCA
+  period_end: '2023-12-31'
+- key: Loan loss allowance
+  period: '2023'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 33308875.0
+  source: fy2023-loans
+  subject: BBCA
+  period_end: '2023-12-31'
+- key: Gross non-performing loan amount
+  period: '2023'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 14147246.0
+  source: fy2023-npl
+  subject: BBCA
+  period_end: '2023-12-31'
+- key: Interest expense on customer deposits
+  period: '2023'
+  period_type: annual
+  basis: consolidated
+  unit: IDR million
+  value: 9510555.0
+  source: fy2023-deposit-cost
+  subject: BBCA
+  period_start: '2023-01-01'
+  period_end: '2023-12-31'
+- key: Customer deposits
+  period: '2023'
+  period_type: balance
+  basis: consolidated
+  unit: IDR million
+  value: 1090766807.0
+  source: fy2023-deposits
+  subject: BBCA
+  period_end: '2023-12-31'
+- key: Loan impairment expense on loans
+  period: '2024'
+  period_type: annual
+  basis: unconsolidated
+  unit: IDR million
+  value: 2686810.0
+  source: fy2024-credit
+  subject: BBCA
+  period_start: '2024-01-01'
+  period_end: '2024-12-31'
+- key: Gross loans and financing
+  period: '2024'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 901310853.0
+  source: fy2024-loans
+  subject: BBCA
+  period_end: '2024-12-31'
+- key: Loan loss allowance
+  period: '2024'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 32624643.0
+  source: fy2024-loans
+  subject: BBCA
+  period_end: '2024-12-31'
+- key: Gross non-performing loan amount
+  period: '2024'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 15498016.0
+  source: fy2024-npl
+  subject: BBCA
+  period_end: '2024-12-31'
+- key: Interest expense on customer deposits
+  period: '2024'
+  period_type: annual
+  basis: consolidated
+  unit: IDR million
+  value: 9503963.0
+  source: fy2024-deposit-cost
+  subject: BBCA
+  period_start: '2024-01-01'
+  period_end: '2024-12-31'
+- key: Customer deposits
+  period: '2024'
+  period_type: balance
+  basis: consolidated
+  unit: IDR million
+  value: 1120613667.0
+  source: fy2024-deposits
+  subject: BBCA
+  period_end: '2024-12-31'
+- key: Loan impairment expense on loans
+  period: '2025'
+  period_type: annual
+  basis: unconsolidated
+  unit: IDR million
+  value: 4738261.0
+  source: fy2025-credit
+  subject: BBCA
+  period_start: '2025-01-01'
+  period_end: '2025-12-31'
+- key: Gross loans and financing
+  period: '2025'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 970233234.0
+  source: fy2025-loans
+  subject: BBCA
+  period_end: '2025-12-31'
+  corroboration: 2026-09-loans
+- key: Loan loss allowance
+  period: '2025'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 29752034.0
+  source: fy2025-loans
+  subject: BBCA
+  period_end: '2025-12-31'
+  corroboration: 2026-09-loans
+- key: Gross non-performing loan amount
+  period: '2025'
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 15965436.0
+  source: fy2025-npl
+  subject: BBCA
+  period_end: '2025-12-31'
+- key: Interest expense on customer deposits
+  period: '2025'
+  period_type: annual
+  basis: consolidated
+  unit: IDR million
+  value: 10087427.0
+  source: fy2025-deposit-cost
+  subject: BBCA
+  period_start: '2025-01-01'
+  period_end: '2025-12-31'
+- key: Customer deposits
+  period: '2025'
+  period_type: balance
+  basis: consolidated
+  unit: IDR million
+  value: 1233799081.0
+  source: fy2025-deposits
+  subject: BBCA
+  period_end: '2025-12-31'
+  corroboration: 2026-09-deposits
+- key: Loan impairment expense on loans
+  period: 2025-06
+  period_type: interim
+  basis: unconsolidated
+  unit: IDR million
+  value: 2302153.0
+  source: 2025-06-credit
+  subject: BBCA
+  period_start: '2025-01-01'
+  period_end: '2025-06-30'
+- key: Gross loans and financing
+  period: 2025-06
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 938229844.0
+  source: 2025-06-loans
+  subject: BBCA
+  period_end: '2025-06-30'
+- key: Loan loss allowance
+  period: 2025-06
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 33195676.0
+  source: 2025-06-loans
+  subject: BBCA
+  period_end: '2025-06-30'
+- key: Gross non-performing loan amount
+  period: 2025-06
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 19665627.0
+  source: 2025-06-npl
+  subject: BBCA
+  period_end: '2025-06-30'
+- key: Interest expense on customer deposits
+  period: 2025-06
+  period_type: interim
+  basis: consolidated
+  unit: IDR million
+  value: 5027347.0
+  source: 2025-06-deposit-cost
+  subject: BBCA
+  period_start: '2025-01-01'
+  period_end: '2025-06-30'
+- key: Customer deposits
+  period: 2025-06
+  period_type: balance
+  basis: consolidated
+  unit: IDR million
+  value: 1175970045.0
+  source: 2025-06-deposits
+  subject: BBCA
+  period_end: '2025-06-30'
+- key: Loan impairment expense on loans
+  period: 2025-09
+  period_type: interim
+  basis: unconsolidated
+  unit: IDR million
+  value: 3731688.0
+  source: 2025-09-credit
+  subject: BBCA
+  period_start: '2025-01-01'
+  period_end: '2025-09-30'
+- key: Gross loans and financing
+  period: 2025-09
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 921999630.0
+  source: 2025-09-loans
+  subject: BBCA
+  period_end: '2025-09-30'
+- key: Loan loss allowance
+  period: 2025-09
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 31467359.0
+  source: 2025-09-loans
+  subject: BBCA
+  period_end: '2025-09-30'
+- key: Gross non-performing loan amount
+  period: 2025-09
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 18671108.0
+  source: 2025-09-npl
+  subject: BBCA
+  period_end: '2025-09-30'
+- key: Interest expense on customer deposits
+  period: 2025-09
+  period_type: interim
+  basis: consolidated
+  unit: IDR million
+  value: 7549755.0
+  source: 2025-09-deposit-cost
+  subject: BBCA
+  period_start: '2025-01-01'
+  period_end: '2025-09-30'
+- key: Customer deposits
+  period: 2025-09
+  period_type: balance
+  basis: consolidated
+  unit: IDR million
+  value: 1190664137.0
+  source: 2025-09-deposits
+  subject: BBCA
+  period_end: '2025-09-30'
+- key: Loan impairment expense on loans
+  period: 2026-03
+  period_type: interim
+  basis: unconsolidated
+  unit: IDR million
+  value: 1501002.0
+  source: 2026-03-credit
+  subject: BBCA
+  period_start: '2026-01-01'
+  period_end: '2026-03-31'
+- key: Gross loans and financing
+  period: 2026-03
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 970701203.0
+  source: 2026-03-loans
+  subject: BBCA
+  period_end: '2026-03-31'
+- key: Loan loss allowance
+  period: 2026-03
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 30526805.0
+  source: 2026-03-loans
+  subject: BBCA
+  period_end: '2026-03-31'
+- key: Gross non-performing loan amount
+  period: 2026-03
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 17269328.0
+  source: 2026-03-npl
+  subject: BBCA
+  period_end: '2026-03-31'
+- key: Interest expense on customer deposits
+  period: 2026-03
+  period_type: interim
+  basis: consolidated
+  unit: IDR million
+  value: 2626091.0
+  source: 2026-03-deposit-cost
+  subject: BBCA
+  period_start: '2026-01-01'
+  period_end: '2026-03-31'
+- key: Customer deposits
+  period: 2026-03
+  period_type: balance
+  basis: consolidated
+  unit: IDR million
+  value: 1276408911.0
+  source: 2026-03-deposits
+  subject: BBCA
+  period_end: '2026-03-31'
+- key: Loan impairment expense on loans
+  period: 2026-06
+  period_type: interim
+  basis: unconsolidated
+  unit: IDR million
+  value: 2506950.0
+  source: 2026-06-credit
+  subject: BBCA
+  period_start: '2026-01-01'
+  period_end: '2026-06-30'
+- key: Gross loans and financing
+  period: 2026-06
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 1012705846.0
+  source: 2026-06-loans
+  subject: BBCA
+  period_end: '2026-06-30'
+- key: Loan loss allowance
+  period: 2026-06
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 30705949.0
+  source: 2026-06-loans
+  subject: BBCA
+  period_end: '2026-06-30'
+- key: Gross non-performing loan amount
+  period: 2026-06
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 18314729.0
+  source: 2026-06-npl
+  subject: BBCA
+  period_end: '2026-06-30'
+- key: Interest expense on customer deposits
+  period: 2026-06
+  period_type: interim
+  basis: consolidated
+  unit: IDR million
+  value: 5369152.0
+  source: 2026-06-deposit-cost
+  subject: BBCA
+  period_start: '2026-01-01'
+  period_end: '2026-06-30'
+- key: Customer deposits
+  period: 2026-06
+  period_type: balance
+  basis: consolidated
+  unit: IDR million
+  value: 1268824684.0
+  source: 2026-06-deposits
+  subject: BBCA
+  period_end: '2026-06-30'
+- key: Loan impairment expense on loans
+  period: 2026-09
+  period_type: interim
+  basis: unconsolidated
+  unit: IDR million
+  value: 3590394.0
+  source: 2026-09-credit
+  subject: BBCA
+  period_start: '2026-01-01'
+  period_end: '2026-09-30'
+- key: Gross loans and financing
+  period: 2026-09
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 1039443469.0
+  source: 2026-09-loans
+  subject: BBCA
+  period_end: '2026-09-30'
+- key: Loan loss allowance
+  period: 2026-09
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 30896885.0
+  source: 2026-09-loans
+  subject: BBCA
+  period_end: '2026-09-30'
+- key: Gross non-performing loan amount
+  period: 2026-09
+  period_type: balance
+  basis: unconsolidated
+  unit: IDR million
+  value: 18189152.0
+  source: 2026-09-npl
+  subject: BBCA
+  period_end: '2026-09-30'
+- key: Interest expense on customer deposits
+  period: 2026-09
+  period_type: interim
+  basis: consolidated
+  unit: IDR million
+  value: 8066791.0
+  source: 2026-09-deposit-cost
+  subject: BBCA
+  period_start: '2026-01-01'
+  period_end: '2026-09-30'
+- key: Customer deposits
+  period: 2026-09
+  period_type: balance
+  basis: consolidated
+  unit: IDR million
+  value: 1285735711.0
+  source: 2026-09-deposits
+  subject: BBCA
+  period_end: '2026-09-30'
+- key: Gross Stage 2 loans
+  period: '2025'
+  period_type: balance
+  basis: unconsolidated
+  unit: 'IDR million'
+  value: 19583051
+  source: bank-loan-stages
+  subject: BBCA
+  period_end: '2025-12-31'
+- key: Gross Stage 3 loans
+  period: '2025'
+  period_type: balance
+  basis: unconsolidated
+  unit: 'IDR million'
+  value: 16194122
+  source: bank-loan-stages
+  subject: BBCA
+  period_end: '2025-12-31'
+- key: Gross staged loans
+  period: '2025'
+  period_type: balance
+  basis: unconsolidated
+  unit: 'IDR million'
+  value: 970233234
+  source: bank-loan-stages
+  subject: BBCA
+  period_end: '2025-12-31'
+- key: Manufacturing loans
+  period: '2025'
+  period_type: balance
+  basis: unconsolidated
+  unit: 'IDR million'
+  value: 211585937
+  source: bank-loan-stages
+  subject: BBCA
+  period_end: '2025-12-31'
+- key: Gross Stage 2 loans
+  period: '2026-09'
+  period_type: balance
+  basis: unconsolidated
+  unit: 'IDR million'
+  value: 21077269
+  source: bank-loan-stages
+  subject: BBCA
+  period_end: '2026-09-30'
+- key: Gross Stage 3 loans
+  period: '2026-09'
+  period_type: balance
+  basis: unconsolidated
+  unit: 'IDR million'
+  value: 18636020
+  source: bank-loan-stages
+  subject: BBCA
+  period_end: '2026-09-30'
+- key: Gross staged loans
+  period: '2026-09'
+  period_type: balance
+  basis: unconsolidated
+  unit: 'IDR million'
+  value: 1039443469
+  source: bank-loan-stages
+  subject: BBCA
+  period_end: '2026-09-30'
+- key: Manufacturing loans
+  period: '2026-09'
+  period_type: balance
+  basis: unconsolidated
+  unit: 'IDR million'
+  value: 248658394
+  source: bank-loan-stages
+  subject: BBCA
+  period_end: '2026-09-30'
+- key: Transfers to Stage 2
+  period: '2026-09'
+  period_type: interim
+  basis: unconsolidated
+  unit: 'IDR million'
+  value: 22878565
+  source: bank-loan-stages
+  subject: BBCA
+  period_start: '2026-01-01'
+  period_end: '2026-09-30'
+- key: Transfers to Stage 3
+  period: '2026-09'
+  period_type: interim
+  basis: unconsolidated
+  unit: 'IDR million'
+  value: 10629348
+  source: bank-loan-stages
+  subject: BBCA
+  period_start: '2026-01-01'
+  period_end: '2026-09-30'
+- key: Loan write-offs
+  period: '2026-09'
+  period_type: interim
+  basis: unconsolidated
+  unit: 'IDR million'
+  value: 2592391
+  source: bank-loan-stages
+  subject: BBCA
+  period_start: '2026-01-01'
+  period_end: '2026-09-30'
+- key: Common Equity Tier 1 capital
+  period: '2025'
+  period_type: balance
+  basis: consolidated
+  unit: 'IDR million'
+  value: 273828527
+  source: bank-2026-09-capital-risk
+  subject: BBCA
+  period_end: '2025-12-31'
+- key: Risk-weighted assets
+  period: '2025'
+  period_type: balance
+  basis: consolidated
+  unit: 'IDR million'
+  value: 936368457
+  source: bank-2026-09-capital-risk
+  subject: BBCA
+  period_end: '2025-12-31'
+- key: CET1 ratio
+  period: '2025'
+  period_type: balance
+  basis: consolidated
+  unit: '%'
+  value: 29.24
+  source: bank-2026-09-capital-risk
+  subject: BBCA
+  period_end: '2025-12-31'
+- key: CET1 available after minimum capital
+  period: '2025'
+  period_type: balance
+  basis: consolidated
+  unit: '%'
+  value: 20.37
+  source: bank-2026-09-capital-risk
+  subject: BBCA
+  period_end: '2025-12-31'
+- key: CET1 buffer requirements
+  period: '2025'
+  period_type: balance
+  basis: consolidated
+  unit: '%'
+  value: 5.0
+  source: bank-2026-09-capital-risk
+  subject: BBCA
+  period_end: '2025-12-31'
+- key: Common Equity Tier 1 capital
+  period: '2026-09'
+  period_type: balance
+  basis: consolidated
+  unit: 'IDR million'
+  value: 275068739
+  source: bank-2026-09-capital-risk
+  subject: BBCA
+  period_end: '2026-09-30'
+- key: Risk-weighted assets
+  period: '2026-09'
+  period_type: balance
+  basis: consolidated
+  unit: 'IDR million'
+  value: 1019183225
+  source: bank-2026-09-capital-risk
+  subject: BBCA
+  period_end: '2026-09-30'
+- key: CET1 ratio
+  period: '2026-09'
+  period_type: balance
+  basis: consolidated
+  unit: '%'
+  value: 26.99
+  source: bank-2026-09-capital-risk
+  subject: BBCA
+  period_end: '2026-09-30'
+- key: CET1 available after minimum capital
+  period: '2026-09'
+  period_type: balance
+  basis: consolidated
+  unit: '%'
+  value: 18.13
+  source: bank-2026-09-capital-risk
+  subject: BBCA
+  period_end: '2026-09-30'
+- key: CET1 buffer requirements
+  period: '2026-09'
+  period_type: balance
+  basis: consolidated
+  unit: '%'
+  value: 5.0
+  source: bank-2026-09-capital-risk
+  subject: BBCA
+  period_end: '2026-09-30'
+- key: Maximum EVE reduction
+  period: '2025'
+  period_type: balance
+  basis: consolidated
+  unit: 'IDR million'
+  value: 19369967
+  source: bank-fy25-irrbb
+  subject: BBCA
+  period_end: '2025-12-31'
+- key: Maximum EVE reduction relative to Tier 1
+  period: '2025'
+  period_type: balance
+  basis: consolidated
+  unit: '%'
+  value: 7.07
+  source: bank-fy25-irrbb
+  subject: BBCA
+  period_end: '2025-12-31'
+- key: Maximum NII reduction
+  period: '2025'
+  period_type: balance
+  basis: consolidated
+  unit: 'IDR million'
+  value: 5283054
+  source: bank-fy25-irrbb
+  subject: BBCA
+  period_end: '2025-12-31'
+- key: Maximum NII reduction relative to projected income
+  period: '2025'
+  period_type: balance
+  basis: consolidated
+  unit: '%'
+  value: 6.18
+  source: bank-fy25-irrbb
+  subject: BBCA
+  period_end: '2025-12-31'
+- key: Material risk taker bonus deferral
+  period: '2025'
+  period_type: balance
+  basis: unconsolidated
+  unit: 'years'
+  value: 3
+  source: bank-fy25-remuneration
+  subject: BBCA
+  period_end: '2025-12-31'
+- key: Common equity attributable to parent
+  period: '2026-09'
+  period_type: balance
+  basis: consolidated
+  unit: 'IDR million'
+  value: 283419338
+  source: bank-group-equity-sep26
+  subject: BBCA
+  period_end: '2026-09-30'
+- key: Closing common shares ex treasury
+  period: '2026-09'
+  period_type: balance
+  basis: consolidated
+  unit: 'shares'
+  value: 122841751300
+  source: bank-group-shares-sep26
+  subject: BBCA
+  period_end: '2026-09-30'
+- key: Gross loans including group financing
+  period: '2026-09'
+  period_type: balance
+  basis: consolidated
+  unit: 'IDR million'
+  value: 1063100000
+  source: bank-group-loans-sep26
+  subject: BBCA
+  period_end: '2026-09-30'
+- key: Reported CASA share
+  subject: BBCA
+  basis: group CASA to total funding
+  value: 85.6
+  unit: '%'
+  period: '2026-09'
+  period_type: balance
+  period_end: '2026-09-30'
+  source: bank-bca-sep26-funding
+- key: Reported CASA share
+  subject: BMRI
+  basis: consolidated excluding BSI
+  value: 70.6
+  unit: '%'
+  period: '2026-09'
+  period_type: balance
+  period_end: '2026-09-30'
+  source: bank-peer-mandiri
+- key: Reported CASA share
+  subject: BBNI
+  basis: consolidated
+  value: 65.2
+  unit: '%'
+  period: '2026-09'
+  period_type: balance
+  period_end: '2026-09-30'
+  source: bank-peer-bni
+- key: Reported CASA share
+  subject: BBRI
+  basis: issuer-reported scope
+  value: 70.0
+  unit: '%'
+  period: '2026-09'
+  period_type: balance
+  period_end: '2026-09-30'
+  source: bank-peer-bri
+rules:
+  bank-credit-cost-ratio:
+    status: partial
+    finding: The bank-only loan impairment cost ratio is calculated for FY2018–FY2025 and 2025/2026 H1 and 9M YTD
+      periods. The expense uses the loan-specific impairment line; the interim values are not annualized.
+    gap: No opening/closing history was assembled before FY2017, and FY2026 full-year results have not yet been
+      published.
+    sources:
+    - fy2018-credit
+    - fy2025-credit
+    - 2025-06-credit
+    - 2025-09-credit
+    - 2026-09-credit
+    - ojk-bank-publications
+  bank-npl-coverage-ratio:
+    status: partial
+    finding: The accounting loan-loss allowance divided by gross NPL classified under prudential rules is calculated
+      as a bank-only proxy from FY2018 through September 2026. The dates, units and reporting entity match; the
+      filing set does not establish an identical regulatory loan perimeter, so the percentage is not an exact regulatory
+      coverage ratio.
+    gap: Earlier periods and the independent OJK company-level reconciliation remain unreviewed; collateral recovery
+      and write-off timing are not captured.
+    sources:
+    - fy2018-credit
+    - 2026-09-npl
+    - ojk-bank-publications
+    - fy2025-npl
+    - 2026-09-npl
+  bank-deposit-cost-ratio:
+    status: partial
+    finding: The ratio uses consolidated interest expense on customer deposits divided by average consolidated customer
+      deposits for FY2018–FY2025, 2025 H1/9M, and 2026 Q1/H1/9M. Sharia deposits and sharia expense are reported
+      separately and excluded from both sides.
+    gap: Earlier history and an independent OJK company-level reconciliation remain unreviewed; the ratio is not
+      the bank’s all-in funding cost because other funding is excluded.
+    sources:
+    - fy2018-deposit-cost
+    - fy2025-deposit-cost
+    - 2025-06-deposit-cost
+    - 2026-09-deposit-cost
+    - ojk-bank-publications
+  bank-deposit-franchise-resilience:
+    status: partial
+    finding: BCA reported CASA of 85.6% of total funding at September 2026. Mandiri, BNI and BRI provide issuer-reported funding mix comparisons with scope differences.
+    gap: Historical deposit repricing by segment, large depositor concentration, runoff and matched peer cost definitions remain gaps.
+    sources: [bank-bca-sep26-funding, bank-peer-mandiri, bank-peer-bni, bank-peer-bri, bank-bi-rate]
+  bank-underwriting-and-concentration:
+    status: partial
+    finding: The note discloses gross loan-stage shares, transfers, write-offs and sector balances. BCA discloses a three-year deferral and conditional malus or clawback for material risk takers.
+    gap: Single-name and correlated borrower exposures, matched cohort migration, and use of remuneration adjustments remain open.
+    sources: [bank-loan-stages, bank-fy25-remuneration, 2026-09-npl]
+  bank-capital-loss-resilience:
+    status: partial
+    finding: The September 2026 KM1 table separates CET1, RWA, specific buffer requirements and available CET1 after minimum requirements. The separate scenario inputs support an illustrative earnings and capital bridge.
+    gap: Bank-specific binding distribution constraints and a full regulatory deductions and loss absorption bridge still need review.
+    sources: [bank-2026-09-capital-risk, bank-imf-stress, bank-ojk-disclosures]
+  bank-rate-liquidity-and-contingent-risk:
+    status: partial
+    finding: FY2025 adds disclosed consolidated EVE and NII sensitivity with their respective denominators. The scenario model separates repricing on retained balances from replacement funding for runoff.
+    gap: The September 2026 capital report does not contain a matching IRRBB table. Observed repricing betas and depositor behavior remain open.
+    sources: [bank-fy25-irrbb, bank-2026-09-capital-risk, bank-bi-rate]
+  bank-through-cycle-earnings-and-value:
+    status: partial
+    finding: A capital-constrained dividend model and a residual income cross-check use the same five-year equity earnings path. Reproducible scenarios vary earnings and RWA separately.
+    gap: Normalized ROE and stress inputs are illustrative. Verified through-cycle common earnings and earnings on discretionary retained capital remain open.
+    sources: [bank-buffett-retention, bank-equity-valuation, bank-2026-09-capital-risk, bank-loan-stages]
+  bank-stage-2-loan-share:
+    status: calculated
+    finding: Gross Stage 2 loans were 2.02% of gross staged loans at December 2025 and 2.03% at September 2026.
+    gap: A longer matched series and cohort-level migration analysis are still needed.
+    sources: [bank-loan-stages]
+  bank-stage-3-loan-share:
+    status: calculated
+    finding: Gross Stage 3 loans rose from 1.67% to 1.79% of gross staged loans across the same two reporting dates.
+    gap: Accounting Stage 3 is a separate series from prudential NPLs.
+    sources: [bank-loan-stages]
+input_conflicts: []

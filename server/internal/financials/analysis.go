@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"strings"
 
+	reportlayout "github.com/Chandra179/lux/server/internal/report"
 	"gopkg.in/yaml.v3"
 )
 
@@ -25,6 +26,9 @@ type analysisSource struct {
 type analysisObservation struct {
 	Key           string   `yaml:"key" json:"key"`
 	Period        string   `yaml:"period" json:"period"`
+	PeriodType    string   `yaml:"period_type,omitempty" json:"period_type,omitempty"`
+	PeriodStart   string   `yaml:"period_start,omitempty" json:"period_start,omitempty"`
+	PeriodEnd     string   `yaml:"period_end,omitempty" json:"period_end,omitempty"`
 	Basis         string   `yaml:"basis" json:"basis"`
 	Unit          string   `yaml:"unit" json:"unit"`
 	Value         *float64 `yaml:"value" json:"value"`
@@ -64,6 +68,23 @@ type analysisEvidence struct {
 	YearStorySources map[string]analysisSource     `yaml:"year_story_sources"`
 }
 
+type bankInputConflict struct {
+	Key     string   `yaml:"key" json:"key"`
+	Period  string   `yaml:"period" json:"period"`
+	Basis   string   `yaml:"basis" json:"basis"`
+	Reason  string   `yaml:"reason" json:"reason"`
+	Sources []string `yaml:"sources,omitempty" json:"sources,omitempty"`
+}
+
+type bankAnalysisEvidence struct {
+	CatalogHash    string                        `yaml:"catalog_hash"`
+	FactsHash      string                        `yaml:"facts_hash"`
+	Sources        map[string]analysisSource     `yaml:"sources"`
+	Observations   []analysisObservation         `yaml:"observations"`
+	Rules          map[string]analysisAssessment `yaml:"rules"`
+	InputConflicts []bankInputConflict           `yaml:"input_conflicts"`
+}
+
 type analysisSection struct {
 	Title              string `yaml:"title" json:"title"`
 	analysisAssessment `yaml:",inline"`
@@ -85,22 +106,28 @@ type analysisPeriod struct {
 }
 
 type AnalysisReport struct {
-	CatalogHash  string                    `json:"catalog_hash"`
-	FactsHash    string                    `json:"facts_hash"`
-	ReviewedHash string                    `json:"reviewed_catalog_hash"`
-	Annual       []analysisPeriod          `json:"history"`
-	Interim      []analysisPeriod          `json:"interim"`
-	Rules        []analysisRule            `json:"rules"`
-	Sections     []analysisSection         `json:"sections"`
-	Sources      map[string]analysisSource `json:"sources"`
-	Observations []analysisObservation     `json:"observations"`
-	Results      map[string]Metric         `json:"results"`
-	InterimRisk  []analysisObservation     `json:"interim_risk"`
-	PeerRows     []analysisPeerRow         `json:"peer_comparisons"`
-	Coverage     analysisCoverage          `json:"evidence_coverage"`
-	Brief        []reportSection           `json:"brief_sections"`
-	Appendix     []reportSection           `json:"evidence_sections"`
-	Yearly       []reportSection           `json:"yearly_sections,omitempty"`
+	CatalogHash      string `json:"catalog_hash"`
+	bankObservations []analysisObservation
+	bankConflicts    []bankInputConflict
+	BankScenarios    *bankScenarioAnalysis     `json:"bank_scenarios,omitempty"`
+	BankCatalogHash  string                    `json:"bank_catalog_hash,omitempty"`
+	FactsHash        string                    `json:"facts_hash"`
+	ReviewedHash     string                    `json:"reviewed_catalog_hash"`
+	Annual           []analysisPeriod          `json:"history"`
+	Interim          []analysisPeriod          `json:"interim"`
+	Rules            []analysisRule            `json:"rules"`
+	Sections         []analysisSection         `json:"sections"`
+	Sources          map[string]analysisSource `json:"sources"`
+	Observations     []analysisObservation     `json:"observations"`
+	Results          map[string]Metric         `json:"results"`
+	BankMetrics      []Metric                  `json:"bank_metrics,omitempty"`
+	InterimRisk      []analysisObservation     `json:"interim_risk"`
+	PeerRows         []analysisPeerRow         `json:"peer_comparisons"`
+	Coverage         analysisCoverage          `json:"evidence_coverage"`
+	Brief            []reportSection           `json:"brief_sections"`
+	Appendix         []reportSection           `json:"evidence_sections"`
+	Yearly           []reportSection           `json:"yearly_sections,omitempty"`
+	YearlyTemplate   *yearlyTemplate           `json:"yearly_template,omitempty"`
 }
 
 var historyKeys = []string{"total_assets", "common_shareholders_equity", "shareholders_equity", "net_earnings",
@@ -126,6 +153,17 @@ func approvedFactsHash(facts []Fact) (string, error) {
 }
 
 func BuildAnalysis(ctx context.Context, db *sql.DB, catalogPath, evidencePath string) (*AnalysisReport, error) {
+	return BuildAnalysisWithBankOverlay(ctx, db, catalogPath, evidencePath, "", "")
+}
+
+func BuildAnalysisWithBankOverlay(ctx context.Context, db *sql.DB, catalogPath, evidencePath, bankCatalogPath, bankEvidencePath string) (*AnalysisReport, error) {
+	return BuildAnalysisWithBankScenarios(ctx, db, catalogPath, evidencePath, bankCatalogPath, bankEvidencePath, "")
+}
+
+func BuildAnalysisWithBankScenarios(ctx context.Context, db *sql.DB, catalogPath, evidencePath, bankCatalogPath, bankEvidencePath, bankScenarioPath string) (*AnalysisReport, error) {
+	if bankScenarioPath != "" && (bankCatalogPath == "" || bankEvidencePath == "") {
+		return nil, fmt.Errorf("bank scenarios require the bank catalog and reviewed evidence")
+	}
 	catalog, hash, err := LoadCatalog(catalogPath)
 	if err != nil {
 		return nil, err
@@ -136,6 +174,31 @@ func BuildAnalysis(ctx context.Context, db *sql.DB, catalogPath, evidencePath st
 	}
 	if evidence.Hash != hash {
 		return nil, fmt.Errorf("analysis catalog differs from the reviewed evidence; review the changed rules before updating the evidence catalog hash")
+	}
+	var bankCatalog []CatalogEntry
+	var bankEvidence bankAnalysisEvidence
+	var bankHash string
+	if (bankCatalogPath == "") != (bankEvidencePath == "") {
+		return nil, fmt.Errorf("bank overlay requires both --bank-catalog and --bank-evidence")
+	}
+	if bankCatalogPath != "" {
+		bankCatalog, bankHash, err = LoadCatalogOverlay(bankCatalogPath, catalog)
+		if err != nil {
+			return nil, err
+		}
+		if err := validateBankFormulaCatalog(bankCatalog); err != nil {
+			return nil, err
+		}
+		bankEvidence, err = readBankAnalysisEvidence(bankEvidencePath)
+		if err != nil {
+			return nil, err
+		}
+		if bankEvidence.CatalogHash != bankHash {
+			return nil, fmt.Errorf("bank catalog differs from the bank evidence; review the changed bank rules")
+		}
+		if err := validateBankRuleAssessments(bankCatalog, bankEvidence); err != nil {
+			return nil, err
+		}
 	}
 	for _, entry := range catalog {
 		if !formulaMatches(entry) {
@@ -165,6 +228,9 @@ func BuildAnalysis(ctx context.Context, db *sql.DB, catalogPath, evidencePath st
 	if evidence.FactsHash != factsHash {
 		return nil, fmt.Errorf("approved facts differ from the reviewed analysis snapshot; recheck the evidence and update its facts_hash")
 	}
+	if bankCatalogPath != "" && bankEvidence.FactsHash != factsHash {
+		return nil, fmt.Errorf("approved facts differ from the reviewed bank snapshot; recheck the bank evidence and update its facts_hash")
+	}
 	facts := make(map[string][]periodFact)
 	for _, fact := range approved {
 		if n, ok := parseCanonicalNumber(fact.NormalizedValue); ok {
@@ -193,6 +259,16 @@ func BuildAnalysis(ctx context.Context, db *sql.DB, catalogPath, evidencePath st
 	report := &AnalysisReport{
 		CatalogHash: hash, FactsHash: factsHash, ReviewedHash: evidence.Hash, Sections: evidence.Sections,
 		Sources: evidence.Sources, Observations: evidence.Observations,
+	}
+	if bankCatalogPath != "" {
+		report.BankCatalogHash = bankHash
+		for key, source := range bankEvidence.Sources {
+			if existing, ok := report.Sources[key]; ok && existing != source {
+				return nil, fmt.Errorf("bank evidence source %s conflicts with shared evidence", key)
+			}
+			report.Sources[key] = source
+		}
+		report.Observations = append(report.Observations, bankEvidence.Observations...)
 	}
 	for year := 1998; year <= 2025; year++ {
 		period := strconv.Itoa(year)
@@ -244,6 +320,35 @@ func BuildAnalysis(ctx context.Context, db *sql.DB, catalogPath, evidencePath st
 		}
 		report.Rules = append(report.Rules, rule)
 	}
+	if bankCatalogPath != "" {
+		report.bankObservations = bankEvidence.Observations
+		report.bankConflicts = bankEvidence.InputConflicts
+		for _, metric := range calculateBankMetrics(bankEvidence.Observations, bankEvidence.InputConflicts) {
+			if _, exists := bankEvidence.Rules[metric.EntityID]; exists {
+				report.BankMetrics = append(report.BankMetrics, metric)
+			}
+		}
+		if bankScenarioPath != "" {
+			config, err := readBankScenarios(bankScenarioPath)
+			if err != nil {
+				return nil, err
+			}
+			report.BankScenarios, err = analyzeBankScenarios(config, bankEvidence)
+			if err != nil {
+				return nil, err
+			}
+		}
+		latestMetrics := latestBankMetrics(report.BankMetrics)
+		for _, entry := range bankCatalog {
+			assessment := bankEvidence.Rules[entry.ID]
+			rule := analysisRule{Number: len(report.Rules) + 1, Rule: entry, analysisAssessment: assessment}
+			if metric, ok := latestMetrics[entry.ID]; entry.Type == "formula" && ok {
+				rule.Metric = &metric
+				rule.Status = metric.Status
+			}
+			report.Rules = append(report.Rules, rule)
+		}
+	}
 	report.Coverage, err = buildAnalysisCoverage(ctx, tx, report, evidence.StatementInputs)
 	if err != nil {
 		return nil, err
@@ -253,11 +358,28 @@ func BuildAnalysis(ctx context.Context, db *sql.DB, catalogPath, evidencePath st
 	if err != nil {
 		return nil, err
 	}
+	if len(report.Yearly) > 0 {
+		report.YearlyTemplate = &yearlyTemplate{
+			ID: reportlayout.StandardTemplate, Title: "BBCA Year by Year", Footer: "BBCA fundamentals · year-by-year comparison",
+		}
+	}
 	report.Appendix, err = report.evidenceSections()
 	if err != nil {
 		return nil, err
 	}
 	return report, tx.Commit()
+}
+
+func validateBankRuleAssessments(catalog []CatalogEntry, evidence bankAnalysisEvidence) error {
+	if len(evidence.Rules) != len(catalog) {
+		return fmt.Errorf("bank evidence requires %d rule assessments; got %d", len(catalog), len(evidence.Rules))
+	}
+	for _, entry := range catalog {
+		if _, ok := evidence.Rules[entry.ID]; !ok {
+			return fmt.Errorf("bank evidence lacks assessment for %s", entry.ID)
+		}
+	}
+	return nil
 }
 
 func addInsurerFloatProxies(report *AnalysisReport) {

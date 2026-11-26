@@ -1,0 +1,51 @@
+# Illustrative assumptions, expressed as fractions. The period selects filing inputs.
+# Normalized ROE spans 16–21%, consistent with the broad range in the 2021–2025 yearly report.
+# Credit stress adds losses beyond those already reflected in normalized ROE.
+period: '2026-09'
+cases:
+  - name: Downside
+    normalized_roe: 0.16
+    earnings_growth: 0.035
+    rwa_growth: 0.075
+    terminal_growth: 0.025
+    cost_of_equity: 0.13
+    payout: 0.60
+    cet1_target: 0.29
+    one_year_stress:
+      affected_loan_share: 0.10
+      incremental_loss_severity: 0.30
+      policy_rate_increase: 0.02
+      deposit_beta: 0.50
+      deposit_repricing_share: 0.50
+      deposit_runoff_share: 0.10
+      replacement_funding_spread: 0.02
+      rwa_increase: 0.10
+      tax_rate: 0.22
+  - name: Base
+    normalized_roe: 0.19
+    earnings_growth: 0.055
+    rwa_growth: 0.07
+    terminal_growth: 0.03
+    cost_of_equity: 0.11
+    payout: 0.65
+    cet1_target: 0.28
+    one_year_stress:
+      affected_loan_share: 0.05
+      incremental_loss_severity: 0.20
+      policy_rate_increase: 0.01
+      deposit_beta: 0.35
+      deposit_repricing_share: 0.40
+      deposit_runoff_share: 0.05
+      replacement_funding_spread: 0.015
+      rwa_increase: 0.05
+      tax_rate: 0.22
+  - name: Favorable
+    normalized_roe: 0.21
+    earnings_growth: 0.07
+    rwa_growth: 0.06
+    terminal_growth: 0.035
+    cost_of_equity: 0.10
+    payout: 0.70
+    cet1_target: 0.27
+    one_year_stress:
+      tax_rate: 0.22

@@ -78,9 +78,39 @@ make bbca-analysis ANALYSIS_FORMAT=json > /tmp/bbca-fy2025.json
 
 The Markdown and JSON commands write to stdout and open the database read-only. The default catalog is the repository-root `fundamental-analysis.yaml`. Native CLI invocations also accept `--catalog` or `BBCA_CATALOG`. The report requires the catalog in SQLite, the supplied YAML, and its reviewed evidence hash to agree. A change to a supported formula requires a matching code change. Numeric narrative and rule assessments are pinned to the approved fact set, including its source references. To update the snapshot, recheck assessments and source observations against the new facts, then record the output of `make bbca-analysis ANALYSIS_FORMAT=facts-hash` as `facts_hash` in the evidence file. `ANALYSIS_DB` and `ANALYSIS_EVIDENCE` override the report inputs.
 
+The yearly Make targets load the bank catalog, reviewed evidence and illustrative scenario YAML by default. This adds pages for bank risk, funding, stress and valuation. Set `ANALYSIS_BANK_CATALOG=` for the yearly report without the bank sections. Native CLI callers can pass `--bank-catalog`, `--bank-evidence`, and optionally `--bank-scenarios`.
+
+The evidence companion includes the full ratio and calculation records. Generate it with:
+
+```sh
+make bbca-analysis ANALYSIS_VIEW=evidence \
+  ANALYSIS_BANK_CATALOG=bank-analysis.yaml \
+  ANALYSIS_BANK_SCENARIOS=data/analysis/bbca-valuation-scenarios.yaml
+```
+
+Use the same variables with `make bbca-analysis-pdf` for the PDF. See the [Markdown companion](analysis/bbca-fy2025-bank-evidence.md) and [PDF companion](../output/pdf/bbca-fy2025-evidence-bank.pdf). The bank overlay adds ten rules to the shared catalog. The credit-cost, NPL coverage proxy, and deposit-cost series cover FY2018–FY2025 and comparable 2025/2026 interim periods through September 2026. Gross Stage 2 and Stage 3 shares match the bank-only loan staging table at each balance date. The funding comparison shows the issuers’ reported CASA figures and their different scopes. Interim flow ratios use period-to-date figures.
+
+The [scenario inputs](analysis/bbca-valuation-scenarios.yaml) select a set of reviewed consolidated opening balances. Change the named cases to compare earnings and RWA growth, capital targets, discount rates, and one-year credit and funding stress. The decimal rates and capital targets are analyst assumptions. Credit shocks are incremental to normalized earnings. The stress bridge applies the scenario tax rate to incremental losses and uses a zero regulatory capital adjustment unless configured. The [bank evidence](analysis/bbca-bank-analysis.yaml) describes the remaining research gaps, including observed deposit repricing and a complete bank-specific regulatory capital and distribution bridge.
+
 To upgrade a previously reviewed analysis database, rebuild the dedicated snapshot from the unreviewed import and reapply the updated decision CSV. Keep the previous database as a backup until the new report succeeds. The restated opening cells are stored as alternate facts for the audited comparison so the as-filed historical totals retain their own source basis. The consolidated KM1 table links reviewed values to both the capital PDF and the matching workbook cells. The JSON carries all available report views alongside the existing facts, observations, rule assessments and metric fields. The evidence view combines equivalent candidate values within compatible period, basis, audit status and units. Source and status remain visible for each candidate. The grouping does not approve pending facts.
 
-The yearly report is laid out as a complete yearbook: a cover with the contents, one comparison table and short bullet summary per annual year, a separate 2026 interim update, and a final table legend and glossary. The English [yearly report](analysis/bbca-fy2025-yearly.md) uses reviewed facts and observations, with scope-matched comparisons and source links. The report calculates price changes from split-adjusted closes and reuses the reviewed holding-period return. Year-to-date returns require a reviewed period-end close and dividends earned through the same date on that share basis.
+The [BBCA yearly report](analysis/bbca-fy2025-yearly.md) uses Standard Template 1. The contents-only cover leads into the 2026 interim update and any enabled bank analysis, followed by annual comparisons from newest to oldest and the table legend and glossary. The report uses reviewed facts and observations with scope-matched comparisons and source links. It calculates price changes from split-adjusted closes and reuses the reviewed holding-period return. Year-to-date returns require a reviewed period-end close and dividends earned through the same date on that share basis.
+
+### Standard Template 1
+
+The HTML source is [`standard-1.html.tmpl`](../server/internal/report/templates/standard-1.html.tmpl). The Go report module embeds it with `embed` and renders it with `html/template`. Export a self-contained HTML report with:
+
+```sh
+make bbca-analysis ANALYSIS_VIEW=yearly ANALYSIS_FORMAT=html > bbca-fy2025-yearly.html
+```
+
+Go resolves section and table layout once for HTML, Markdown, and PDF. The PDF adapter reads the derived `layout` metadata when available and handles pagination.
+
+For another company, supply `yearly_template` metadata with `id: "standard-1"`, the report `title`, and its PDF `footer`. Populate `yearly_sections` in reading order with stable, unique section IDs. Set each section's `kind` to `cover`, `interim`, `analysis`, `annual`, or `glossary`. For period headings, set `period_label` and format the section title as the period label followed by an em dash and the headline.
+
+Use a two-column `Section` and `Coverage` contents table on the cover, with each title linked to its section ID. Annual history can link to the newest annual section and show the full year range. The PDF adds start-page numbers and begins each section on a fresh page. Tables that span pages repeat their headers.
+
+Use the `Sources` paragraph label for links displayed after the tables. A table can set `numeric_columns` to a list of zero-based column indices and `current_column` to the numeric column to emphasize. Company-specific sections, measures, units, and reporting scopes come from the analysis snapshot.
 
 ### PDF export
 

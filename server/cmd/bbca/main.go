@@ -33,6 +33,7 @@ func run(args []string) error {
 	extractedDir := flags.String("extracted", "", "page text output directory (default: data/extracted)")
 	dbPath := flags.String("db", defaultDBPath(), "SQLite database path")
 	catalogPath := flags.String("catalog", defaultCatalogPath(), "fundamental-analysis.yaml path")
+	bankCatalogPath := flags.String("bank-catalog", "", "optional bank-analysis.yaml overlay path")
 	outPath := flags.String("out", filepath.Join("data", "review", "bbca-review.csv"), "review CSV output path")
 	filePath := flags.String("file", "", "review CSV to apply")
 	reviewPeriod := flags.String("period", "", "optional period of pending facts to export")
@@ -41,9 +42,11 @@ func run(args []string) error {
 	minPageChars := flags.Int("min-page-chars", 60, "OCR pages with fewer non-space characters")
 	skipOCR := flags.Bool("skip-ocr", false, "use PDF text without OCR for documents that have a verified text layer")
 	force := flags.Bool("force", false, "rebuild facts from cached pages and extract any missing pages")
-	analysisFormat := flags.String("format", "markdown", "analysis output format (markdown, json, or facts-hash)")
+	analysisFormat := flags.String("format", "markdown", "analysis output format (markdown, html, json, or facts-hash)")
 	view := flags.String("view", "brief", "analysis report view (brief, evidence, or yearly)")
 	evidencePath := flags.String("evidence", filepath.Join("data", "analysis", "bbca-fy2025.yaml"), "analysis evidence file")
+	bankEvidencePath := flags.String("bank-evidence", "", "optional bank-specific reviewed evidence path")
+	bankScenarioPath := flags.String("bank-scenarios", "", "optional bank stress and valuation assumptions YAML")
 	if err := flags.Parse(args[1:]); err != nil {
 		return err
 	}
@@ -53,7 +56,7 @@ func run(args []string) error {
 
 	ctx := context.Background()
 	if command == "analysis" {
-		return runAnalysis(ctx, *dbPath, *catalogPath, *evidencePath, *analysisFormat, *view)
+		return runAnalysis(ctx, *dbPath, *catalogPath, *evidencePath, *bankCatalogPath, *bankEvidencePath, *bankScenarioPath, *analysisFormat, *view)
 	}
 	db, err := store.NewSQLite(ctx, *dbPath)
 	if err != nil {
@@ -99,9 +102,15 @@ func run(args []string) error {
 	}
 }
 
-func runAnalysis(ctx context.Context, dbPath, catalogPath, evidencePath, format, view string) error {
-	if format != "markdown" && format != "json" && format != "facts-hash" {
-		return fmt.Errorf("invalid analysis format %q (use markdown, json, or facts-hash)", format)
+func runAnalysis(ctx context.Context, dbPath, catalogPath, evidencePath, bankCatalogPath, bankEvidencePath, bankScenarioPath, format, view string) error {
+	switch format {
+	case "markdown", "json", "facts-hash":
+	case "html":
+		if view != "yearly" {
+			return fmt.Errorf("HTML output requires the yearly analysis view")
+		}
+	default:
+		return fmt.Errorf("invalid analysis format %q (use markdown, html, json, or facts-hash)", format)
 	}
 	if view != "brief" && view != "evidence" && view != "yearly" {
 		return fmt.Errorf("invalid analysis view %q (use brief, evidence, or yearly)", view)
@@ -124,7 +133,7 @@ func runAnalysis(ctx context.Context, dbPath, catalogPath, evidencePath, format,
 		_, err = fmt.Fprintln(os.Stdout, hash)
 		return err
 	}
-	report, err := financials.BuildAnalysis(ctx, db, catalogPath, evidencePath)
+	report, err := financials.BuildAnalysisWithBankScenarios(ctx, db, catalogPath, evidencePath, bankCatalogPath, bankEvidencePath, bankScenarioPath)
 	if err != nil {
 		return err
 	}

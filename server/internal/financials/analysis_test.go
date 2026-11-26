@@ -2,6 +2,7 @@ package financials
 
 import (
 	"math"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -68,23 +69,73 @@ func TestYearlyComparisonTableKeepsReportingScopesSeparate(t *testing.T) {
 	}
 }
 
-func TestYearlySectionsHaveCoverAnnualInterimAndFinalGlossary(t *testing.T) {
+func TestYearlySectionsFollowStandardTemplateOrder(t *testing.T) {
 	stories := map[string]analysisYearStory{
+		"2024": {Title: "An earlier year", Bank: "The bank grew.", Impact: "It mattered.", Sources: []string{"annual"}},
 		"2025": {Title: "A year", Bank: "The bank grew.", Impact: "It mattered.", Sources: []string{"annual"}},
 		"2026": {Title: "So far", Bank: "The bank is growing.", Impact: "It matters now.", Sources: []string{"annual"}},
 	}
 	source := analysisSource{Title: "Annual report", URL: "https://example.test/annual.pdf", Where: "pages 1–2"}
-	r := AnalysisReport{Annual: []analysisPeriod{{Period: "2025", Facts: map[string]Fact{}, Values: map[string]Metric{}}}}
-	sections, err := r.yearlySections(stories, map[string]analysisSource{"annual": source})
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(sections) != 4 || sections[0].ID != "yearly-cover" || sections[1].ID != "year-2025" ||
-		sections[2].ID != "year-2026" || sections[3].ID != "yearly-glossary" {
-		t.Fatalf("yearly report section order is wrong: %#v", sections)
-	}
-	if len(sections[1].Tables) != 1 || sections[1].Tables[0].Headers[0] != "Measure" {
-		t.Fatalf("annual year card has no comparison table: %#v", sections[1].Tables)
+	for _, tc := range []struct {
+		name      string
+		bank      string
+		scenarios *bankScenarioAnalysis
+		bankIDs   []string
+	}{
+		{name: "without bank sections"},
+		{name: "risk only", bank: "bank", bankIDs: []string{"yearly-bank-risk"}},
+		{name: "risk and valuation", bank: "bank", scenarios: &bankScenarioAnalysis{},
+			bankIDs: []string{"yearly-bank-risk", "yearly-bank-scenarios"}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			r := AnalysisReport{
+				Annual:          []analysisPeriod{{Period: "2024"}, {Period: "2025"}},
+				BankCatalogHash: tc.bank, BankScenarios: tc.scenarios,
+			}
+			sections, err := r.yearlySections(stories, map[string]analysisSource{"annual": source})
+			if err != nil {
+				t.Fatal(err)
+			}
+			want := append([]string{"yearly-cover", "year-2026"}, tc.bankIDs...)
+			want = append(want, "year-2025", "year-2024", "yearly-glossary")
+			var ids []string
+			for _, section := range sections {
+				ids = append(ids, section.ID)
+			}
+			if !slices.Equal(ids, want) {
+				t.Fatalf("section order %v, want %v", ids, want)
+			}
+			cover := sections[0]
+			if len(cover.Paragraphs) != 1 || len(cover.Tables) != 1 {
+				t.Fatalf("cover should have a description and contents: %#v", cover)
+			}
+			rows := cover.Tables[0].Rows
+			targets := append([]string{"year-2026"}, tc.bankIDs...)
+			targets = append(targets, "year-2025", "yearly-glossary")
+			if len(rows) != len(targets) {
+				t.Fatalf("unexpected number of contents entries: %d", len(rows))
+			}
+			r.Yearly = sections
+			r.YearlyTemplate = &yearlyTemplate{ID: "standard-1", Title: "Sample Company"}
+			var markdown strings.Builder
+			if err := r.WriteView(&markdown, "markdown", "yearly"); err != nil {
+				t.Fatal(err)
+			}
+			output := markdown.String()
+			if !strings.HasPrefix(output, "# Sample Company\n") {
+				t.Fatal("Markdown did not use the template title")
+			}
+			for i, target := range targets {
+				if len(rows[i][0].Links) != 1 || rows[i][0].Links[0].URL != "#"+target ||
+					!strings.Contains(output, "](#"+target+")") || !strings.Contains(output, `id="`+target+`"`) {
+					t.Errorf("missing or invalid contents link for %s", target)
+				}
+			}
+			card := sections[len(sections)-3]
+			if len(card.Tables) != 1 || card.Tables[0].Headers[0] != "Measure" {
+				t.Fatalf("annual year card has no comparison table: %#v", card.Tables)
+			}
+		})
 	}
 }
 

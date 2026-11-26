@@ -26,30 +26,59 @@ func LoadCatalog(path string) ([]CatalogEntry, string, error) {
 	if err := yaml.Unmarshal(data, &parsed); err != nil {
 		return nil, "", fmt.Errorf("parse catalog %q: %w", path, err)
 	}
-	if len(parsed.Entries) == 0 {
-		return nil, "", fmt.Errorf("catalog %q has no entries", path)
+	if err := validateCatalogEntries(path, parsed.Entries, nil); err != nil {
+		return nil, "", err
 	}
-	seen := make(map[string]bool, len(parsed.Entries))
-	for _, entry := range parsed.Entries {
+	sum := sha256.Sum256(data)
+	return parsed.Entries, hex.EncodeToString(sum[:]), nil
+}
+
+// LoadCatalogOverlay validates an additive catalog against the shared catalog.
+// The returned hash fingerprints only the overlay file, so the shared catalog
+// and its database snapshot remain independently pinned.
+func LoadCatalogOverlay(path string, base []CatalogEntry) ([]CatalogEntry, string, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, "", fmt.Errorf("read bank catalog %q: %w", path, err)
+	}
+	var parsed catalogFile
+	if err := yaml.Unmarshal(data, &parsed); err != nil {
+		return nil, "", fmt.Errorf("parse bank catalog %q: %w", path, err)
+	}
+	if err := validateCatalogEntries(path, parsed.Entries, base); err != nil {
+		return nil, "", err
+	}
+	sum := sha256.Sum256(data)
+	return parsed.Entries, hex.EncodeToString(sum[:]), nil
+}
+
+func validateCatalogEntries(path string, entries, allowedDependencies []CatalogEntry) error {
+	if len(entries) == 0 {
+		return fmt.Errorf("catalog %q has no entries", path)
+	}
+	seen := make(map[string]bool, len(entries)+len(allowedDependencies))
+	for _, entry := range allowedDependencies {
+		seen[entry.ID] = true
+	}
+	for _, entry := range entries {
 		if entry.ID == "" || entry.Description == "" || seen[entry.ID] {
-			return nil, "", fmt.Errorf("catalog %q has an incomplete or duplicate entry %q", path, entry.ID)
+			return fmt.Errorf("catalog %q has an incomplete or duplicate entry %q", path, entry.ID)
 		}
 		switch entry.Type {
 		case "formula", "concept", "heuristic":
 		default:
-			return nil, "", fmt.Errorf("catalog entry %q has unknown type %q", entry.ID, entry.Type)
+			return fmt.Errorf("catalog entry %q has unknown type %q", entry.ID, entry.Type)
 		}
 		seen[entry.ID] = true
 	}
-	for _, entry := range parsed.Entries {
+	for _, entry := range entries {
 		for _, dependency := range entry.DependsOn {
 			if !seen[dependency] {
-				return nil, "", fmt.Errorf("catalog entry %q refers to missing entry %q", entry.ID, dependency)
+				return fmt.Errorf("catalog entry %q refers to missing entry %q", entry.ID, dependency)
 			}
 		}
 	}
-	sum := sha256.Sum256(data)
-	return parsed.Entries, hex.EncodeToString(sum[:]), nil
+	return nil
 }
 
 // Initialize installs the BBCA schema and records the current analysis catalog

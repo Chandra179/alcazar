@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Template.Title}}</title>
+  <style>
+    :root { color-scheme: light; --ink: #123047; --muted: #465767; --accent: #006f67; --line: #cfdbe3; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: #edf3f5; font: 1rem/1.55 system-ui, sans-serif; }
+    main { max-width: 60rem; margin: auto; padding: clamp(1rem, 4vw, 3rem); }
+    .report-section { margin-bottom: 1.5rem; padding: clamp(1rem, 4vw, 2.6rem); border-top: 3px solid var(--accent); background: #fff; }
+    h1, h2, p { margin: 0 0 .8rem; }
+    h1 { font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.12; }
+    h2 { font-size: clamp(1.35rem, 3vw, 2rem); line-height: 1.24; }
+    .cover { padding-block: clamp(2.5rem, 8vw, 4.5rem); }
+    .cover > p { max-width: 65ch; }
+    .takeaways { padding-inline-start: 1.2rem; }
+    .takeaways li { margin-bottom: .4rem; }
+    .table-wrap { overflow-x: auto; margin: 1rem 0; }
+    table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+    caption { text-align: start; padding-bottom: .4rem; font-size: 1.05rem; font-weight: 700; }
+    th, td { border-bottom: 1px solid var(--line); text-align: start; padding: .45rem .55rem; vertical-align: top; }
+    thead { color: var(--muted); }
+    .numeric, .current { text-align: end; font-variant-numeric: tabular-nums; }
+    .current { font-weight: 700; }
+    thead .current, .group { color: var(--accent); }
+    a { color: var(--accent); text-underline-offset: .16em; }
+    .sources, footer { color: var(--muted); font-size: .8rem; }
+    .sources a + a::before { content: " · "; color: var(--muted); }
+    @page { size: A4; margin: 14mm; }
+    @media print {
+      body, .report-section { background: #fff; }
+      main { max-width: none; padding: 0; }
+      .report-section { margin: 0; padding: .65rem 0; }
+      .report-section + .report-section { break-before: page; }
+      h2 { break-after: avoid; }
+      .table-wrap { overflow: visible; }
+      thead { display: table-header-group; }
+      tr { break-inside: avoid; }
+      a { color: inherit; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  {{range .Sections}}
+  <section id="{{.ID}}" class="report-section {{.Kind}}">
+    {{if eq .Kind "cover"}}<h1>{{$.Template.Title}}</h1>{{else}}<h2>{{.Title}}</h2>{{end}}
+    {{if .Layout.Takeaways}}
+    <ul class="takeaways">{{range .Body}}<li>{{template "cell" .}}</li>{{end}}</ul>
+    {{else}}
+    {{range .Body}}<p>{{template "cell" .}}</p>{{end}}
+    {{end}}
+    {{range .Tables}}{{if .Rows}}{{template "table" .}}{{end}}{{end}}
+    {{range .Sources}}<p class="sources">{{template "cell" .}}</p>{{end}}
+  </section>
+  {{end}}
+  {{with .Template.Footer}}<footer>{{.}}</footer>{{end}}
+</main>
+</body>
+</html>
+
+{{define "cell"}}{{with .Label}}<strong>{{.}}.</strong> {{end}}{{.Text}}{{range .Links}} <a href="{{.URL}}">{{.Text}}</a>{{end}}{{end}}
+
+{{define "table"}}
+<div class="table-wrap">
+  <table>
+    {{with .Title}}<caption>{{.}}</caption>{{end}}
+    <thead><tr>{{range $i, $header := .Headers}}<th scope="col" class="{{$.ColumnRole $i}}">{{$header}}</th>{{end}}</tr></thead>
+    <tbody>
+      {{range $i, $row := .Rows}}
+      <tr>
+        {{if $.Group $i $row}}
+        <th class="group" colspan="{{len $.Headers}}">{{(index $row 0).Text}}</th>
+        {{else}}
+        {{range $column, $cell := $row}}{{$role := $.ColumnRole $column}}<td class="{{$role}}">{{if $role}}{{$cell.Text}}{{else}}{{template "cell" $cell}}{{end}}</td>{{end}}
+        {{end}}
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}

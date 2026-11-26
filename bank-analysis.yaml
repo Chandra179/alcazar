@@ -1,0 +1,103 @@
+glossary:
+  types:
+    formula: A defined bank-specific calculation using reviewed inputs.
+    concept: A bank-specific relationship that helps explain franchise economics or risk.
+    heuristic: A bank-specific review practice that requires judgment and has no universal pass threshold.
+
+  fields:
+    id: A unique, readable rule name prefixed with bank-.
+    type: The entry type; use formula, concept, or heuristic.
+    description: The bank-specific question or calculation.
+    formula: A formula entry's calculation; its implementation is registered in code.
+    applies_when: Scope, periods, interpretation limits, and input requirements.
+    depends_on: Shared or overlay rule IDs needed to interpret this rule.
+    source: Primary banking disclosures or source material for the analysis principle.
+
+entries:
+  - id: bank-credit-cost-ratio
+    type: formula
+    description: Loan impairment expense as a share of average gross loans for the same reporting period.
+    formula: (loan_impairment_expense / average_gross_loans) * 100
+    applies_when: |-
+      - Match the loan-only impairment charge, average gross loan balance, period, units, and reporting scope.
+      - Average the opening and closing loan balances. For interim periods, use a matching period-to-date expense and label the result as interim; do not annualize it silently.
+      - State whether the expense is before or after recoveries and write-offs. Do not substitute a broad asset-impairment total for a loan-only charge.
+      - Compare across years and credit cycles; no single value is a pass threshold.
+    depends_on: [borrower-repayment-capacity, normalize-earnings-for-nonrecurring-items]
+    source: "BCA audited financial statements and OJK bank disclosures; calculation defined for this catalog."
+
+  - id: bank-npl-coverage-ratio
+    type: formula
+    description: The reported loan-loss allowance divided by gross non-performing loans at the same date.
+    formula: (loan_loss_allowance / gross_nonperforming_loans) * 100
+    applies_when: |-
+      Use an allowance and gross NPL amount with the same date, currency, and bank-only or consolidated scope. Do not substitute loan-at-risk coverage for NPL coverage. If the accounting allowance and prudential NPL definitions do not establish an identical loan perimeter, label the result a proxy and state the classification difference. Read the NPL classification, collateral, write-off policy, and allowance methodology before interpreting the ratio; higher coverage is not proof that expected losses are fully reserved.
+    depends_on: [borrower-repayment-capacity]
+    source: "BCA audited financial statements and OJK bank disclosures; calculation defined for this catalog."
+
+  - id: bank-deposit-cost-ratio
+    type: formula
+    description: Interest expense on customer deposits divided by average customer deposits for the same period.
+    formula: (interest_expense_on_customer_deposits / average_customer_deposits) * 100
+    applies_when: |-
+      - Match customer-deposit interest expense with opening and closing customer deposits for the same scope and period.
+      - State whether sharia deposits and other bank funding are included. A deposit-cost measure that excludes them must not be compared with an all-in funding cost.
+      - Compare the deposit cost with asset yields and changes in market rates; no single rate establishes a durable funding advantage.
+    depends_on: [liquidity-as-financial-optionality]
+    source: "BCA audited financial statements and OJK bank disclosures; calculation defined for this catalog."
+
+  - id: bank-deposit-franchise-resilience
+    type: heuristic
+    description: Assess whether customer deposits are a durable, low-cost funding advantage rather than a temporary balance-sheet source.
+    applies_when: |-
+      Review CASA mix, deposit cost and repricing, customer and large-depositor concentration, wholesale funding reliance, maturity and withdrawal terms, and deposit behavior during market stress. Track whether the bank retains deposits when competitors offer higher rates. Measure rate pass-through and deposit runoff separately by segment when data allow. Match period, scope and funding denominator before comparing peers. Compare deposit repricing with the local policy rate and distinguish mix shifts from prices within a deposit segment.
+    depends_on: [durable-competitive-advantage, liquidity-as-financial-optionality]
+    source: "Warren E. Buffett, Berkshire Hathaway shareholder letter for 1990, discussion of bank management and financial resilience. Drechsler, Savov, Schnabl and Wang, Deposit Franchise Runs, NBER Working Paper 31138."
+
+  - id: bank-underwriting-and-concentration
+    type: heuristic
+    description: Assess whether loan growth comes from sound repayment capacity and diversified exposures, with losses recognized promptly.
+    applies_when: |-
+      Review large borrower, sector, geography, collateral, related-party, and loan-vintage exposures. Compare underwriting terms and repayment performance with loan growth, past-due and restructured loans, NPL migration, write-offs, recoveries, and allowance changes. Treat collateral as a recovery source rather than a substitute for borrower repayment capacity. Track gross Stage 2 and Stage 3 shares and transitions, including cures and write-offs. Test correlated exposures under a common downturn and review whether deferred pay and clawbacks align originators with realized losses.
+    depends_on: [borrower-repayment-capacity, customer-concentration-risk, bank-credit-cost-ratio, bank-npl-coverage-ratio]
+    source: "Warren E. Buffett, Berkshire Hathaway shareholder letter for 1990, discussion of lending errors and leverage. Basel Committee, Principles for the Management of Credit Risk (2025), and IFRS Foundation, IFRS 9 impairment model."
+
+  - id: bank-capital-loss-resilience
+    type: heuristic
+    description: Assess the quality and usable buffer of common regulatory capital against plausible credit, market, and funding losses.
+    applies_when: |-
+      Review common equity tier 1, tier 1 and total capital, risk-weighted assets, applicable minimums and buffers, deductions, and restrictions on dividends or growth. Stress capital after plausible loan losses, valuation losses, and correlated exposures. Bridge opening CET1 to closing CET1 through stressed earnings, distributions and regulatory adjustments. Use stressed RWA and distinguish minimum requirements, disclosed buffers and management targets. Charge incremental losses only when earnings already include baseline provisions. Keep regulatory scope and consolidated versus bank-only ratios distinct; a reported capital ratio without its requirements and loss sensitivity is incomplete.
+    depends_on: [liquidity-as-financial-optionality, bank-underwriting-and-concentration]
+    source: "Warren E. Buffett, Berkshire Hathaway shareholder letters for 1990 and 2002, discussion of bank leverage and systemic exposures. Basel Committee, Stress Testing and KM1 disclosures, and IMF Indonesia FSAP Technical Note 25/53."
+
+  - id: bank-rate-liquidity-and-contingent-risk
+    type: heuristic
+    description: Assess whether changes in rates, market values, withdrawals, and contingent obligations could create a sudden funding or capital need.
+    applies_when: |-
+      Review repricing gaps, net-interest-income and economic-value sensitivity, securities valuation and unrealized losses, pledged assets, liquidity outflows, derivatives, guarantees, and undrawn commitments. Record separately the issuer’s economic value of equity and net interest income sensitivities with their denominators and shock dates. Stress deposit repricing, runoff and replacement funding without repricing withdrawn balances. Consider collateral calls and correlated counterparty failures. LCR and NSFR are useful disclosures but do not replace a scenario analysis of the bank's actual assets and liabilities.
+    depends_on: [liquidity-as-financial-optionality, derivative-counterparty-and-contagion-risk]
+    source: "Warren E. Buffett, Berkshire Hathaway shareholder letters for 1990 and 2002, discussion of systemic and derivative risk. Basel Framework SRP31 and Federal Reserve, Review of Silicon Valley Bank (2023)."
+
+  - id: bank-through-cycle-earnings-and-value
+    type: heuristic
+    description: Estimate sustainable per-share earning power after normal credit losses and the capital needed to support safe growth, then compare it with price.
+    applies_when: |-
+      Normalize net interest income, deposit costs, fee income, operating expense, and credit losses across a full cycle. Distinguish required capital retention from discretionary reinvestment. Forecast earnings and risk-weighted assets separately. Compare capital-constrained distributions with a residual-income valuation using the same earnings and capital assumptions, and explain differences in terminal treatment. Interpret price-to-book or tangible-book value alongside sustainable ROE, capital quality, and risk; a low multiple alone does not make a bank cheap. Conventional operating cash flow and industrial-company owner-earnings formulas are not direct measures of bank owner earnings.
+    depends_on: [return-on-equity, price-to-book-ratio, intrinsic-business-value, share-repurchase-value, financial-consistency-as-durability-evidence]
+    source: "Warren E. Buffett, Berkshire Hathaway shareholder letter for 1990, discussion of well-managed banks, earning power, and fair purchase prices. Buffett’s 1984 letter on earnings retention and Aswath Damodaran, Valuing Financial Service Firms."
+
+  - id: bank-stage-2-loan-share
+    type: formula
+    description: Gross Stage 2 loans as a share of gross loans in the same staging table.
+    formula: (gross_stage_2_loans / gross_staged_loans) * 100
+    applies_when: Match reporting date, scope, currency and balance basis. Interpret the share with Stage 1 to Stage 2 transfers, cures, new lending and write-offs. Stage 2 measures increased credit risk under the issuer’s accounting policy.
+    depends_on: [bank-underwriting-and-concentration]
+    source: "Issuer loan staging disclosures and IFRS Foundation, IFRS 9 expected credit loss model."
+
+  - id: bank-stage-3-loan-share
+    type: formula
+    description: Gross Stage 3 loans as a share of gross loans in the same staging table.
+    formula: (gross_stage_3_loans / gross_staged_loans) * 100
+    applies_when: Match reporting date, scope, currency and balance basis. Compare with prudential NPL, retaining both definitions and reconciling differences where disclosed.
+    depends_on: [bank-underwriting-and-concentration]
+    source: "Issuer loan staging disclosures and Basel Committee, Prudential treatment of problem assets."

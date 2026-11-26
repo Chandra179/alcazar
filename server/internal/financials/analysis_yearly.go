@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math"
 	"strings"
+
+	"github.com/Chandra179/lux/server/internal/report"
 )
 
 type analysisYearStory struct {
@@ -63,18 +65,19 @@ func (r *AnalysisReport) yearlySections(stories map[string]analysisYearStory, st
 		return nil, fmt.Errorf("missing yearly story for %s", interimYear)
 	}
 
-	firstAnnualPage := 2
-	lastAnnualPage := firstAnnualPage + len(r.Annual) - 1
-	interimPage := lastAnnualPage + 1
-	glossaryPage := interimPage + 1
-	cover := reportSection{ID: "yearly-cover", Paragraphs: []reportCell{{
-		Text: "A year-by-year comparison of BCA’s business, financial position and shareholder outcomes, from the first available annual record through the latest interim update.",
-	}}, Tables: []reportTable{{Title: "In this report", Headers: []string{"Section", "Coverage", "Page"}, Rows: [][]reportCell{
-		textCells("Annual comparison", fmt.Sprintf("%s–%s", r.Annual[len(r.Annual)-1].Period, r.Annual[0].Period), fmt.Sprintf("%02d–%02d", firstAnnualPage, lastAnnualPage)),
-		textCells("Interim update", "2026 so far", fmt.Sprintf("%02d", interimPage)),
-		textCells("Table legend and glossary", "Definitions and comparison notes", fmt.Sprintf("%02d", glossaryPage)),
-	}}}}
-	sections := []reportSection{cover}
+	if len(r.Annual) == 0 {
+		return nil, fmt.Errorf("yearly report requires at least one annual period")
+	}
+	cover := reportSection{ID: "yearly-cover", Kind: "cover", Paragraphs: []reportCell{{
+		Text: "A year-by-year comparison of BCA’s business, financial position and shareholder outcomes, from the first available annual record through FY2025, with a 2026 update.",
+	}}}
+	sections := []reportSection{cover, r.yearlyInterim(interim, sources)}
+	if r.BankCatalogHash != "" {
+		sections = append(sections, r.yearlyBankRisk())
+	}
+	if r.BankScenarios != nil {
+		sections = append(sections, r.yearlyBankScenarios())
+	}
 	for i := len(r.Annual) - 1; i >= 0; i-- {
 		row := r.Annual[i]
 		story, ok := stories[row.Period]
@@ -88,7 +91,8 @@ func (r *AnalysisReport) yearlySections(stories map[string]analysisYearStory, st
 		close := r.marketShareObservation("Year-end close", row.Period)
 		table := r.yearlyComparisonTable(i)
 		sections = append(sections, reportSection{
-			ID: "year-" + row.Period, Title: row.Period + " — " + story.Title,
+			ID: "year-" + row.Period, Kind: "annual", PeriodLabel: row.Period,
+			Title: row.Period + " — " + story.Title,
 			Paragraphs: []reportCell{
 				{Label: "At the bank", Text: strings.TrimSpace(story.Bank + qualitativeProfitSummary(row.Facts["net_earnings"], prior))},
 				{Label: "For shareholders", Text: r.yearlyStockSummary(row, close)},
@@ -98,9 +102,9 @@ func (r *AnalysisReport) yearlySections(stories map[string]analysisYearStory, st
 			Tables: []reportTable{table},
 		})
 	}
-	sections = append(sections, r.yearlyInterim(interim, sources))
 	sections = append(sections, yearlyGlossary())
-	return sections, nil
+	sections[0].Tables = []reportTable{report.YearlyContents(sections[1:])}
+	return report.PrepareYearly(sections), nil
 }
 
 func qualitativeProfitSummary(current, prior Fact) string {
@@ -180,7 +184,8 @@ func (r *AnalysisReport) yearlyComparisonTable(index int) reportTable {
 	if priorLabel == "" {
 		priorLabel = "—"
 	}
-	table := reportTable{Headers: []string{"Measure", priorLabel, period, "Change"}}
+	table := reportTable{Headers: []string{"Measure", priorLabel, period, "Change"},
+		NumericColumns: []int{1, 2, 3}, CurrentColumn: 2}
 	groupRows := make(map[string][][]reportCell)
 	for _, measure := range measures {
 		current := yearlyValue{}
@@ -277,7 +282,7 @@ func (r *AnalysisReport) yearlyMeasures() []yearlyMeasure {
 		{group: "Credit risk", label: "Loans at risk", unit: "percent", getFor: func(row analysisPeriod, basis string) yearlyValue {
 			return r.yearlyObservation("Loan at risk", row.Period, basis, "%", "percent", 1)
 		}},
-		{group: "Credit risk", label: "Charge for possible loan losses", unit: "money", getFor: func(row analysisPeriod, basis string) yearlyValue {
+		{group: "Credit risk", label: "Net asset impairment", unit: "money", getFor: func(row analysisPeriod, basis string) yearlyValue {
 			return r.yearlyObservation("Impairment losses", row.Period, basis, "IDR million", "money", 1e-6)
 		}},
 		{group: "Capital and liquidity", label: "Capital adequacy ratio", unit: "percent", getFor: func(row analysisPeriod, basis string) yearlyValue {
@@ -518,19 +523,19 @@ func commaNumber(value float64, decimals int) string {
 }
 
 func (r *AnalysisReport) yearlyInterim(story analysisYearStory, sources map[string]analysisSource) reportSection {
-	tables := []reportTable{r.interimEarningsTable(), r.interimRiskTable()}
-	section := reportSection{ID: "year-2026", Title: "2026 so far — " + story.Title, Paragraphs: []reportCell{
-		{Label: "At the bank", Text: story.Bank},
-		{Label: "For shareholders", Text: "A 2026 share return is not shown because a matching dated price and dividend record has not been verified."},
-		{Label: "Why it mattered", Text: story.Impact},
-		{Label: "Sources", Links: yearlySourceLinks(sources, story.Sources, "", true)},
-	}}
-	section.Tables = tables
-	return section
+	return reportSection{ID: "year-2026", Kind: "interim", PeriodLabel: "2026 interim",
+		Title: "2026 interim — " + story.Title, Paragraphs: []reportCell{
+			{Label: "At the bank", Text: story.Bank},
+			{Label: "For shareholders", Text: "A 2026 share return is not shown because a matching dated price and dividend record has not been verified."},
+			{Label: "Why it mattered", Text: story.Impact},
+			{Label: "Sources", Links: yearlySourceLinks(sources, story.Sources, "", true)},
+		}, Tables: []reportTable{r.interimEarningsTable(), r.interimRiskTable()}}
 }
 
 func (r *AnalysisReport) interimEarningsTable() reportTable {
-	table := reportTable{Title: "Year-to-date earnings", Headers: []string{"Measure", "2025 matched period", "2026 update", "Change"}}
+	table := reportTable{Title: "Year-to-date earnings",
+		Headers:        []string{"Measure", "2025 matched period", "2026 matched period", "Change"},
+		NumericColumns: []int{1, 2, 3}, CurrentColumn: 2}
 	for _, item := range []struct{ period, prior, basis, title string }{
 		{"2026-09", "2025-09", "consolidated", "Group · January–September profit"},
 		{"2026-10", "2025-10", "unconsolidated", "Bank only · January–October profit"},
@@ -565,7 +570,9 @@ func (r *AnalysisReport) interimEarningsTable() reportTable {
 }
 
 func (r *AnalysisReport) interimRiskTable() reportTable {
-	table := reportTable{Title: "Selected balance-sheet and risk indicators", Headers: []string{"Measure", "FY2025 close", "Latest 2026", "Change"}}
+	table := reportTable{Title: "Selected group balance-sheet and risk indicators",
+		Headers:        []string{"Measure", "Dec 2025", "Sep 2026", "Change"},
+		NumericColumns: []int{1, 2, 3}, CurrentColumn: 2}
 	for _, measure := range []struct{ key, unit, display string }{
 		{"Gross loans and financing", "IDR billion", "Loans · group (IDR T)"},
 		{"Capital adequacy ratio (KM1)", "%", "Capital adequacy · group"},
@@ -647,7 +654,7 @@ func yearlyGlossary() reportSection {
 		[2]string{"Dividend yield / payout", "Cash dividends relative to share price / earnings per share."},
 		[2]string{"Real return", "Total return adjusted for Indonesian CPI inflation over the same calendar year."},
 	)
-	return reportSection{ID: "yearly-glossary", Title: "Table legend and glossary",
+	return reportSection{ID: "yearly-glossary", Kind: "glossary", Title: "Table legend and glossary",
 		Paragraphs: []reportCell{{Text: "Definitions and calculation bases used in the year-by-year tables. Read each result with its reporting scope and period."}},
 		Tables:     []reportTable{{Headers: []string{"Term", "Meaning in this report"}, Rows: rows}},
 	}

@@ -7,31 +7,17 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/Chandra179/lux/server/internal/report"
 )
 
-type reportLink struct {
-	Text string `json:"text"`
-	URL  string `json:"url"`
-}
-
-type reportCell struct {
-	Text  string       `json:"text"`
-	Links []reportLink `json:"links,omitempty"`
-	Label string       `json:"label,omitempty"`
-}
-
-type reportTable struct {
-	Title   string         `json:"title,omitempty"`
-	Headers []string       `json:"headers"`
-	Rows    [][]reportCell `json:"rows"`
-}
-
-type reportSection struct {
-	ID         string        `json:"id,omitempty"`
-	Title      string        `json:"title,omitempty"`
-	Paragraphs []reportCell  `json:"paragraphs,omitempty"`
-	Tables     []reportTable `json:"tables,omitempty"`
-}
+type (
+	reportLink     = report.Link
+	reportCell     = report.Cell
+	reportTable    = report.Table
+	reportSection  = report.Section
+	yearlyTemplate = report.Template
+)
 
 func textCells(values ...string) []reportCell {
 	row := make([]reportCell, 0, len(values))
@@ -225,6 +211,9 @@ func (r *AnalysisReport) evidenceSections() ([]reportSection, error) {
 		{ID: "history", Title: "Annual financial history", Paragraphs: []reportCell{{Text: "Consolidated amounts in IDR trillion. This table puts reported EPS on the October 2021 share basis. EPS calculation records show the share counts on the basis documented in the cited filing."}}, Tables: []reportTable{r.annualTable(false)}},
 		{ID: "interim", Title: "Interim statement history", Tables: []reportTable{r.interimTable(false)}},
 	}
+	if r.BankCatalogHash != "" {
+		sections[0].Paragraphs = append(sections[0].Paragraphs, reportCell{Text: "Bank overlay SHA-256 " + r.BankCatalogHash})
+	}
 	notes := reportTable{Title: "Periods and comparability", Headers: []string{"Period", "Basis", "Note"}}
 	for _, row := range append(append([]analysisPeriod{}, r.Annual...), r.Interim...) {
 		if row.Note != "" {
@@ -284,10 +273,29 @@ func (r *AnalysisReport) evidenceSections() ([]reportSection, error) {
 		if rule.Metric != nil && rule.Metric.Value == nil && rule.Metric.Reason != "" {
 			finding += " " + rule.Metric.Reason
 		}
+		if r.BankCatalogHash != "" && rule.Metric != nil && rule.Metric.EntityID == bankNPLCoverageRule && rule.Metric.Reason != "" {
+			finding += " " + rule.Metric.Reason
+		}
 		assessments.Rows = append(assessments.Rows, []reportCell{{Text: fmt.Sprintf("%d · %s", rule.Number, rule.Rule.ID)}, {Text: displayKey(rule.Status)},
 			{Text: finding, Links: r.sourceLinks(rule.Sources...)}, {Links: calcsByRule[rule.Rule.ID]}})
 	}
 	sections = append(sections, reportSection{ID: "rules", Title: "Rule assessments", Tables: []reportTable{assessments}})
+	if r.BankCatalogHash != "" {
+		bankMetrics := reportTable{Headers: []string{"Measure", "Period", "Scope", "Result", "Status", "Input gaps or limits", "Input sources"}}
+		for _, metric := range r.BankMetrics {
+			status := strings.ReplaceAll(displayKey(metric.Status), "_", " ")
+			row := textCells(displayKey(metric.EntityID), metric.Period,
+				basisLabel(metric.Basis), metricText(metric), status, metric.Reason)
+			row = append(row, reportCell{Links: r.sourceLinks(bankMetricSourceIDs(metric)...)})
+			bankMetrics.Rows = append(bankMetrics.Rows, row)
+		}
+		sections = append(sections, reportSection{ID: "bank-metrics", Title: "Bank-specific calculations and gaps",
+			Paragraphs: []reportCell{{Text: "Each ratio uses reviewed inputs on matching reporting dates, flow periods, units, and scope. Interim ratios are period-to-date and are not annualized. Missing or conflicting inputs remain visible as gaps."}},
+			Tables:     []reportTable{bankMetrics}})
+	}
+	if r.BankScenarios != nil {
+		sections = append(sections, r.yearlyBankScenarios())
+	}
 	sections = append(sections, r.periodGapSection())
 	sections = append(sections, reportSection{ID: "research-gaps", Title: "Remaining research gaps", Paragraphs: []reportCell{
 		{Text: "BCA’s audited equity statement confirms the FY1998 year-end deficit carried into FY1999. The FY1999 recapitalization restored positive closing equity, but average equity was negative, making conventional ROE unsuitable. The FY1998 cash-flow, tax and asset-return calculations still need the full statements and FY1997 opening assets. A ten-year capex ratio before FY2008 also needs contemporaneous fixed-asset purchases and earnings.",
@@ -314,7 +322,11 @@ func (r *AnalysisReport) evidenceSections() ([]reportSection, error) {
 				continue
 			}
 		}
-		row := textCells(obs.Subject+" · "+obs.Key, obs.Period, obs.Basis, fmt.Sprintf("%s %s", strconv.FormatFloat(*obs.Value, 'f', -1, 64), obs.Unit))
+		basis := obs.Basis
+		if r.BankCatalogHash != "" {
+			basis = basisLabel(basis)
+		}
+		row := textCells(obs.Subject+" · "+obs.Key, obs.Period, basis, fmt.Sprintf("%s %s", strconv.FormatFloat(*obs.Value, 'f', -1, 64), obs.Unit))
 		observations.Rows = append(observations.Rows, append(row, reportCell{Links: r.sourceLinks(obs.Source, obs.Corroboration)}))
 	}
 	sections = append(sections, reportSection{ID: "observations", Title: "Reviewed disclosures and observations", Tables: []reportTable{observations}})
@@ -327,6 +339,37 @@ func (r *AnalysisReport) evidenceSections() ([]reportSection, error) {
 	}
 	sections = append(sections, reportSection{ID: "sources", Title: "Source register", Tables: []reportTable{register}})
 	return sections, nil
+}
+
+func bankMetricSourceIDs(metric Metric) []string {
+	seen := make(map[string]bool)
+	var result []string
+	add := func(source string) {
+		if source != "" && !seen[source] {
+			seen[source] = true
+			result = append(result, source)
+		}
+	}
+	for _, input := range metric.Inputs {
+		switch value := input.(type) {
+		case analysisObservation:
+			add(value.Source)
+			add(value.Corroboration)
+		case *analysisObservation:
+			if value != nil {
+				add(value.Source)
+				add(value.Corroboration)
+			}
+		case []bankInputConflict:
+			for _, conflict := range value {
+				for _, source := range conflict.Sources {
+					add(source)
+				}
+			}
+		}
+	}
+	sort.Strings(result)
+	return result
 }
 
 func (r *AnalysisReport) periodGapSection() reportSection {
@@ -455,6 +498,16 @@ func (r *AnalysisReport) calculationSections() ([]calculationRecord, error) {
 			all[calculationKey{id, metric.Period, basis}] = metric
 		}
 	}
+	for _, metric := range r.BankMetrics {
+		if metric.Value == nil {
+			continue
+		}
+		basis := metric.Basis
+		if basis == "" {
+			basis = "consolidated"
+		}
+		all[calculationKey{metric.EntityID, metric.Period, basis}] = metric
+	}
 	for _, row := range append(append([]analysisPeriod{}, r.Annual...), r.Interim...) {
 		for id, metric := range row.Values {
 			key := calculationKey{id, row.Period, row.Basis}
@@ -483,8 +536,12 @@ func (r *AnalysisReport) calculationSections() ([]calculationRecord, error) {
 		for _, name := range sortedKeys(values) {
 			r.appendCalculationInput(&table, displayKey(name), values[name], all, key.basis)
 		}
+		calculationSummary := metricText(metric)
+		if r.BankCatalogHash != "" && metric.EntityID == bankNPLCoverageRule && metric.Status == "proxy_calculated" {
+			calculationSummary = "Proxy · " + calculationSummary + ". " + metric.Reason
+		}
 		section := reportSection{ID: key.anchor(), Title: displayKey(key.id) + " · " + key.period + " · " + basisLabel(key.basis),
-			Paragraphs: []reportCell{{Text: metricText(metric)}}}
+			Paragraphs: []reportCell{{Text: calculationSummary}}}
 		if len(table.Rows) > 0 {
 			section.Tables = []reportTable{table}
 		}

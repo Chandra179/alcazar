@@ -14,7 +14,10 @@ ANALYSIS_DB ?= data/analysis/bbca-analysis.db
 ANALYSIS_FORMAT ?= markdown
 ANALYSIS_EVIDENCE ?= data/analysis/bbca-fy2025.yaml
 ANALYSIS_VIEW ?= brief
-ANALYSIS_PDF ?= output/pdf/bbca-fy2025$(if $(filter-out brief,$(ANALYSIS_VIEW)),-$(ANALYSIS_VIEW)).pdf
+ANALYSIS_BANK_CATALOG ?= $(if $(filter yearly,$(ANALYSIS_VIEW)),bank-analysis.yaml)
+ANALYSIS_BANK_EVIDENCE ?= $(if $(ANALYSIS_BANK_CATALOG),data/analysis/bbca-bank-analysis.yaml)
+ANALYSIS_BANK_SCENARIOS ?= $(if $(and $(filter yearly,$(ANALYSIS_VIEW)),$(ANALYSIS_BANK_CATALOG)),data/analysis/bbca-valuation-scenarios.yaml)
+ANALYSIS_PDF ?= output/pdf/bbca-fy2025$(if $(filter-out brief,$(ANALYSIS_VIEW)),-$(ANALYSIS_VIEW))$(if $(filter-out yearly,$(ANALYSIS_VIEW)),$(if $(ANALYSIS_BANK_CATALOG),-bank)).pdf
 PYTHON ?= python3
 
 .PHONY: all build run test lint fmt tidy verify migrate-up podman-build bbca-import bbca-catalog bbca-review bbca-approve bbca-analysis bbca-analysis-pdf \
@@ -66,14 +69,14 @@ ifeq ($(ANALYSIS_FORMAT),pdf)
 bbca-analysis: bbca-analysis-pdf
 else
 bbca-analysis:
-	@$(GO) run ./server/cmd/bbca analysis --db "$(ANALYSIS_DB)" --format "$(ANALYSIS_FORMAT)" --view "$(ANALYSIS_VIEW)" --evidence "$(ANALYSIS_EVIDENCE)"
+	@$(GO) run ./server/cmd/bbca analysis --db "$(ANALYSIS_DB)" --format "$(ANALYSIS_FORMAT)" --view "$(ANALYSIS_VIEW)" --evidence "$(ANALYSIS_EVIDENCE)" $(if $(ANALYSIS_BANK_CATALOG),--bank-catalog "$(ANALYSIS_BANK_CATALOG)") $(if $(ANALYSIS_BANK_EVIDENCE),--bank-evidence "$(ANALYSIS_BANK_EVIDENCE)") $(if $(ANALYSIS_BANK_SCENARIOS),--bank-scenarios "$(ANALYSIS_BANK_SCENARIOS)")
 endif
 
 bbca-analysis-pdf:
 	@set -eu; \
 	input=$$(mktemp); \
 	trap 'rm -f "$$input"' EXIT; \
-	$(GO) run ./server/cmd/bbca analysis --db "$(ANALYSIS_DB)" --format json --view "$(ANALYSIS_VIEW)" --evidence "$(ANALYSIS_EVIDENCE)" > "$$input"; \
+	$(GO) run ./server/cmd/bbca analysis --db "$(ANALYSIS_DB)" --format json --view "$(ANALYSIS_VIEW)" --evidence "$(ANALYSIS_EVIDENCE)" $(if $(ANALYSIS_BANK_CATALOG),--bank-catalog "$(ANALYSIS_BANK_CATALOG)") $(if $(ANALYSIS_BANK_EVIDENCE),--bank-evidence "$(ANALYSIS_BANK_EVIDENCE)") $(if $(ANALYSIS_BANK_SCENARIOS),--bank-scenarios "$(ANALYSIS_BANK_SCENARIOS)") > "$$input"; \
 	"$(PYTHON)" scripts/bbca_analysis_pdf.py "$$input" "$(ANALYSIS_PDF)" --view "$(ANALYSIS_VIEW)"
 
 web-install:
