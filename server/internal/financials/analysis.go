@@ -124,8 +124,6 @@ type AnalysisReport struct {
 	InterimRisk      []analysisObservation     `json:"interim_risk"`
 	PeerRows         []analysisPeerRow         `json:"peer_comparisons"`
 	Coverage         analysisCoverage          `json:"evidence_coverage"`
-	Brief            []reportSection           `json:"brief_sections"`
-	Appendix         []reportSection           `json:"evidence_sections"`
 	Yearly           []reportSection           `json:"yearly_sections,omitempty"`
 	YearlyTemplate   *yearlyTemplate           `json:"yearly_template,omitempty"`
 }
@@ -353,7 +351,6 @@ func BuildAnalysisWithBankScenarios(ctx context.Context, db *sql.DB, catalogPath
 	if err != nil {
 		return nil, err
 	}
-	report.Brief = report.briefSections()
 	report.Yearly, err = report.yearlySections(evidence.YearStories, evidence.YearStorySources)
 	if err != nil {
 		return nil, err
@@ -362,10 +359,6 @@ func BuildAnalysisWithBankScenarios(ctx context.Context, db *sql.DB, catalogPath
 		report.YearlyTemplate = &yearlyTemplate{
 			ID: reportlayout.StandardTemplate, Title: "BBCA Year by Year", Footer: "BBCA fundamentals · year-by-year comparison",
 		}
-	}
-	report.Appendix, err = report.evidenceSections()
-	if err != nil {
-		return nil, err
 	}
 	return report, tx.Commit()
 }

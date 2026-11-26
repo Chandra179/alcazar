@@ -55,9 +55,9 @@ API routes:
 
 Metrics use approved facts only and require compatible, known reporting basis, audit status, currency, and unit metadata. ROA and ROE average balances are derived from approved current- and prior-period balances, and the metric response includes both source facts. The capital-expenditure burden uses a trailing ten fiscal-year window for annual periods; interim requests remain `requires_multi_period`, and the response links every annual input to its source. Formula statuses distinguish `missing_inputs`, `conflict`, `not_applicable`, `requires_external_data`, `requires_multi_period`, and `requires_manual_estimate`; an unknown formula ID remains `unsupported`. Coverage reports pending and approved facts by period and identifies missing consolidated statement inputs. Review prompts use selected fact keys and statement disclosures with source references. A prompt can include pending evidence and labels its review status.
 
-## FY2025 analysis report
+## BBCA yearly report
 
-Open [`analysis/bbca-fy2025.md`](analysis/bbca-fy2025.md) for the brief and [`analysis/bbca-fy2025-evidence.md`](analysis/bbca-fy2025-evidence.md) for full history, source coverage, the 101 rule assessments, calculations and the grouped review queue. [`analysis/bbca-fy2025.yaml`](analysis/bbca-fy2025.yaml) records the qualitative assessments, supplemental observations, and the catalog and approved-fact hashes. The decision CSV records approved extracted statement facts. The evidence YAML includes source-located statement inputs for pages or rows the parser missed. The report uses those reviewed inputs only when an approved candidate for that scope is absent. Review decisions use the original candidate revisions, so regenerating candidates with a different parser or OCR result may require a fresh review.
+[`analysis/bbca-fy2025.yaml`](analysis/bbca-fy2025.yaml) records the qualitative assessments, supplemental observations, and the catalog and approved-fact hashes. The decision CSV records approved extracted statement facts. The evidence YAML includes source-located statement inputs for pages or rows the parser missed. The report uses those reviewed inputs only when an approved candidate for that scope is absent. Review decisions use the original candidate revisions, so regenerating candidates with a different parser or OCR result may require a fresh review.
 
 Create the dedicated database once from the repository root. Run the approval step against a fresh analysis database. Reapplying the same decisions to an already reviewed database reports stale candidate revisions.
 
@@ -71,28 +71,18 @@ If `lux.db` already contains the matching initial 40-document import and has no 
 
 ```sh
 make bbca-analysis
-make bbca-analysis ANALYSIS_VIEW=evidence
-make bbca-analysis ANALYSIS_VIEW=yearly
 make bbca-analysis ANALYSIS_FORMAT=json > /tmp/bbca-fy2025.json
 ```
 
 The Markdown and JSON commands write to stdout and open the database read-only. The default catalog is the repository-root `fundamental-analysis.yaml`. Native CLI invocations also accept `--catalog` or `BBCA_CATALOG`. The report requires the catalog in SQLite, the supplied YAML, and its reviewed evidence hash to agree. A change to a supported formula requires a matching code change. Numeric narrative and rule assessments are pinned to the approved fact set, including its source references. To update the snapshot, recheck assessments and source observations against the new facts, then record the output of `make bbca-analysis ANALYSIS_FORMAT=facts-hash` as `facts_hash` in the evidence file. `ANALYSIS_DB` and `ANALYSIS_EVIDENCE` override the report inputs.
 
-The yearly Make targets load the bank catalog, reviewed evidence and illustrative scenario YAML by default. This adds pages for bank risk, funding, stress and valuation. Set `ANALYSIS_BANK_CATALOG=` for the yearly report without the bank sections. Native CLI callers can pass `--bank-catalog`, `--bank-evidence`, and optionally `--bank-scenarios`.
+The yearly report command loads the bank catalog, reviewed evidence and illustrative scenario YAML by default. This adds pages for bank risk, funding, stress and valuation. Set `ANALYSIS_BANK_CATALOG=` for the yearly report without the bank sections. Native CLI callers can pass `--bank-catalog`, `--bank-evidence`, and optionally `--bank-scenarios`.
 
-The evidence companion includes the full ratio and calculation records. Generate it with:
-
-```sh
-make bbca-analysis ANALYSIS_VIEW=evidence \
-  ANALYSIS_BANK_CATALOG=bank-analysis.yaml \
-  ANALYSIS_BANK_SCENARIOS=data/analysis/bbca-valuation-scenarios.yaml
-```
-
-Use the same variables with `make bbca-analysis-pdf` for the PDF. See the [Markdown companion](analysis/bbca-fy2025-bank-evidence.md) and [PDF companion](../output/pdf/bbca-fy2025-evidence-bank.pdf). The bank overlay adds ten rules to the shared catalog. The credit-cost, NPL coverage proxy, and deposit-cost series cover FY2018–FY2025 and comparable 2025/2026 interim periods through September 2026. Gross Stage 2 and Stage 3 shares match the bank-only loan staging table at each balance date. The funding comparison shows the issuers’ reported CASA figures and their different scopes. Interim flow ratios use period-to-date figures.
+The bank overlay adds ten rules to the shared catalog. The credit-cost, NPL coverage proxy, and deposit-cost series cover FY2018–FY2025 and comparable 2025/2026 interim periods through September 2026. Gross Stage 2 and Stage 3 shares match the bank-only loan staging table at each balance date. The funding comparison shows the issuers’ reported CASA figures and their different scopes. Interim flow ratios use period-to-date figures.
 
 The [scenario inputs](analysis/bbca-valuation-scenarios.yaml) select a set of reviewed consolidated opening balances. Change the named cases to compare earnings and RWA growth, capital targets, discount rates, and one-year credit and funding stress. The decimal rates and capital targets are analyst assumptions. Credit shocks are incremental to normalized earnings. The stress bridge applies the scenario tax rate to incremental losses and uses a zero regulatory capital adjustment unless configured. The [bank evidence](analysis/bbca-bank-analysis.yaml) describes the remaining research gaps, including observed deposit repricing and a complete bank-specific regulatory capital and distribution bridge.
 
-To upgrade a previously reviewed analysis database, rebuild the dedicated snapshot from the unreviewed import and reapply the updated decision CSV. Keep the previous database as a backup until the new report succeeds. The restated opening cells are stored as alternate facts for the audited comparison so the as-filed historical totals retain their own source basis. The consolidated KM1 table links reviewed values to both the capital PDF and the matching workbook cells. The JSON carries all available report views alongside the existing facts, observations, rule assessments and metric fields. The evidence view combines equivalent candidate values within compatible period, basis, audit status and units. Source and status remain visible for each candidate. The grouping does not approve pending facts.
+To upgrade a previously reviewed analysis database, rebuild the dedicated snapshot from the unreviewed import and reapply the updated decision CSV. Keep the previous database as a backup until the new report succeeds. The restated opening cells are stored as alternate facts for the audited comparison so the as-filed historical totals retain their own source basis. The consolidated KM1 table links reviewed values to both the capital PDF and the matching workbook cells. The JSON includes the yearly report sections, facts, observations, rule assessments, and metrics.
 
 The [BBCA yearly report](analysis/bbca-fy2025-yearly.md) uses Standard Template 1. The contents-only cover leads into the 2026 interim update and any enabled bank analysis, followed by annual comparisons from newest to oldest and the table legend and glossary. The report uses reviewed facts and observations with scope-matched comparisons and source links. It calculates price changes from split-adjusted closes and reuses the reviewed holding-period return. Year-to-date returns require a reviewed period-end close and dividends earned through the same date on that share basis.
 
@@ -101,7 +91,7 @@ The [BBCA yearly report](analysis/bbca-fy2025-yearly.md) uses Standard Template 
 The HTML source is [`standard-1.html.tmpl`](../server/internal/report/templates/standard-1.html.tmpl). The Go report module embeds it with `embed` and renders it with `html/template`. Export a self-contained HTML report with:
 
 ```sh
-make bbca-analysis ANALYSIS_VIEW=yearly ANALYSIS_FORMAT=html > bbca-fy2025-yearly.html
+make bbca-analysis ANALYSIS_FORMAT=html > bbca-fy2025-yearly.html
 ```
 
 Go resolves section and table layout once for HTML, Markdown, and PDF. The PDF adapter reads the derived `layout` metadata when available and handles pagination.
@@ -119,12 +109,10 @@ The PDF uses the same report sections as Markdown and has clickable source links
 ```sh
 python3 -m venv .venv-bbca-pdf
 .venv-bbca-pdf/bin/python -m pip install reportlab==4.4.9
-make bbca-analysis-pdf PYTHON=.venv-bbca-pdf/bin/python
-make bbca-analysis-pdf ANALYSIS_VIEW=evidence PYTHON=.venv-bbca-pdf/bin/python
-make bbca-analysis-pdf ANALYSIS_VIEW=yearly PYTHON=.venv-bbca-pdf/bin/python
+make bbca-analysis ANALYSIS_FORMAT=pdf PYTHON=.venv-bbca-pdf/bin/python
 ```
 
-If `python3` already has ReportLab, run `make bbca-analysis-pdf` or `make bbca-analysis ANALYSIS_FORMAT=pdf`. The default destination for the brief is `output/pdf/bbca-fy2025.pdf`. The evidence and yearly views add `-evidence` and `-yearly` to the filename. Set `ANALYSIS_PDF=/path/to/report.pdf` to choose another file. Use `PYTHON` to select an existing interpreter with ReportLab. PDF export uses the same dedicated analysis database and evidence as Markdown and JSON.
+If `python3` already has ReportLab, run `make bbca-analysis ANALYSIS_FORMAT=pdf`. The default destination is `output/pdf/bbca-fy2025-yearly.pdf`. Set `ANALYSIS_PDF=/path/to/report.pdf` to choose another file. Use `PYTHON` to select an existing interpreter with ReportLab. PDF export uses the same dedicated analysis database and evidence as Markdown and JSON.
 
 ## Official source pages
 

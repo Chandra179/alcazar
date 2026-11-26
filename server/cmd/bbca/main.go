@@ -43,7 +43,7 @@ func run(args []string) error {
 	skipOCR := flags.Bool("skip-ocr", false, "use PDF text without OCR for documents that have a verified text layer")
 	force := flags.Bool("force", false, "rebuild facts from cached pages and extract any missing pages")
 	analysisFormat := flags.String("format", "markdown", "analysis output format (markdown, html, json, or facts-hash)")
-	view := flags.String("view", "brief", "analysis report view (brief, evidence, or yearly)")
+	view := flags.String("view", "yearly", "analysis report view (yearly)")
 	evidencePath := flags.String("evidence", filepath.Join("data", "analysis", "bbca-fy2025.yaml"), "analysis evidence file")
 	bankEvidencePath := flags.String("bank-evidence", "", "optional bank-specific reviewed evidence path")
 	bankScenarioPath := flags.String("bank-scenarios", "", "optional bank stress and valuation assumptions YAML")
@@ -104,16 +104,12 @@ func run(args []string) error {
 
 func runAnalysis(ctx context.Context, dbPath, catalogPath, evidencePath, bankCatalogPath, bankEvidencePath, bankScenarioPath, format, view string) error {
 	switch format {
-	case "markdown", "json", "facts-hash":
-	case "html":
-		if view != "yearly" {
-			return fmt.Errorf("HTML output requires the yearly analysis view")
-		}
+	case "markdown", "html", "json", "facts-hash":
 	default:
 		return fmt.Errorf("invalid analysis format %q (use markdown, html, json, or facts-hash)", format)
 	}
-	if view != "brief" && view != "evidence" && view != "yearly" {
-		return fmt.Errorf("invalid analysis view %q (use brief, evidence, or yearly)", view)
+	if view != "yearly" {
+		return fmt.Errorf("invalid analysis view %q (use yearly)", view)
 	}
 	path, err := filepath.Abs(dbPath)
 	if err != nil {

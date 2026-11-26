@@ -20,7 +20,7 @@ try:
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
     from reportlab.platypus import (
-        KeepTogether, LongTable, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle,
+        LongTable, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle,
     )
 except ModuleNotFoundError as exc:
     if exc.name != "reportlab":
@@ -31,7 +31,6 @@ NAVY = colors.HexColor("#123047")
 TEAL = colors.HexColor("#006F67")
 MUTED = colors.HexColor("#465767")
 LINE = colors.HexColor("#CFDBE3")
-PALE = colors.HexColor("#EDF5F6")
 WHITE = colors.white
 WIDTH = A4[0] - 88
 YEARLY_WIDTH = WIDTH - 12
@@ -44,15 +43,10 @@ pdfmetrics.registerFont(TTFont(BOLD, str(FONT_DIRECTORY / "VeraBd.ttf")))
 pdfmetrics.registerFontFamily(FONT, normal=FONT, bold=BOLD)
 
 STYLES = {
-    "title": ParagraphStyle("title", fontName=BOLD, fontSize=31, leading=37, spaceAfter=9, textColor=NAVY),
     "cover_title": ParagraphStyle("cover_title", fontName=BOLD, fontSize=40, leading=45, spaceAfter=14, textColor=NAVY),
     "deck": ParagraphStyle("deck", fontSize=13, leading=19, textColor=MUTED, spaceAfter=16),
-    "section": ParagraphStyle("section", fontName=BOLD, fontSize=22, leading=26,
-                              spaceBefore=11, spaceAfter=9, textColor=NAVY, keepWithNext=True),
     "heading": ParagraphStyle("heading", fontName=BOLD, fontSize=12, leading=15,
                               spaceBefore=9, spaceAfter=3, textColor=NAVY, keepWithNext=True),
-    "year": ParagraphStyle("year", fontName=BOLD, fontSize=16, leading=21,
-                           spaceBefore=13, spaceAfter=6, textColor=NAVY, keepWithNext=True),
     "year_number": ParagraphStyle("year_number", fontName=BOLD, fontSize=25, leading=29,
                                    textColor=NAVY, keepWithNext=True),
     "year_headline": ParagraphStyle("year_headline", fontName=BOLD, fontSize=13, leading=17,
@@ -61,12 +55,7 @@ STYLES = {
                                      spaceAfter=3, textColor=NAVY, keepWithNext=True),
     "eyebrow": ParagraphStyle("eyebrow", fontName=BOLD, fontSize=9, leading=12,
                               spaceAfter=5, textColor=TEAL, keepWithNext=True),
-    "body": ParagraphStyle("body", fontSize=10, leading=14, spaceAfter=7, textColor=NAVY),
-    "note": ParagraphStyle("note", fontSize=8.3, leading=11.3, spaceAfter=5, textColor=MUTED),
     "sources": ParagraphStyle("sources", fontSize=8, leading=11, spaceAfter=7, textColor=MUTED),
-    "cell": ParagraphStyle("cell", fontSize=8.1, leading=10.6, textColor=NAVY),
-    "number": ParagraphStyle("number", fontSize=8.1, leading=10.6, textColor=NAVY, alignment=TA_RIGHT),
-    "header": ParagraphStyle("header", fontName=BOLD, fontSize=8, leading=10, textColor=WHITE),
     "year_header": ParagraphStyle("year_header", fontName=BOLD, fontSize=7.8, leading=10, textColor=MUTED),
     "year_cell": ParagraphStyle("year_cell", fontSize=8.15, leading=10.5, textColor=NAVY),
     "year_number_cell": ParagraphStyle("year_number_cell", fontSize=8.15, leading=10.5,
@@ -91,8 +80,6 @@ def link(reference):
     label, url = reference["text"], reference["url"]
     if url.startswith("#") or urlsplit(url).scheme == "https":
         return f'<link href={quoteattr(url)} color="#006F67">{plain(label)}</link>'
-    if url == "bbca-fy2025-evidence.md":
-        return "bbca-fy2025-evidence.pdf"
     return plain(label)
 
 
@@ -195,74 +182,26 @@ def yearly_paragraphs(section):
 
 
 class AnalysisPDF:
-    def __init__(self, report, view):
-        self.view = view
-        section_key, self.title = {
-            "brief": ("brief_sections", "BBCA fundamental analysis"),
-            "evidence": ("evidence_sections", "BBCA evidence companion"),
-            "yearly": ("yearly_sections", ""),
-        }[view]
-        self.sections = report[section_key]
-        if view == "yearly":
-            template = report.get("yearly_template")
-            if template is None:
-                template = {"id": "standard-1", "title": "BBCA Year by Year",
-                            "footer": "BBCA fundamentals · year-by-year comparison"}
-                self.sections = legacy_yearly_sections(self.sections)
-            if template["id"] != "standard-1":
-                raise ValueError(f"unsupported yearly template {template['id']!r}")
-            fill_archived_layout(self.sections)
-            self.title = template["title"]
-            self.footer = template["footer"]
+    def __init__(self, report):
+        self.sections = report["yearly_sections"]
+        template = report.get("yearly_template")
+        if template is None:
+            template = {"id": "standard-1", "title": "BBCA Year by Year",
+                        "footer": "BBCA fundamentals · year-by-year comparison"}
+            self.sections = legacy_yearly_sections(self.sections)
+        if template["id"] != "standard-1":
+            raise ValueError(f"unsupported yearly template {template['id']!r}")
+        fill_archived_layout(self.sections)
+        self.title = template["title"]
+        self.footer = template["footer"]
         self.story = []
 
-    def paragraph(self, text, style="body"):
+    def paragraph(self, text, style):
         self.story.append(Paragraph(text, STYLES[style]))
 
-    def table(self, table):
-        headers = table["headers"]
+    def yearly_table(self, table, contents=False):
         if not table.get("rows"):
             return
-        if self.view == "yearly":
-            self.yearly_table(table)
-            return
-        if table.get("title"):
-            self.paragraph(plain(table["title"]), "heading")
-        widths = {
-            "Catalog rules": [.28, .20, .25, .27],
-            "Evidence and gaps": [.19, .16, .50, .15],
-            "Source candidates": [.29, .16, .55],
-            "Reviewed value or reference": [.40, .60],
-            "Locator": [.47, .53],
-            "Value and unit": [.30, .12, .16, .15, .27],
-            "Note": [.14, .20, .66],
-            "Gap": [.21, .15, .26, .38],
-            "Profit YoY": [.12, .17, .18, .17, .19, .17],
-            "FY2025": [.36, .22, .15, .135, .135],
-    "Input sources": [.14, .09, .09, .10, .11, .18, .29],
-        }
-        fractions = next((v for k, v in widths.items() if k in headers), [1 / len(headers)] * len(headers))
-        cells = [[Paragraph(plain(header), STYLES["header"]) for header in headers]]
-        for row in table["rows"]:
-            source_table = "Input sources" in headers
-            cells.append([
-                Paragraph(cell_content(cell), STYLES["note"] if source_table and index == len(row) - 1 else STYLES["cell"])
-                for index, cell in enumerate(row)
-            ])
-        grid = LongTable(cells, colWidths=[WIDTH * fraction for fraction in fractions],
-                         repeatRows=1, hAlign="LEFT", spaceAfter=10)
-        grid.setStyle(TableStyle([
-            ("BACKGROUND", (0, 0), (-1, 0), NAVY),
-            ("ROWBACKGROUNDS", (0, 1), (-1, -1), [WHITE, PALE]),
-            ("LINEBELOW", (0, 0), (-1, 0), 0.7, TEAL),
-            ("LINEBELOW", (0, -1), (-1, -1), 0.5, LINE),
-            ("VALIGN", (0, 0), (-1, -1), "TOP"),
-            ("TOPPADDING", (0, 0), (-1, -1), 4),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
-        ]))
-        self.story.append(grid)
-
-    def yearly_table(self, table, contents=False):
         headers = table["headers"]
         layout = table["layout"]
         roles = layout["column_roles"]
@@ -330,7 +269,7 @@ class AnalysisPDF:
         for table in section.get("tables", []):
             layout = table["layout"]
             if not layout.get("contents"):
-                self.table(table)
+                self.yearly_table(table)
                 continue
             self.paragraph(plain(table["title"]), "eyebrow")
             rows = []
@@ -380,7 +319,7 @@ class AnalysisPDF:
         if takeaways and section.get("tables"):
             self.story.append(Spacer(1, 8))
         for table in section.get("tables", []):
-            self.table(table)
+            self.yearly_table(table)
         for cell in sources:
             self.paragraph(cell_content(cell, " · "), "sources")
 
@@ -411,59 +350,21 @@ class AnalysisPDF:
         return doc.page_starts, doc.page
 
     def render(self, destination):
-        if self.view == "yearly":
-            with BytesIO() as draft:
-                page_starts, page_count = self.build_yearly(draft, {})
-            if self.build_yearly(str(destination), page_starts, page_count) != (page_starts, page_count):
-                raise ValueError("yearly contents changed document pagination")
-            return
-
-        edition = "FY2025"
-        self.paragraph(plain(edition), "eyebrow")
-        self.paragraph(plain(self.title), "title")
-        for section in self.sections:
-            anchor = section.get("id", "")
-            year = anchor.startswith("year-")
-            start = len(self.story)
-            if section.get("title"):
-                heading_style = "year" if year else "heading" if anchor.startswith("calc-") else "section"
-                self.paragraph(plain(section["title"]), heading_style)
-                self.story[-1].anchor = anchor
-            for cell in section.get("paragraphs", []):
-                style = "sources" if year and not cell.get("text") else "note" if anchor.startswith("calc-") else "body"
-                self.paragraph(cell_content(cell), style)
-            for table in section.get("tables", []):
-                self.table(table)
-            if year:
-                self.story[start:] = [KeepTogether(self.story[start:])]
-
-        doc = PDFDocument(str(destination), pagesize=A4, leftMargin=44, rightMargin=44,
-                          topMargin=49, bottomMargin=47, title=self.title + " - " + edition,
-                          author="Alcazar")
-
-        def page(canvas, _doc):
-            canvas.setStrokeColor(LINE)
-            canvas.line(44, A4[1] - 35, A4[0] - 44, A4[1] - 35)
-            canvas.line(44, 35, A4[0] - 44, 35)
-            canvas.setFont(FONT, 8)
-            canvas.setFillColor(MUTED)
-            canvas.drawString(44, 23, f"BBCA  /  {edition}  /  {self.view.upper()}")
-            canvas.drawRightString(A4[0] - 44, 23, str(canvas.getPageNumber()))
-
-        doc.build(self.story, onFirstPage=page, onLaterPages=page)
-        if self.view == "brief" and doc.page > 6:
-            raise ValueError(f"BBCA brief exceeds its six-page budget ({doc.page} pages)")
+        with BytesIO() as draft:
+            page_starts, page_count = self.build_yearly(draft, {})
+        if self.build_yearly(str(destination), page_starts, page_count) != (page_starts, page_count):
+            raise ValueError("yearly contents changed document pagination")
 
 
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("report", type=Path, help="BBCA analysis JSON")
     cli.add_argument("output", type=Path, help="destination PDF")
-    cli.add_argument("--view", choices=("brief", "evidence", "yearly"), default="brief")
+    cli.add_argument("--view", choices=("yearly",), default="yearly")
     args = cli.parse_args()
     with args.report.open(encoding="utf-8") as stream:
         report = json.load(stream)
-    pdf = AnalysisPDF(report, args.view)
+    pdf = AnalysisPDF(report)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".bbca-pdf-", dir=args.output.parent) as directory:
         draft = Path(directory) / "report.pdf"

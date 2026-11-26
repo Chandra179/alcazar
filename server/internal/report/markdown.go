@@ -6,11 +6,11 @@ import (
 	"strings"
 )
 
-func WriteMarkdown(w io.Writer, title string, sections []Section, yearly bool) error {
+func WriteMarkdown(w io.Writer, title string, sections []Section) error {
 	var out strings.Builder
 	fmt.Fprintln(&out, "# "+title)
 	for i, section := range sections {
-		if yearly && i > 0 {
+		if i > 0 {
 			fmt.Fprintln(&out, "\n---")
 		}
 		if section.ID != "" {
@@ -28,7 +28,7 @@ func WriteMarkdown(w io.Writer, title string, sections []Section, yearly bool) e
 			fmt.Fprintln(&out, prefix+markdownCell(cell, " "))
 		}
 		for _, table := range section.Tables {
-			writeMarkdownTable(&out, table, yearly, takeaways)
+			writeMarkdownTable(&out, table, takeaways)
 		}
 		for _, cell := range section.Sources() {
 			fmt.Fprintln(&out, "\n"+markdownCell(cell, " · "))
@@ -38,7 +38,7 @@ func WriteMarkdown(w io.Writer, title string, sections []Section, yearly bool) e
 	return err
 }
 
-func writeMarkdownTable(out *strings.Builder, table Table, yearly, takeaways bool) {
+func writeMarkdownTable(out *strings.Builder, table Table, takeaways bool) {
 	if table.Title != "" {
 		fmt.Fprintln(out, "\n### "+table.Title)
 	}
@@ -65,10 +65,7 @@ func writeMarkdownTable(out *strings.Builder, table Table, yearly, takeaways boo
 			if takeaways && role != "" {
 				cell.Links = nil
 			}
-			value := markdownCell(cell, " ")
-			if yearly {
-				value = strings.TrimSpace(value)
-			}
+			value := strings.TrimSpace(markdownCell(cell, " "))
 			value = strings.ReplaceAll(value, "|", "\\|")
 			if (group && column == 0) || (!group && role == "current" && value != "") {
 				value = bold(value)

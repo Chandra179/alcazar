@@ -9,28 +9,20 @@ import (
 )
 
 func (r *AnalysisReport) Write(w io.Writer, format string) error {
-	return r.WriteView(w, format, "brief")
+	return r.WriteView(w, format, "yearly")
 }
 
 func (r *AnalysisReport) WriteView(w io.Writer, format, view string) error {
-	sections := r.Brief
-	title := "BBCA fundamental analysis · FY2025"
-	switch view {
-	case "brief":
-	case "evidence":
-		title = "BBCA evidence companion · FY2025"
-		sections = r.Appendix
-	case "yearly":
-		if len(r.Yearly) == 0 {
-			return fmt.Errorf("the reviewed evidence has no yearly stories")
-		}
-		title = "BBCA Year by Year"
-		if r.YearlyTemplate != nil {
-			title = r.YearlyTemplate.Title
-		}
-		sections = r.Yearly
-	default:
-		return fmt.Errorf("unknown analysis view %q", view)
+	if view != "yearly" {
+		return fmt.Errorf("unknown analysis view %q (use yearly)", view)
+	}
+	if len(r.Yearly) == 0 {
+		return fmt.Errorf("the reviewed evidence has no yearly stories")
+	}
+	sections := r.Yearly
+	template := yearlyTemplate{ID: report.StandardTemplate, Title: "BBCA Year by Year"}
+	if r.YearlyTemplate != nil {
+		template = *r.YearlyTemplate
 	}
 	switch format {
 	case "json":
@@ -38,15 +30,8 @@ func (r *AnalysisReport) WriteView(w io.Writer, format, view string) error {
 		encoder.SetIndent("", "  ")
 		return encoder.Encode(r)
 	case "markdown":
-		return report.WriteMarkdown(w, title, sections, view == "yearly")
+		return report.WriteMarkdown(w, template.Title, sections)
 	case "html":
-		if view != "yearly" {
-			return fmt.Errorf("HTML output requires the yearly analysis view")
-		}
-		template := yearlyTemplate{ID: report.StandardTemplate, Title: title}
-		if r.YearlyTemplate != nil {
-			template = *r.YearlyTemplate
-		}
 		return report.WriteYearlyHTML(w, template, sections)
 	default:
 		return fmt.Errorf("unknown analysis format %q", format)
