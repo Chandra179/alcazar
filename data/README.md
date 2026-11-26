@@ -67,7 +67,7 @@ make bbca-approve SQLITE_DSN=data/analysis/bbca-analysis.db \
   REVIEW_FILE=data/analysis/bbca-fy2025-review.csv
 ```
 
-If `lux.db` already contains the matching initial 40-document import and has no reviewed facts, it can supply the initial candidates. With `sqlite3` installed, run `sqlite3 -readonly lux.db '.backup data/analysis/bbca-analysis.db'` to seed a fresh analysis database. Run the import against that database to pick up the additional manifest files, then apply the decision CSV. For a cached import with only text-layer additions, the native import accepts `--skip-ocr` when Tesseract is unavailable.
+If `alcazar.db` already contains the matching initial 40-document import and has no reviewed facts, it can supply the initial candidates. With `sqlite3` installed, run `sqlite3 -readonly alcazar.db '.backup data/analysis/bbca-analysis.db'` to seed a fresh analysis database. Run the import against that database to pick up the additional manifest files, then apply the decision CSV. For a cached import with only text-layer additions, the native import accepts `--skip-ocr` when Tesseract is unavailable.
 
 ```sh
 make bbca-analysis
@@ -109,10 +109,10 @@ The PDF uses the same report sections as Markdown and has clickable source links
 ```sh
 python3 -m venv .venv-bbca-pdf
 .venv-bbca-pdf/bin/python -m pip install reportlab==4.4.9
-make bbca-analysis ANALYSIS_FORMAT=pdf PYTHON=.venv-bbca-pdf/bin/python
+make bbca-analysis ANALYSIS_FORMAT=pdf
 ```
 
-If `python3` already has ReportLab, run `make bbca-analysis ANALYSIS_FORMAT=pdf`. The default destination is `output/pdf/bbca-fy2025-yearly.pdf`. Set `ANALYSIS_PDF=/path/to/report.pdf` to choose another file. Use `PYTHON` to select an existing interpreter with ReportLab. PDF export uses the same dedicated analysis database and evidence as Markdown and JSON.
+Make uses `.venv-bbca-pdf/bin/python` when it exists and `python3` otherwise. Set `PYTHON` to use a different interpreter with ReportLab. The default destination is `output/pdf/bbca-fy2025-yearly.pdf`. Set `ANALYSIS_PDF=/path/to/report.pdf` to choose another file. PDF export uses the same dedicated analysis database and evidence as Markdown and JSON.
 
 ## Official source pages
 

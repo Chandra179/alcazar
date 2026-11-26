@@ -6,24 +6,24 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/lux-server ./server/cmd/example
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/alcazar-server ./server/cmd/example
 
 FROM docker.io/library/alpine:3.22
 
-RUN addgroup -S lux \
-    && adduser -S -G lux lux \
+RUN addgroup -S alcazar \
+    && adduser -S -G alcazar alcazar \
     && mkdir -p /data \
-    && chown lux:lux /data
+    && chown alcazar:alcazar /data
 
 WORKDIR /app
-COPY --from=build --chown=lux:lux /out/lux-server /app/lux-server
-COPY --from=build --chown=lux:lux /src/server/config /app/server/config
+COPY --from=build --chown=alcazar:alcazar /out/alcazar-server /app/alcazar-server
+COPY --from=build --chown=alcazar:alcazar /src/server/config /app/server/config
 
 ENV APP_ENVIRONMENT=prd \
-    SQLITE_DSN=/data/lux.db \
-    BADGER_DIR=/data/lux
+    SQLITE_DSN=/data/alcazar.db \
+    BADGER_DIR=/data/alcazar
 
 EXPOSE 8080
 VOLUME ["/data"]
-USER lux
-ENTRYPOINT ["/app/lux-server"]
+USER alcazar
+ENTRYPOINT ["/app/alcazar-server"]

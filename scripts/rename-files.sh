@@ -5,7 +5,7 @@ usage() {
 	echo "Usage: $0 <new-module-name>"
 	echo "Example: $0 github.com/me/myproject"
 	echo ""
-	echo "Renames the current Go module and the project's Lux references to the"
+	echo "Renames the current Go module and the project's name references to the"
 	echo "last path segment of <new-module-name>."
 	exit 1
 }
@@ -91,8 +91,8 @@ echo "  updated environment and datastore names"
 find . -path './vendor' -prune -o -path './.git' -prune -o -type f -name '*.md' -exec sed -i \
 	-e "s|$old/|$new/|g" \
 	-e "s|server/cmd/example|server/cmd/$new_name|g" \
-	-e "s|\<Lux\>|$new_title|g" \
-	-e "s|\<lux\>|$new_name|g" \
+	-e "s|\<$old_title\>|$new_title|g" \
+	-e "s|\<$old_name\>|$new_name|g" \
 	{} +
 sed -i "s|server/cmd/example|server/cmd/$new_name|g" Containerfile Makefile
 echo "  updated documentation, Containerfile, and Makefile"

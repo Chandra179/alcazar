@@ -11,8 +11,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Chandra179/lux/server/internal/financials"
-	"github.com/Chandra179/lux/server/store"
+	"github.com/Chandra179/alcazar/server/internal/financials"
+	"github.com/Chandra179/alcazar/server/store"
 )
 
 func main() {
@@ -147,5 +147,5 @@ func defaultDBPath() string {
 	if value := strings.TrimSpace(os.Getenv("SQLITE_DSN")); value != "" {
 		return value
 	}
-	return "lux.db"
+	return "alcazar.db"
 }

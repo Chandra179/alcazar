@@ -1,5 +1,5 @@
 # Runtime data when running commands from the server directory
 *.db
 *.db-*
-lux/
+alcazar/
 badger/

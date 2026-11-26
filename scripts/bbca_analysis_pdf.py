@@ -20,7 +20,7 @@ try:
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
     from reportlab.platypus import (
-        LongTable, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle,
+        BaseDocTemplate, Frame, LongTable, PageBreak, PageTemplate, Paragraph, Spacer, Table, TableStyle,
     )
 except ModuleNotFoundError as exc:
     if exc.name != "reportlab":
@@ -32,8 +32,18 @@ TEAL = colors.HexColor("#006F67")
 MUTED = colors.HexColor("#465767")
 LINE = colors.HexColor("#CFDBE3")
 WHITE = colors.white
-WIDTH = A4[0] - 88
-YEARLY_WIDTH = WIDTH - 12
+PAGE_MARGIN = 48
+BODY_INSET = 56
+RULE_INSET = 36
+FOOTER_BASELINE = 24
+CONTENT_WIDTH = A4[0] - 2 * PAGE_MARGIN
+PARAGRAPH_GAP = 4
+HEADING_GAP = 8
+BLOCK_GAP = 12
+COVER_OFFSET = 64
+PERIOD_GUTTER = 16
+CELL_PAD_X = 6
+CELL_PAD_Y = 4
 PUNCTUATION = str.maketrans({"–": "-", "—": "-", "−": "-", "‑": "-", " ": " "})
 FONT = "Report Sans"
 BOLD = "Report Sans Bold"
@@ -43,19 +53,17 @@ pdfmetrics.registerFont(TTFont(BOLD, str(FONT_DIRECTORY / "VeraBd.ttf")))
 pdfmetrics.registerFontFamily(FONT, normal=FONT, bold=BOLD)
 
 STYLES = {
-    "cover_title": ParagraphStyle("cover_title", fontName=BOLD, fontSize=40, leading=45, spaceAfter=14, textColor=NAVY),
-    "deck": ParagraphStyle("deck", fontSize=13, leading=19, textColor=MUTED, spaceAfter=16),
-    "heading": ParagraphStyle("heading", fontName=BOLD, fontSize=12, leading=15,
-                              spaceBefore=9, spaceAfter=3, textColor=NAVY, keepWithNext=True),
+    "cover_title": ParagraphStyle("cover_title", fontName=BOLD, fontSize=40, leading=45,
+                                  spaceAfter=HEADING_GAP, textColor=NAVY),
+    "deck": ParagraphStyle("deck", fontSize=13, leading=19, textColor=MUTED, spaceAfter=PARAGRAPH_GAP),
+    "heading": ParagraphStyle("heading", fontName=BOLD, fontSize=12, leading=15, textColor=NAVY),
     "year_number": ParagraphStyle("year_number", fontName=BOLD, fontSize=25, leading=29,
                                    textColor=NAVY, keepWithNext=True),
     "year_headline": ParagraphStyle("year_headline", fontName=BOLD, fontSize=13, leading=17,
                                      textColor=NAVY, keepWithNext=True),
-    "year_glossary": ParagraphStyle("year_glossary", fontName=BOLD, fontSize=25, leading=30,
-                                     spaceAfter=3, textColor=NAVY, keepWithNext=True),
-    "eyebrow": ParagraphStyle("eyebrow", fontName=BOLD, fontSize=9, leading=12,
-                              spaceAfter=5, textColor=TEAL, keepWithNext=True),
-    "sources": ParagraphStyle("sources", fontSize=8, leading=11, spaceAfter=7, textColor=MUTED),
+    "section_title": ParagraphStyle("section_title", fontName=BOLD, fontSize=25, leading=30,
+                                    spaceAfter=HEADING_GAP, textColor=NAVY, keepWithNext=True),
+    "sources": ParagraphStyle("sources", fontSize=8, leading=11, spaceBefore=BLOCK_GAP, textColor=MUTED),
     "year_header": ParagraphStyle("year_header", fontName=BOLD, fontSize=7.8, leading=10, textColor=MUTED),
     "year_cell": ParagraphStyle("year_cell", fontSize=8.15, leading=10.5, textColor=NAVY),
     "year_number_cell": ParagraphStyle("year_number_cell", fontSize=8.15, leading=10.5,
@@ -63,7 +71,7 @@ STYLES = {
     "year_group": ParagraphStyle("year_group", fontName=BOLD, fontSize=8.3, leading=10.8,
                                   textColor=TEAL),
     "year_bullet": ParagraphStyle("year_bullet", fontSize=9.2, leading=12.1,
-                                   leftIndent=10, firstLineIndent=0, spaceAfter=4, textColor=MUTED),
+                                   leftIndent=10, firstLineIndent=0, spaceAfter=PARAGRAPH_GAP, textColor=MUTED),
 }
 STYLES["year_numeric_header"] = ParagraphStyle("year_numeric_header", parent=STYLES["year_header"], alignment=TA_RIGHT)
 STYLES["year_current_header"] = ParagraphStyle("year_current_header", parent=STYLES["year_numeric_header"], textColor=TEAL)
@@ -89,7 +97,7 @@ def cell_content(cell, separator=" "):
     return label + " ".join(filter(None, (plain(cell.get("text", "")), references)))
 
 
-class PDFDocument(SimpleDocTemplate):
+class PDFDocument(BaseDocTemplate):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.page_starts = {}
@@ -210,7 +218,7 @@ class AnalysisPDF:
         header_style = {"": "year_header", "numeric": "year_numeric_header", "current": "year_current_header"}
         value_style = {"": "year_cell", "numeric": "year_number_cell", "current": "year_current"}
 
-        caption = table.get("title") if not contents else None
+        caption = table.get("title")
         cells = []
         if caption:
             cells.append([Paragraph(plain(caption), STYLES["heading"]), *([""] * (len(headers) - 1))])
@@ -225,42 +233,37 @@ class AnalysisPDF:
                 Paragraph(plain(cell.get("text", "")) if role else cell_content(cell), STYLES[value_style[role]])
                 for cell, role in zip(row, roles)
             ])
-        grid = LongTable(cells, colWidths=[YEARLY_WIDTH * fraction for fraction in fractions],
-                         repeatRows=(header_row,), hAlign="LEFT", spaceAfter=7)
+        grid = LongTable(cells, colWidths=[CONTENT_WIDTH * fraction for fraction in fractions],
+                         repeatRows=(header_row,), hAlign="LEFT", spaceBefore=BLOCK_GAP)
         style = [
             ("BACKGROUND", (0, 0), (-1, 0), WHITE),
             ("LINEBELOW", (0, header_row), (-1, header_row), 0.7, LINE),
             ("LINEBELOW", (0, -1), (-1, -1), 0.5, LINE),
             ("VALIGN", (0, 0), (-1, -1), "TOP"),
-            ("TOPPADDING", (0, 0), (-1, -1), 4),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+            ("LEFTPADDING", (0, 0), (-1, -1), CELL_PAD_X),
+            ("RIGHTPADDING", (0, 0), (-1, -1), CELL_PAD_X),
+            ("TOPPADDING", (0, 0), (-1, -1), CELL_PAD_Y),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), CELL_PAD_Y),
             ("LINEBELOW", (0, header_row + 1), (-1, -1), 0.25, LINE),
         ]
         if caption:
             style.extend([
                 ("SPAN", (0, 0), (-1, 0)),
                 ("LEFTPADDING", (0, 0), (0, 0), 0),
-                ("TOPPADDING", (0, 0), (0, 0), 5),
-            ])
-        if contents:
-            style.extend([
-                ("TOPPADDING", (0, 1), (-1, -1), 10),
-                ("BOTTOMPADDING", (0, 1), (-1, -1), 10),
-                ("LINEBELOW", (0, 1), (-1, -1), 0.45, LINE),
+                ("TOPPADDING", (0, 0), (0, 0), 0),
+                ("BOTTOMPADDING", (0, 0), (0, 0), HEADING_GAP - CELL_PAD_Y),
             ])
         for index in sorted(group_rows):
             row_index = header_row + 1 + index
             style.extend([
                 ("SPAN", (0, row_index), (-1, row_index)),
                 ("LINEBELOW", (0, row_index), (-1, row_index), 0.4, LINE),
-                ("TOPPADDING", (0, row_index), (-1, row_index), 7),
-                ("BOTTOMPADDING", (0, row_index), (-1, row_index), 2),
             ])
         grid.setStyle(TableStyle(style))
         self.story.append(grid)
 
     def yearly_cover(self, section, page_starts):
-        self.story.append(Spacer(1, 72))
+        self.story.append(Spacer(1, COVER_OFFSET))
         self.paragraph(plain(self.title), "cover_title")
         self.story[-1].anchor = section["id"]
         body, sources = yearly_paragraphs(section)
@@ -271,7 +274,6 @@ class AnalysisPDF:
             if not layout.get("contents"):
                 self.yearly_table(table)
                 continue
-            self.paragraph(plain(table["title"]), "eyebrow")
             rows = []
             for row in table["rows"]:
                 refs = row[0].get("links", [])
@@ -285,16 +287,17 @@ class AnalysisPDF:
     def period_heading(self, title, period):
         headline = title.removeprefix(period + " — ")
         label_width = pdfmetrics.stringWidth(period, BOLD, STYLES["year_number"].fontSize)
-        width = min(YEARLY_WIDTH * .43, max(92, label_width + 14))
+        width = min(CONTENT_WIDTH * .43, label_width + PERIOD_GUTTER)
         heading = Table([
             [Paragraph(plain(period), STYLES["year_number"]), Paragraph(plain(headline), STYLES["year_headline"])],
-        ], colWidths=[width, YEARLY_WIDTH - width], hAlign="LEFT")
+        ], colWidths=[width, CONTENT_WIDTH - width], hAlign="LEFT", spaceAfter=HEADING_GAP)
         heading.setStyle(TableStyle([
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
             ("LEFTPADDING", (0, 0), (-1, -1), 0),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+            ("RIGHTPADDING", (0, 0), (0, 0), PERIOD_GUTTER),
             ("TOPPADDING", (0, 0), (-1, -1), 0),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
         ]))
         heading.anchor_title = title
         heading.keepWithNext = True
@@ -308,7 +311,7 @@ class AnalysisPDF:
 
         title = section["title"]
         period = section.get("period_label")
-        heading = self.period_heading(title, period) if period else Paragraph(plain(title), STYLES["year_glossary"])
+        heading = self.period_heading(title, period) if period else Paragraph(plain(title), STYLES["section_title"])
         heading.anchor = section["id"]
         self.story.append(heading)
         takeaways = section["layout"].get("takeaways", False)
@@ -316,8 +319,6 @@ class AnalysisPDF:
         body, sources = yearly_paragraphs(section)
         for cell in body:
             self.story.append(Paragraph(cell_content(cell), STYLES[style], bulletText="•" if takeaways else None))
-        if takeaways and section.get("tables"):
-            self.story.append(Spacer(1, 8))
         for table in section.get("tables", []):
             self.yearly_table(table)
         for cell in sources:
@@ -330,23 +331,26 @@ class AnalysisPDF:
                 self.story.append(PageBreak())
             self.yearly_section(section, page_starts)
 
-        doc = PDFDocument(destination, pagesize=A4, leftMargin=44, rightMargin=44,
-                          topMargin=49, bottomMargin=47, title=self.title, author="Alcazar")
+        doc = PDFDocument(destination, pagesize=A4, leftMargin=PAGE_MARGIN, rightMargin=PAGE_MARGIN,
+                          topMargin=BODY_INSET, bottomMargin=BODY_INSET, title=self.title, author="Alcazar")
 
         def year_page(canvas, _doc):
             canvas.setStrokeColor(TEAL)
             canvas.setLineWidth(1.35)
-            canvas.line(44, A4[1] - 35, A4[0] - 44, A4[1] - 35)
+            canvas.line(PAGE_MARGIN, A4[1] - RULE_INSET, A4[0] - PAGE_MARGIN, A4[1] - RULE_INSET)
             canvas.setStrokeColor(LINE)
             canvas.setLineWidth(0.6)
-            canvas.line(44, 35, A4[0] - 44, 35)
+            canvas.line(PAGE_MARGIN, RULE_INSET, A4[0] - PAGE_MARGIN, RULE_INSET)
             canvas.setFont(FONT, 8)
             canvas.setFillColor(MUTED)
-            canvas.drawString(44, 23, self.footer)
+            canvas.drawString(PAGE_MARGIN, FOOTER_BASELINE, self.footer)
             if page_count is not None:
-                canvas.drawRightString(A4[0] - 44, 23, f"{canvas.getPageNumber():02d} / {page_count:02d}")
+                canvas.drawRightString(A4[0] - PAGE_MARGIN, FOOTER_BASELINE, f"{canvas.getPageNumber():02d} / {page_count:02d}")
 
-        doc.build(self.story, onFirstPage=year_page, onLaterPages=year_page)
+        frame = Frame(PAGE_MARGIN, BODY_INSET, CONTENT_WIDTH, doc.height, leftPadding=0,
+                      rightPadding=0, topPadding=0, bottomPadding=0)
+        doc.addPageTemplates(PageTemplate("yearly", frames=frame, onPage=year_page))
+        doc.build(self.story)
         return doc.page_starts, doc.page
 
     def render(self, destination):

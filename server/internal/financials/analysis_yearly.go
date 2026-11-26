@@ -5,7 +5,7 @@ import (
 	"math"
 	"strings"
 
-	"github.com/Chandra179/lux/server/internal/report"
+	"github.com/Chandra179/alcazar/server/internal/report"
 )
 
 type analysisYearStory struct {

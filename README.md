@@ -1,6 +1,6 @@
-## Lux
+## Alcazar
 
-Lux contains a Go API server and a React frontend.
+Alcazar contains a Go API server and a React frontend.
 
 ### Backend
 

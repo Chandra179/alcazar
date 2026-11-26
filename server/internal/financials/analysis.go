@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	reportlayout "github.com/Chandra179/lux/server/internal/report"
+	reportlayout "github.com/Chandra179/alcazar/server/internal/report"
 	"gopkg.in/yaml.v3"
 )
 

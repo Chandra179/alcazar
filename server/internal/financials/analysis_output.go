@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Chandra179/lux/server/internal/report"
+	"github.com/Chandra179/alcazar/server/internal/report"
 )
 
 func (r *AnalysisReport) Write(w io.Writer, format string) error {

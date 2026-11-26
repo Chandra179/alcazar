@@ -15,7 +15,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Chandra179/lux/server/store"
+	"github.com/Chandra179/alcazar/server/store"
 )
 
 type ImportOptions struct {

@@ -11,8 +11,8 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/Chandra179/lux/server/router"
-	"github.com/Chandra179/lux/server/store"
+	"github.com/Chandra179/alcazar/server/router"
+	"github.com/Chandra179/alcazar/server/store"
 	"github.com/gin-gonic/gin"
 	"github.com/xuri/excelize/v2"
 	"go.uber.org/zap"

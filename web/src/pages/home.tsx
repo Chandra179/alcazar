@@ -23,7 +23,7 @@ const foundations = [
   {
     icon: Server,
     title: "Go API",
-    description: "A typed API layer is ready for the Lux server endpoints.",
+    description: "A typed API layer is ready for the Alcazar server endpoints.",
   },
 ]
 
@@ -31,12 +31,12 @@ export function HomePage() {
   return (
     <div className="space-y-10">
       <section className="max-w-3xl space-y-5">
-        <p className="text-sm font-medium text-primary">Lux platform</p>
+        <p className="text-sm font-medium text-primary">Alcazar platform</p>
         <h1 className="text-4xl font-semibold tracking-tight sm:text-6xl">
           A bright foundation for building with clarity.
         </h1>
         <p className="max-w-2xl text-lg text-muted-foreground">
-          The Lux frontend is ready for pages, reusable components, and a typed
+          The Alcazar frontend is ready for pages, reusable components, and a typed
           connection to the Go server.
         </p>
         <Button>

@@ -19,9 +19,10 @@ go.work.sum
 
 # Local environment and server runtime data
 .env
+.venv-bbca-pdf/
 *.db
 *.db-*
-lux/
+alcazar/
 badger/
 data/extracted/
 data/review/

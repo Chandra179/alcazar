@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Chandra179/lux/server/store"
+	"github.com/Chandra179/alcazar/server/store"
 	"gopkg.in/yaml.v3"
 )
 

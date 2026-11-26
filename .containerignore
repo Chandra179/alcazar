@@ -9,6 +9,7 @@ data
 docs
 *.db
 *.db-*
-lux
+alcazar
 badger
 .env
+.venv-bbca-pdf

@@ -18,7 +18,7 @@ middleware:
     query_allowlist: ["page", "limit", "cursor"]
 
 sqlite:
-  dsn: "lux.db"
+  dsn: "alcazar.db"
 
 badger:
-  dir: "lux"
+  dir: "alcazar"

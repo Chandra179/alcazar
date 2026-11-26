@@ -6,8 +6,8 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     env:
-      SQLITE_DSN: lux.db
-      BADGER_DIR: lux
+      SQLITE_DSN: alcazar.db
+      BADGER_DIR: alcazar
     steps:
       - uses: actions/checkout@v4
 

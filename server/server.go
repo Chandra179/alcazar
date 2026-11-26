@@ -15,13 +15,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/Chandra179/lux/server/config"
-	"github.com/Chandra179/lux/server/internal/example"
-	"github.com/Chandra179/lux/server/internal/financials"
-	"github.com/Chandra179/lux/server/logger"
-	"github.com/Chandra179/lux/server/middleware"
-	"github.com/Chandra179/lux/server/router"
-	"github.com/Chandra179/lux/server/store"
+	"github.com/Chandra179/alcazar/server/config"
+	"github.com/Chandra179/alcazar/server/internal/example"
+	"github.com/Chandra179/alcazar/server/internal/financials"
+	"github.com/Chandra179/alcazar/server/logger"
+	"github.com/Chandra179/alcazar/server/middleware"
+	"github.com/Chandra179/alcazar/server/router"
+	"github.com/Chandra179/alcazar/server/store"
 )
 
 // RunHttpServer starts the configured HTTP server and blocks until it receives
