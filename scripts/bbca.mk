@@ -1,19 +1,21 @@
-REVIEW_FILE ?= data/review/bbca-review.csv
+COMPANY ?= bbca
+DATA_DIR ?= data/$(COMPANY)
+REVIEW_FILE ?= $(DATA_DIR)/review/review.csv
 REVIEW_PERIOD ?=
 REVIEW_DOCUMENT ?=
-ANALYSIS_DB ?= data/analysis/bbca-analysis.db
+ANALYSIS_DB ?= $(DATA_DIR)/analysis/analysis.db
 ANALYSIS_FORMAT ?= markdown
-ANALYSIS_EVIDENCE ?= data/analysis/bbca-fy2025.yaml
+ANALYSIS_EVIDENCE ?= $(DATA_DIR)/analysis/evidence.yaml
 ANALYSIS_BANK_CATALOG ?= bank-analysis.yaml
-ANALYSIS_BANK_EVIDENCE ?= $(if $(ANALYSIS_BANK_CATALOG),data/analysis/bbca-bank-analysis.yaml)
-ANALYSIS_BANK_SCENARIOS ?= $(if $(ANALYSIS_BANK_CATALOG),data/analysis/bbca-valuation-scenarios.yaml)
-ANALYSIS_PDF ?= output/pdf/bbca-fy2025-yearly.pdf
+ANALYSIS_BANK_EVIDENCE ?= $(if $(ANALYSIS_BANK_CATALOG),$(DATA_DIR)/analysis/bank-analysis.yaml)
+ANALYSIS_BANK_SCENARIOS ?= $(if $(ANALYSIS_BANK_CATALOG),$(DATA_DIR)/analysis/valuation-scenarios.yaml)
+ANALYSIS_PDF ?= output/pdf/$(COMPANY)-yearly.pdf
 PYTHON ?= $(or $(wildcard .venv-bbca-pdf/bin/python),python3)
 
 .PHONY: bbca-import bbca-catalog bbca-review bbca-approve bbca-analysis bbca-analysis-pdf
 
 bbca-import:
-	PODMAN="$(PODMAN)" ./scripts/bbca.sh import --db "$(SQLITE_DSN)"
+	PODMAN="$(PODMAN)" ./scripts/bbca.sh import --data "$(DATA_DIR)" --db "$(SQLITE_DSN)"
 
 bbca-catalog:
 	PODMAN="$(PODMAN)" ./scripts/bbca.sh catalog --db "$(SQLITE_DSN)"
@@ -32,9 +34,9 @@ bbca-analysis bbca-analysis-pdf:
 		$(if $(ANALYSIS_BANK_EVIDENCE),--bank-evidence "$(ANALYSIS_BANK_EVIDENCE)") \
 		$(if $(ANALYSIS_BANK_SCENARIOS),--bank-scenarios "$(ANALYSIS_BANK_SCENARIOS)"); \
 	if [ "$(ANALYSIS_FORMAT)" = pdf ]; then \
-		input=$$(mktemp); \
+		input=$$(mktemp --suffix=.html); \
 		trap 'rm -f "$$input"' EXIT; \
-		$(GO) run ./server/cmd/bbca analysis "$$@" --format json > "$$input"; \
+		$(GO) run ./server/cmd/bbca analysis "$$@" --format html > "$$input"; \
 		"$(PYTHON)" scripts/bbca_analysis_pdf.py "$$input" "$(ANALYSIS_PDF)"; \
 	else \
 		$(GO) run ./server/cmd/bbca analysis "$$@" --format "$(ANALYSIS_FORMAT)"; \

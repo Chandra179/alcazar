@@ -5,37 +5,135 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{.Template.Title}}</title>
   <style>
-    :root { color-scheme: light; --ink: #123047; --muted: #465767; --accent: #006f67; --line: #cfdbe3; }
+    :root {
+      color-scheme: light;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --ink: #111827;
+      --muted: #6b7280;
+      --accent: #0f766e;
+      --tint: #f0fdfa;
+      --zebra: #fafafa;
+    }
     * { box-sizing: border-box; }
-    body { margin: 0; color: var(--ink); background: #edf3f5; font: 1rem/1.55 system-ui, sans-serif; }
-    main { max-width: 60rem; margin: auto; padding: clamp(1rem, 4vw, 3rem); }
-    .report-section { margin-bottom: 1.5rem; padding: clamp(1rem, 4vw, 2.6rem); border-top: 3px solid var(--accent); background: #fff; }
-    h1, h2, p { margin: 0 0 .8rem; }
-    h1 { font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.12; }
-    h2 { font-size: clamp(1.35rem, 3vw, 2rem); line-height: 1.24; }
-    .cover { padding-block: clamp(2.5rem, 8vw, 4.5rem); }
-    .cover > p { max-width: 65ch; }
-    .takeaways { padding-inline-start: 1.2rem; }
-    .takeaways li { margin-bottom: .4rem; }
-    .table-wrap { overflow-x: auto; margin: 1rem 0; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font: 0.9375rem/1.6 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    main { max-width: 56rem; margin: auto; padding: clamp(1rem, 4vw, 2.75rem); }
+    .report-section {
+      margin-bottom: 1.5rem;
+      padding: clamp(1.5rem, 4vw, 2.75rem);
+      background: var(--surface);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+    h1, h2, p { margin: 0 0 .75rem; }
+    h1 { font-size: clamp(1.85rem, 4.5vw, 2.75rem); line-height: 1.15; letter-spacing: -0.025em; }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    h2 { font-size: clamp(1.2rem, 2.5vw, 1.5rem); line-height: 1.25; letter-spacing: -0.015em; margin: 0; }
+    .period {
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--tint);
+      padding: .2rem .65rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .cover { padding-block: clamp(2.25rem, 6vw, 3.75rem); }
+    .cover > p { max-width: 62ch; color: var(--muted); margin-bottom: 1.75rem; }
+    .takeaways {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.25rem;
+      display: grid;
+      gap: 1rem;
+    }
+    .takeaways li {
+      display: grid;
+      grid-template-columns: 9.25rem 1fr;
+      gap: 1rem;
+      align-items: baseline;
+      font-size: .875rem;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+    .takeaways li strong {
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    @media (max-width: 560px) {
+      .takeaways li { grid-template-columns: 1fr; gap: .2rem; }
+    }
+    .table-wrap { overflow-x: auto; margin: 1.75rem 0 0; }
+    .table-wrap + .table-wrap { margin-top: 2.25rem; }
     table { width: 100%; border-collapse: collapse; font-size: .875rem; }
-    caption { text-align: start; padding-bottom: .4rem; font-size: 1.05rem; font-weight: 700; }
-    th, td { border-bottom: 1px solid var(--line); text-align: start; padding: .45rem .55rem; vertical-align: top; }
-    thead { color: var(--muted); }
-    .numeric, .current { text-align: end; font-variant-numeric: tabular-nums; }
-    .current { font-weight: 700; }
-    thead .current, .group { color: var(--accent); }
-    a { color: var(--accent); text-underline-offset: .16em; }
+    caption { text-align: start; padding-bottom: .65rem; font-size: .95rem; font-weight: 600; color: var(--ink); }
+    th, td { text-align: start; padding: .55rem .75rem; vertical-align: top; }
+    th:first-child, td:first-child { padding-left: 0; }
+    th:last-child:not(.current), td:last-child:not(.current) { padding-right: 0; }
+    thead th {
+      font-size: .68rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: .45rem;
+    }
+    tbody tr:nth-child(even) td { background: var(--zebra); }
+    .numeric, .current { text-align: end; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    thead .current, tbody .current { background: var(--tint); }
+    thead .current { border-bottom: 2px solid var(--accent); border-top-left-radius: 6px; border-top-right-radius: 6px; }
+    .current { font-weight: 600; color: var(--accent); }
+    .group {
+      padding-top: 1.1rem;
+      padding-bottom: .35rem;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: .18em; }
     .sources, footer { color: var(--muted); font-size: .8rem; }
+    .sources { margin-top: 1.25rem; }
     .sources a + a::before { content: " · "; color: var(--muted); }
-    @page { size: A4; margin: 14mm; }
+    footer { padding: 0 .25rem; }
+    @page { size: A4; margin: 12mm 14mm; }
     @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; font-size: 0.8125rem; line-height: 1.45; }
       body, .report-section { background: #fff; }
       main { max-width: none; padding: 0; }
-      .report-section { margin: 0; padding: .65rem 0; }
+      .report-section { margin: 0; padding: .2rem 0; border-radius: 0; box-shadow: none; }
       .report-section + .report-section { break-before: page; }
-      h2 { break-after: avoid; }
-      .table-wrap { overflow: visible; }
+      .cover { padding-block: 1.5rem; }
+      .section-head { margin-bottom: .75rem; break-after: avoid; }
+      h2 { font-size: 1.2rem; break-after: avoid; }
+      .takeaways { gap: .65rem; margin-bottom: 1.1rem; }
+      .takeaways li { grid-template-columns: 7.75rem 1fr; gap: .75rem; font-size: .78rem; line-height: 1.48; }
+      .takeaways li strong { font-size: .75rem; }
+      .table-wrap { overflow: visible; margin-top: 1.25rem; }
+      .table-wrap + .table-wrap { margin-top: 1.45rem; }
+      table { font-size: .78rem; }
+      caption { padding-bottom: .4rem; font-size: .85rem; }
+      th, td { padding: .27rem .55rem; line-height: 1.38; }
+      th:first-child, td:first-child { padding-left: 0; }
+      th:last-child:not(.current), td:last-child:not(.current) { padding-right: 0; }
+      thead th { font-size: .64rem; padding-bottom: .3rem; }
+      .group { padding-top: .7rem; padding-bottom: .2rem; font-size: .72rem; }
+      .sources, footer { font-size: .72rem; }
+      .sources { margin-top: .65rem; }
       thead { display: table-header-group; }
       tr { break-inside: avoid; }
       a { color: inherit; }
@@ -46,9 +144,9 @@
 <main>
   {{range .Sections}}
   <section id="{{.ID}}" class="report-section {{.Kind}}">
-    {{if eq .Kind "cover"}}<h1>{{$.Template.Title}}</h1>{{else}}<h2>{{.Title}}</h2>{{end}}
+    {{if eq .Kind "cover"}}<h1>{{$.Template.Title}}</h1>{{else}}<div class="section-head"><h2>{{.Title}}</h2>{{with .PeriodLabel}}<span class="period">{{.}}</span>{{end}}</div>{{end}}
     {{if .Layout.Takeaways}}
-    <ul class="takeaways">{{range .Body}}<li>{{template "cell" .}}</li>{{end}}</ul>
+    <ul class="takeaways">{{range .Body}}<li>{{with .Label}}<strong>{{.}}.</strong>{{else}}<span></span>{{end}}<span>{{.Text}}{{range .Links}} <a href="{{.URL}}">{{.Text}}</a>{{end}}</span></li>{{end}}</ul>
     {{else}}
     {{range .Body}}<p>{{template "cell" .}}</p>{{end}}
     {{end}}
