@@ -109,6 +109,23 @@
     .sources, footer { color: var(--muted); font-size: .8rem; }
     .sources { margin-top: 1.25rem; }
     .sources a + a::before { content: " · "; color: var(--muted); }
+    .chart-block { margin-top: 1.4rem; }
+    .chart-block + .chart-block { margin-top: 2rem; padding-top: 1.4rem; border-top: 1px solid var(--line); }
+    .chart-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap; margin-bottom: .65rem; }
+    .chart-tag { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); }
+    .chart-title { font-size: .95rem; font-weight: 600; color: var(--ink); margin: .12rem 0 0; }
+    .chart-sub { font-size: .78rem; color: var(--muted); margin: .1rem 0 0; }
+    .chart-legend { display: flex; gap: .9rem; font-size: .74rem; color: var(--muted); white-space: nowrap; }
+    .chart-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: -1px; margin-right: 4px; }
+    .chart-swatch-line { display: inline-block; width: 14px; height: 2.5px; vertical-align: 3px; margin-right: 4px; }
+    .chart-swatch-dashed { display: inline-block; width: 14px; height: 0; border-top: 1.5px dashed #94a3b8; vertical-align: 3px; margin-right: 4px; }
+    .chart-block svg { display: block; width: 100%; height: auto; overflow: visible; }
+    .chart-grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem 1.25rem; }
+    .chart-panel { border: 1px solid #f1f5f9; border-radius: 4px; padding: .55rem .7rem .35rem; background: #fff; }
+    .chart-panel-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .25rem; }
+    .chart-panel-title { font-size: .78rem; font-weight: 600; color: var(--ink); }
+    .chart-panel-val { font-size: .78rem; font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; }
+    .chart-note { margin-top: .4rem; font-size: .72rem; color: var(--muted); }
     footer { padding: 0 .25rem; }
     @page { size: A4; margin: 12mm 14mm; }
     @media print {
@@ -134,6 +151,16 @@
       .group { padding-top: .7rem; padding-bottom: .2rem; font-size: .72rem; }
       .sources, footer { font-size: .72rem; }
       .sources { margin-top: .65rem; }
+      .chart-block { margin-top: .7rem; break-inside: avoid; }
+      .chart-block + .chart-block { margin-top: 1.15rem; padding-top: .95rem; }
+      .chart-head { margin-bottom: .45rem; }
+      .chart-tag { font-size: .6rem; }
+      .chart-title { font-size: .86rem; }
+      .chart-sub, .chart-legend { font-size: .7rem; }
+      .chart-grid-2x2 { gap: .6rem .9rem; }
+      .chart-panel { padding: .4rem .55rem .25rem; }
+      .chart-panel-title, .chart-panel-val { font-size: .72rem; }
+      .chart-note { font-size: .66rem; }
       thead { display: table-header-group; }
       tr { break-inside: avoid; }
       a { color: inherit; }
@@ -150,6 +177,7 @@
     {{else}}
     {{range .Body}}<p>{{template "cell" .}}</p>{{end}}
     {{end}}
+    {{range .Charts}}{{template "chart" .}}{{end}}
     {{range .Tables}}{{if .Rows}}{{template "table" .}}{{end}}{{end}}
     {{range .Sources}}<p class="sources">{{template "cell" .}}</p>{{end}}
   </section>
@@ -158,6 +186,25 @@
 </main>
 </body>
 </html>
+
+{{define "chart"}}
+<div class="chart-block">
+  <div class="chart-head">
+    <div>
+      {{with .Tag}}<div class="chart-tag">{{.}}</div>{{end}}
+      {{with .Title}}<div class="chart-title">{{.}}</div>{{end}}
+      {{with .Subtitle}}<div class="chart-sub">{{.}}</div>{{end}}
+    </div>
+    {{if .Legend}}
+    <div class="chart-legend">
+      {{range .Legend}}<span><span class="{{if eq .Kind "line"}}chart-swatch-line{{else if eq .Kind "dashed"}}chart-swatch-dashed{{else}}chart-swatch{{end}}" {{if ne .Kind "dashed"}}style="background:{{.Color}}"{{end}}></span>{{.Label}}</span>{{end}}
+    </div>
+    {{end}}
+  </div>
+  {{.Body}}
+  {{with .Note}}<p class="chart-note">{{.}}</p>{{end}}
+</div>
+{{end}}
 
 {{define "cell"}}{{with .Label}}<strong>{{.}}.</strong> {{end}}{{.Text}}{{range .Links}} <a href="{{.URL}}">{{.Text}}</a>{{end}}{{end}}
 

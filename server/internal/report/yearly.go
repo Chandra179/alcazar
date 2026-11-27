@@ -56,8 +56,12 @@ func YearlyContents(sections []Section) Table {
 		section := sections[i]
 		title, coverage := section.Title, ""
 		switch section.Kind {
-		case "interim":
-			title, coverage = "Interim update", section.PeriodLabel
+		case "interim", "charts":
+			title = section.Title
+			if section.Kind == "interim" {
+				title = "Interim update"
+			}
+			coverage = section.PeriodLabel
 		case "annual":
 			title, coverage = "Annual comparison", section.PeriodLabel
 			first := i

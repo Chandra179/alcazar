@@ -1,7 +1,10 @@
 // Package report owns company-independent financial report layout and rendering.
 package report
 
-import "slices"
+import (
+	"html/template"
+	"slices"
+)
 
 const StandardTemplate = "standard-1"
 
@@ -31,12 +34,28 @@ type Table struct {
 	Layout         *TableLayout `json:"layout,omitempty"`
 }
 
+type ChartLegend struct {
+	Label string `json:"label"`
+	Color string `json:"color"`
+	Kind  string `json:"kind,omitempty"`
+}
+
+type ChartBlock struct {
+	Tag      string        `json:"tag,omitempty"`
+	Title    string        `json:"title,omitempty"`
+	Subtitle string        `json:"subtitle,omitempty"`
+	Legend   []ChartLegend `json:"legend,omitempty"`
+	Body     template.HTML `json:"-"`
+	Note     string        `json:"note,omitempty"`
+}
+
 type Section struct {
 	ID          string         `json:"id,omitempty"`
 	Title       string         `json:"title,omitempty"`
 	Kind        string         `json:"kind,omitempty"`
 	PeriodLabel string         `json:"period_label,omitempty"`
 	Paragraphs  []Cell         `json:"paragraphs,omitempty"`
+	Charts      []ChartBlock   `json:"charts,omitempty"`
 	Tables      []Table        `json:"tables,omitempty"`
 	Layout      *SectionLayout `json:"layout,omitempty"`
 }

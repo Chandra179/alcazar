@@ -103,6 +103,13 @@ func (r *AnalysisReport) yearlySections(stories map[string]analysisYearStory, st
 		})
 	}
 	sections = append(sections, yearlyGlossary())
+	if charts := report.YearlyChartSections(sections); len(charts) > 0 {
+		updated := make([]reportSection, 0, len(sections)+len(charts))
+		updated = append(updated, sections[0])
+		updated = append(updated, charts...)
+		updated = append(updated, sections[1:]...)
+		sections = updated
+	}
 	sections[0].Tables = []reportTable{report.YearlyContents(sections[1:])}
 	return report.PrepareYearly(sections), nil
 }
