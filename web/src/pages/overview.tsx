@@ -21,6 +21,23 @@ import {
   getSectionsByKind,
 } from "@/lib/report-data"
 
+function KpiInfoTooltip({ text }: { text: string }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type="button"
+          aria-label={text}
+          className="inline-flex shrink-0 items-center text-muted-foreground/70 hover:text-foreground focus-visible:outline-none"
+        >
+          <Info className="size-3" />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent className="max-w-xs">{text}</TooltipContent>
+    </Tooltip>
+  )
+}
+
 function splitTitleSummary(title?: string): { label: string; summary?: string } {
   if (!title) return { label: "" }
   const match = title.match(/^(.+?)\s+[—-]\s+(.+)$/)
@@ -93,25 +110,35 @@ export function OverviewPage() {
       value: extractRowValue(latestAnnual, "Group profit"),
       delta: extractRowDelta(latestAnnual, "Group profit"),
       sub: `EPS ${extractRowValue(latestAnnual, "Earnings per share")}`,
+      subTooltip:
+        "The bank's net profit divided by its total number of shares—showing how much profit each single share earned.",
     },
     {
-      label: "Return on Equity",
+      label: `FY${latestAnnual?.period_label ?? "Latest"} Return on Equity`,
+      labelTooltip:
+        "Measures how efficiently the bank generates profit from shareholders' equity. Higher means more profit per rupiah of equity.",
       value: extractRowValue(latestAnnual, "Return on equity"),
       delta: extractRowDelta(latestAnnual, "Return on equity"),
       sub: `ROA ${extractRowValue(latestAnnual, "Return on assets")}`,
+      subTooltip:
+        "Return on Assets—measures how efficiently the bank uses its total assets (loans, investments, cash) to generate profit. For banks, above 1% is generally solid and 2%+ is strong.",
     },
     ...(bankRisk
       ? [
           {
-            label: "CET1 Ratio",
+            label: `FY${latestAnnual?.period_label ?? "Latest"} CET1 Ratio`,
+            labelTooltip:
+              "The bank's strictest safety cushion—its core shareholder money compared to the riskiness of its loans and investments. Higher means safer (above 10–12% is generally well-capitalized).",
             value: extractRowValue(bankRisk, "CET1 ratio"),
             delta: "",
             sub: `CAR ${extractRowValue(latestAnnual, "Capital adequacy")}`,
+            subTooltip:
+              "Regulators and investors use it to verify that a bank holds enough total capital relative to the riskiness of its loans and investments. Above 15% is generally a strong buffer.",
           },
         ]
       : [
           {
-            label: "Price / Earnings",
+            label: `FY${latestAnnual?.period_label ?? "Latest"} Price / Earnings`,
             value: extractRowValue(latestAnnual, "Price / earnings"),
             delta: extractRowDelta(latestAnnual, "Price / earnings"),
             sub: `P/BV ${extractRowValue(latestAnnual, "Price / book value")}`,
@@ -161,7 +188,10 @@ export function OverviewPage() {
               const isNeg = kpi.delta.startsWith("-")
               return (
                 <div key={kpi.label} className="min-w-0">
-                  <p className="truncate text-xs text-muted-foreground">{kpi.label}</p>
+                  <div className="flex items-center gap-1 min-w-0">
+                    <p className="truncate text-xs text-muted-foreground">{kpi.label}</p>
+                    {kpi.labelTooltip ? <KpiInfoTooltip text={kpi.labelTooltip} /> : null}
+                  </div>
                   <p className="mt-1 font-mono text-xl font-semibold tabular-nums sm:text-2xl">
                     {kpi.value}
                   </p>
@@ -177,7 +207,10 @@ export function OverviewPage() {
                         {kpi.delta}
                       </span>
                     ) : null}
-                    <span className="truncate text-muted-foreground">{kpi.sub}</span>
+                    <span className="inline-flex items-center gap-1 min-w-0 text-muted-foreground">
+                      <span className="truncate">{kpi.sub}</span>
+                      {kpi.subTooltip ? <KpiInfoTooltip text={kpi.subTooltip} /> : null}
+                    </span>
                   </div>
                 </div>
               )
@@ -227,6 +260,22 @@ export function OverviewPage() {
             </div>
 
             {chartMode === "profit" && hasProfitOrRoe ? (
+              <p className="text-xs text-muted-foreground">
+                Bars show annual net profit (left axis); line shows Return on Equity (right axis).
+              </p>
+            ) : (
+              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                <p>
+                  Tracks long-term compounding—how many times profit and total return have multiplied
+                  since the start.
+                </p>
+                <span className="font-mono text-[11px]">
+                  100 = start · 1,000 = 10× · 10,000 = 100×
+                </span>
+              </div>
+            )}
+
+            {chartMode === "profit" && hasProfitOrRoe ? (
               <ProfitRoeChart data={chartSeries} />
             ) : hasCompounding ? (
               <IndexedCompoundingChart data={chartSeries} />
@@ -243,20 +292,6 @@ export function OverviewPage() {
                   <h3 className="text-sm font-medium text-foreground/90">
                     {interimHeading.label || "Latest interim"}
                   </h3>
-                  {interimHeading.summary ? (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          type="button"
-                          aria-label={interimHeading.summary}
-                          className="inline-flex items-center text-muted-foreground hover:text-foreground focus-visible:outline-none"
-                        >
-                          <Info className="size-3.5" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>{interimHeading.summary}</TooltipContent>
-                    </Tooltip>
-                  ) : null}
                 </div>
                 {(latestInterim.tables?.length ?? 0) > 0 ? (
                   <Button

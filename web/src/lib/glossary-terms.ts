@@ -99,13 +99,13 @@ const PLAIN_ENGLISH_TERMS: PlainTermDef[] = [
   {
     term: "Liquidity coverage ratio (LCR)",
     group: "Risk & Stress",
-    meaning: "Easy-to-sell cash and bonds compared with 30 days of stressed withdrawals (regulators require at least 100%).",
+    meaning: "Checks if the bank has enough quick cash to survive 30 days of heavy customer withdrawals in a crisis (regulators require at least 100%).",
     includes: ["liquidity coverage", "lcr"],
   },
   {
     term: "Net stable funding ratio (NSFR)",
     group: "Risk & Stress",
-    meaning: "Long-term, sticky funding compared with longer-term loans and assets (regulators require at least 100%).",
+    meaning: "Checks if the bank's long-term loans are funded by stable, reliable money rather than short-term borrowing (regulators require 100%+ so there's no funding shortfall).",
     includes: ["stable funding", "nsfr"],
   },
   {
