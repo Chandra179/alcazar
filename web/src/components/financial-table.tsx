@@ -125,6 +125,7 @@ export function FinancialTable({ table }: FinancialTableProps) {
                         isNumeric && "text-right font-mono tabular-nums whitespace-nowrap",
                         isCurrent && "bg-muted/30 font-semibold",
                         isDelta && deltaToneClass(cell.text),
+                        cell.changed && "text-teal-700 dark:text-teal-400 font-medium",
                       )}
                     >
                       {isNumeric ? (

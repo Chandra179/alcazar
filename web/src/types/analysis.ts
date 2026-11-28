@@ -7,6 +7,7 @@ export interface ReportCell {
   text: string
   links?: ReportLink[]
   label?: string
+  changed?: boolean
 }
 
 export interface TableLayout {
@@ -75,15 +76,30 @@ export interface AnalysisSectionSummary {
   sources: string[]
 }
 
+export interface BankStressAssumptions {
+  affected_loan_share: number
+  incremental_loss_severity: number
+  policy_rate_increase: number
+  deposit_beta: number
+  deposit_repricing_share: number
+  deposit_runoff_share: number
+  replacement_funding_spread: number
+  rwa_increase: number
+  cet1_adjustment_idr_million: number
+  tax_rate: number
+}
+
 export interface BankScenarioCase {
   name: string
-  roe: number
+  normalized_roe?: number
+  roe?: number
   earnings_growth: number
   rwa_growth: number
   payout: number
   cost_of_equity: number
   terminal_growth: number
   cet1_target: number
+  one_year_stress?: BankStressAssumptions
 }
 
 export interface BankScenarioForecast {
@@ -126,7 +142,7 @@ export interface GlossaryEntry {
 
 export interface BankScenarios {
   period: string
-  inputs?: { source: string }[]
+  inputs?: { key?: string; value?: number | null; source: string }[]
   results: BankScenarioResult[]
 }
 
