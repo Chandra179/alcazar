@@ -33,7 +33,9 @@ export function RiskStressSection({
   const [showCharts, setShowCharts] = useState(false)
 
   const casaPeers = useMemo<CasaPeerPoint[]>(() => {
-    const peerTable = bankRisk?.tables?.[1]
+    const peerTable = bankRisk?.tables?.find((t) =>
+      t.title?.toLowerCase().includes("casa"),
+    )
     if (!peerTable) return []
     return peerTable.rows
       .map((row) => ({

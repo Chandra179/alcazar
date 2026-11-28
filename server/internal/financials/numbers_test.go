@@ -1,6 +1,10 @@
 package financials
 
-import "testing"
+import (
+	"os"
+	"path/filepath"
+	"testing"
+)
 
 func TestParseNumber(t *testing.T) {
 	tests := []struct {
@@ -116,15 +120,18 @@ func TestMetricInputsRequireKnownMetadata(t *testing.T) {
 
 func TestFormulaDispositionClassifiesNonCalculatedCatalogEntries(t *testing.T) {
 	want := map[string]string{
-		"closed-end-fund-discount-to-nav": "not_applicable",
-		"dividend-yield":                  "requires_external_data",
-		"earnings-yield-on-original-cost": "requires_external_data",
-		"insurance-float-cost":            "not_applicable",
-		"look-through-earnings":           "requires_external_data",
-		"owner-earnings":                  "requires_manual_estimate",
-		"price-earnings-ratio":            "requires_external_data",
-		"price-to-book-ratio":             "requires_external_data",
-		"real-return-after-inflation":     "requires_external_data",
+		"closed-end-fund-discount-to-nav":  "not_applicable",
+		"dividend-payout-ratio":            "requires_external_data",
+		"dividend-yield":                   "requires_external_data",
+		"earnings-yield-on-original-cost":  "requires_external_data",
+		"free-cash-flow":                   "not_applicable",
+		"insurance-float-cost":             "not_applicable",
+		"look-through-earnings":            "requires_external_data",
+		"owner-earnings":                   "requires_manual_estimate",
+		"price-earnings-ratio":             "requires_external_data",
+		"price-to-book-ratio":              "requires_external_data",
+		"real-return-after-inflation":      "requires_external_data",
+		"return-on-tangible-common-equity": "requires_manual_estimate",
 	}
 	for id, wantStatus := range want {
 		definition, ok := formulaDefinitions[id]
@@ -132,5 +139,31 @@ func TestFormulaDispositionClassifiesNonCalculatedCatalogEntries(t *testing.T) {
 		if !ok || status != wantStatus || reason == "" {
 			t.Errorf("formulaDefinitions[%q] = (%q, %q, %t), want status %q with reason", id, status, reason, ok, wantStatus)
 		}
+	}
+}
+
+func TestCatalogValidatesScopeAndExcludedSectors(t *testing.T) {
+	t.Parallel()
+	entries, _, err := LoadCatalog("../../../fundamental-analysis.yaml")
+	if err != nil {
+		t.Fatalf("LoadCatalog fundamental-analysis.yaml: %v", err)
+	}
+	for _, entry := range entries {
+		if !formulaMatches(entry) {
+			t.Errorf("catalog entry %q failed formulaMatches (including exclude_sectors check)", entry.ID)
+		}
+	}
+	bad := `entries:
+  - id: bad-scope
+    type: formula
+    description: Invalid scope test
+    scope: invalid-scope
+`
+	path := filepath.Join(t.TempDir(), "bad.yaml")
+	if err := os.WriteFile(path, []byte(bad), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if _, _, err := LoadCatalog(path); err == nil {
+		t.Fatal("LoadCatalog accepted unknown scope")
 	}
 }

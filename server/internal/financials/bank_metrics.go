@@ -9,11 +9,19 @@ import (
 )
 
 const (
-	bankCreditCostRule  = "bank-credit-cost-ratio"
-	bankNPLCoverageRule = "bank-npl-coverage-ratio"
-	bankDepositCostRule = "bank-deposit-cost-ratio"
-	bankStage2Rule      = "bank-stage-2-loan-share"
-	bankStage3Rule      = "bank-stage-3-loan-share"
+	bankCreditCostRule    = "bank-credit-cost-ratio"
+	bankNPLCoverageRule   = "bank-npl-coverage-ratio"
+	bankDepositCostRule   = "bank-deposit-cost-ratio"
+	bankStage2Rule        = "bank-stage-2-loan-share"
+	bankStage3Rule        = "bank-stage-3-loan-share"
+	bankNIMRule           = "bank-net-interest-margin"
+	bankCIRRule           = "bank-cost-to-income-ratio"
+	bankLDRRule           = "bank-loan-to-deposit-ratio"
+	bankCASARule          = "bank-casa-ratio"
+	bankNetWriteOffRule   = "bank-net-write-off-ratio"
+	bankLeverageRatioRule = "bank-leverage-ratio"
+	bankLCRRule           = "bank-lcr-ratio"
+	bankNSFRRule          = "bank-nsfr-ratio"
 )
 
 type bankFormulaDefinition struct {
@@ -40,6 +48,41 @@ var bankFormulaDefinitions = []bankFormulaDefinition{
 	},
 	{id: bankStage2Rule, formula: "(gross_stage_2_loans / gross_staged_loans) * 100", currentBalanceKey: "Gross Stage 2 loans", coverageKey: "Gross staged loans", unit: "percent", basis: "unconsolidated", optional: true},
 	{id: bankStage3Rule, formula: "(gross_stage_3_loans / gross_staged_loans) * 100", currentBalanceKey: "Gross Stage 3 loans", coverageKey: "Gross staged loans", unit: "percent", basis: "unconsolidated", optional: true},
+	{
+		id: bankNIMRule, formula: "(net_interest_income / average_earning_assets) * 100",
+		flowKey: "Net interest income", currentBalanceKey: "Earning assets",
+		openingBalanceKey: "Earning assets", unit: "percent", basis: "consolidated", optional: true,
+	},
+	{
+		id: bankCIRRule, formula: "(operating_expenses / operating_income) * 100",
+		currentBalanceKey: "Operating expenses", coverageKey: "Operating income", unit: "percent", basis: "consolidated", optional: true,
+	},
+	{
+		// OJK/BCA statutory LDR uses bank-only gross loans and unconsolidated customer deposits.
+		id: bankLDRRule, formula: "(gross_loans / customer_deposits) * 100",
+		currentBalanceKey: "Gross loans and financing", coverageKey: "Customer deposits", unit: "percent", basis: "unconsolidated", optional: true,
+	},
+	{
+		id: bankCASARule, formula: "(casa_deposits / customer_deposits) * 100",
+		currentBalanceKey: "CASA deposits", coverageKey: "Customer deposits", unit: "percent", basis: "consolidated", optional: true,
+	},
+	{
+		id: bankNetWriteOffRule, formula: "(net_loan_write_offs / average_gross_loans) * 100",
+		flowKey: "Net loan write-offs", currentBalanceKey: "Gross loans and financing",
+		openingBalanceKey: "Gross loans and financing", unit: "percent", basis: "unconsolidated", optional: true,
+	},
+	{
+		id: bankLeverageRatioRule, formula: "(tier_1_capital / basel_iii_exposure_measure) * 100",
+		currentBalanceKey: "Tier 1 capital", coverageKey: "Basel III exposure measure", unit: "percent", basis: "consolidated", optional: true,
+	},
+	{
+		id: bankLCRRule, formula: "(high_quality_liquid_assets / net_cash_outflows_30d) * 100",
+		currentBalanceKey: "High-quality liquid assets", coverageKey: "Total net cash outflows (30d)", unit: "percent", basis: "consolidated", optional: true,
+	},
+	{
+		id: bankNSFRRule, formula: "(available_stable_funding / required_stable_funding) * 100",
+		currentBalanceKey: "Available stable funding", coverageKey: "Required stable funding", unit: "percent", basis: "consolidated", optional: true,
+	},
 }
 
 func bankFormulaMatches(entry CatalogEntry) bool {
@@ -98,12 +141,8 @@ func calculateBankMetrics(observations []analysisObservation, conflicts []bankIn
 				if basis != definition.basis {
 					continue
 				}
-				if definition.optional {
-					_, observed, conflict, _ := bankObservation(definition.currentBalanceKey, period, basis, observations, conflicts)
-					_, denominatorObserved, denominatorConflict, _ := bankObservation(definition.coverageKey, period, basis, observations, conflicts)
-					if !observed && !denominatorObserved && conflict == "" && denominatorConflict == "" {
-						continue
-					}
+				if definition.optional && !optionalInputsPresent(definition, period, basis, observations, conflicts) {
+					continue
 				}
 				metric := calculateBankMetric(definition, period, basis, observations, conflicts)
 				metrics = append(metrics, metric)
@@ -111,6 +150,35 @@ func calculateBankMetrics(observations []analysisObservation, conflicts []bankIn
 		}
 	}
 	return metrics
+}
+
+// optionalInputsPresent avoids emitting spurious missing_inputs for optional rules on periods
+// that only contain shared balances supporting non-optional ratios (loans or customer deposits).
+func optionalInputsPresent(definition bankFormulaDefinition, period, basis string, observations []analysisObservation, conflicts []bankInputConflict) bool {
+	if definition.flowKey != "" {
+		_, flowObserved, flowConflict, _ := bankObservation(definition.flowKey, period, basis, observations, conflicts)
+		return flowObserved || flowConflict != ""
+	}
+	_, numObserved, numConflict, _ := bankObservation(definition.currentBalanceKey, period, basis, observations, conflicts)
+	_, denObserved, denConflict, _ := bankObservation(definition.coverageKey, period, basis, observations, conflicts)
+	if numConflict != "" || denConflict != "" {
+		return true
+	}
+	isSharedBalance := func(key string) bool {
+		return key == "Gross loans and financing" || key == "Customer deposits"
+	}
+	numShared := isSharedBalance(definition.currentBalanceKey)
+	denShared := isSharedBalance(definition.coverageKey)
+	switch {
+	case numShared && denShared:
+		return numObserved && denObserved
+	case numShared:
+		return denObserved
+	case denShared:
+		return numObserved
+	default:
+		return numObserved || denObserved
+	}
 }
 
 // Opening and closing balances for cost ratios can exist solely as supporting inputs.
@@ -124,7 +192,11 @@ func bankReportInput(key, basis, periodType string) bool {
 				return true
 			}
 		} else if (key == definition.currentBalanceKey || key == definition.coverageKey) &&
-			(periodType == "" || periodType == "balance") {
+			(periodType == "" || periodType == "balance" ||
+				(definition.id == bankCIRRule && (periodType == "annual" || periodType == "interim"))) {
+			if definition.optional && (key == "Gross loans and financing" || key == "Customer deposits") {
+				continue
+			}
 			return true
 		}
 	}
@@ -246,14 +318,15 @@ func calculateBankMetric(definition bankFormulaDefinition, period, basis string,
 		denominator = *inputs[definition.coverageKey].(analysisObservation).Value
 		balance := inputs[definition.currentBalanceKey].(analysisObservation)
 		matchedBalance := inputs[definition.coverageKey].(analysisObservation)
-		if balance.Unit != matchedBalance.Unit || balance.PeriodEnd != matchedBalance.PeriodEnd || balance.PeriodType != "balance" || matchedBalance.PeriodType != "balance" {
+		if balance.Unit != matchedBalance.Unit || balance.PeriodEnd != matchedBalance.PeriodEnd ||
+			balance.PeriodStart != matchedBalance.PeriodStart || balance.PeriodType != matchedBalance.PeriodType {
 			metric.Status = "conflict"
-			metric.Reason = "The inputs must be balances with the same unit and reporting date."
+			metric.Reason = "The inputs must share the same unit, period type, and reporting dates."
 			metric.Inputs = inputs
 			return metric
 		}
 	}
-	if definition.optional && (numerator < 0 || numerator > denominator) {
+	if (definition.id == bankStage2Rule || definition.id == bankStage3Rule) && (numerator < 0 || numerator > denominator) {
 		metric.Status = "not_calculable"
 		metric.Reason = "Staged loans must be between zero and total gross staged loans."
 		metric.Inputs = inputs

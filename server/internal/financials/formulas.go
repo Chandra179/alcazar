@@ -60,6 +60,8 @@ func sumCashMovements(v map[string]periodFact) (float64, error) {
 	return v["net_cash_from_operating_activities"].Number + v["net_cash_from_investing_activities"].Number + v["net_cash_from_financing_activities"].Number, nil
 }
 
+const primaryAnalysisSector = "deposit-taking-bank"
+
 var notApplicableBankFormulas = map[string]bool{
 	"cost-of-goods-sold":              true,
 	"gross-margin":                    true,
@@ -75,21 +77,24 @@ var notApplicableBankFormulas = map[string]bool{
 	"net-current-asset-value":         true,
 	"current-ratio":                   true,
 	"quick-ratio":                     true,
+	"free-cash-flow":                  true,
 	"insurance-float-cost":            true,
 	"closed-end-fund-discount-to-nav": true,
 }
 
 var formulasRequiringExternalData = map[string]string{
 	"price-earnings-ratio":            "Requires a labeled market share price and EPS basis, which are outside the local financial-statement data.",
-	"price-to-book-ratio":             "Requires a market price per share, which is outside the local financial-statement data.",
+	"price-to-book-ratio":             "Requires a market price per share, which are outside the local financial-statement data.",
 	"dividend-yield":                  "Requires a labeled trailing or expected annual dividend per share and market share price.",
+	"dividend-payout-ratio":           "Requires a labeled annual or trailing cash dividend per share matched to the EPS period.",
 	"earnings-yield-on-original-cost": "Requires investor-specific split-adjusted purchase price and normalized earnings per share.",
 	"real-return-after-inflation":     "Requires a nominal return and a matching-period inflation rate.",
 	"look-through-earnings":           "Requires investee earnings not recognized in reported income and an estimate of incremental distribution taxes.",
 }
 
 var formulasRequiringManualEstimate = map[string]string{
-	"owner-earnings": "Requires normalized earnings, maintenance capital expenditures, and incremental working-capital estimates that are not directly reported facts.",
+	"owner-earnings":                   "Requires normalized earnings, maintenance capital expenditures, and incremental working-capital estimates that are not directly reported facts.",
+	"return-on-tangible-common-equity": "Requires separating goodwill and other intangible assets from common equity on a consistent basis.",
 }
 
 // The catalog documents the formulas. Match each expression before using its Go implementation.
@@ -109,6 +114,13 @@ var implementedExpressions = map[string]string{
 }
 
 func formulaMatches(entry CatalogEntry) bool {
+	if entry.Type == "formula" {
+		for _, sector := range entry.ExcludeSectors {
+			if sector == primaryAnalysisSector && formulaDefinitions[entry.ID].status != "not_applicable" {
+				return false
+			}
+		}
+	}
 	expression, implemented := implementedExpressions[entry.ID]
 	return !implemented || entry.Type == "formula" && strings.Join(strings.Fields(expression), "") == strings.Join(strings.Fields(entry.Formula), "")
 }

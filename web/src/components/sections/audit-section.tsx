@@ -35,6 +35,7 @@ export function AuditSection({ glossary, rules, sources }: AuditSectionProps) {
   const [tab, setTab] = useState<"glossary" | "rules">(
     mergedGlossary.length > 0 ? "glossary" : "rules",
   )
+  const [hideNotApplicable, setHideNotApplicable] = useState(true)
   const [query, setQuery] = useState("")
 
   const filteredGlossary = useMemo(() => {
@@ -48,16 +49,26 @@ export function AuditSection({ glossary, rules, sources }: AuditSectionProps) {
     )
   }, [mergedGlossary, query])
 
+  const applicableRuleCount = useMemo(
+    () =>
+      hideNotApplicable
+        ? rules.filter((r) => r.status !== "not_applicable").length
+        : rules.length,
+    [rules, hideNotApplicable],
+  )
+
   const filteredRules = useMemo(() => {
     const q = query.trim().toLowerCase()
-    if (!q) return rules
-    return rules.filter(
-      (r) =>
+    return rules.filter((r) => {
+      if (hideNotApplicable && r.status === "not_applicable") return false
+      if (!q) return true
+      return (
         r.rule.id.toLowerCase().includes(q) ||
         (r.rule.title ?? "").toLowerCase().includes(q) ||
-        r.finding.toLowerCase().includes(q),
-    )
-  }, [rules, query])
+        r.finding.toLowerCase().includes(q)
+      )
+    })
+  }, [rules, query, hideNotApplicable])
 
   if (mergedGlossary.length === 0 && rules.length === 0) return null
 
@@ -105,7 +116,18 @@ export function AuditSection({ glossary, rules, sources }: AuditSectionProps) {
                   variant={tab === "rules" ? "secondary" : "ghost"}
                   onClick={() => setTab("rules")}
                 >
-                  Rules ({rules.length})
+                  Rules ({applicableRuleCount})
+                </Button>
+              ) : null}
+              {tab === "rules" ? (
+                <Button
+                  type="button"
+                  size="xs"
+                  variant={hideNotApplicable ? "outline" : "ghost"}
+                  onClick={() => setHideNotApplicable((prev) => !prev)}
+                  className="text-muted-foreground"
+                >
+                  {hideNotApplicable ? "Showing applicable" : "Showing all"}
                 </Button>
               ) : null}
             </div>

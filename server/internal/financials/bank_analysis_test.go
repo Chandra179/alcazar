@@ -1,6 +1,7 @@
 package financials
 
 import (
+	"math"
 	"os"
 	"path/filepath"
 	"strings"
@@ -264,6 +265,109 @@ func TestLatestBankMetricsUsesPeriodEnd(t *testing.T) {
 	latest := latestBankMetrics(metrics)
 	if latest[bankDepositCostRule].Period != "2026" || latest[bankCreditCostRule].Period != "2026-03" {
 		t.Fatalf("latest periods = %#v", latest)
+	}
+}
+
+func TestBankEfficiencyAndPillar3Ratios(t *testing.T) {
+	observations := []analysisObservation{
+		{Key: "Operating expenses", Subject: "BBCA", Period: "2025", PeriodType: "annual",
+			PeriodStart: "2025-01-01", PeriodEnd: "2025-12-31", Basis: "consolidated", Unit: "IDR million", Value: bankFloat(328)},
+		{Key: "Operating income", Subject: "BBCA", Period: "2025", PeriodType: "annual",
+			PeriodStart: "2025-01-01", PeriodEnd: "2025-12-31", Basis: "consolidated", Unit: "IDR million", Value: bankFloat(1000)},
+		{Key: "Operating expenses", Subject: "BBCA", Period: "2026-09", PeriodType: "interim",
+			PeriodStart: "2026-01-01", PeriodEnd: "2026-09-30", Basis: "consolidated", Unit: "IDR million", Value: bankFloat(320)},
+		{Key: "Operating income", Subject: "BBCA", Period: "2026-09", PeriodType: "interim",
+			PeriodStart: "2026-01-01", PeriodEnd: "2026-09-30", Basis: "consolidated", Unit: "IDR million", Value: bankFloat(1000)},
+		bankBalance("Tier 1 capital", "2025", "consolidated", 150, "2025-12-31"),
+		bankBalance("Basel III exposure measure", "2025", "consolidated", 1000, "2025-12-31"),
+		bankBalance("High-quality liquid assets", "2026-06", "consolidated", 250, "2026-06-30"),
+		bankBalance("Total net cash outflows (30d)", "2026-06", "consolidated", 100, "2026-06-30"),
+		bankBalance("Available stable funding", "2026-09", "consolidated", 160, "2026-09-30"),
+		bankBalance("Required stable funding", "2026-09", "consolidated", 100, "2026-09-30"),
+		bankBalance("Gross Stage 2 loans", "2026-09", "unconsolidated", 110, "2026-09-30"),
+		bankBalance("Gross staged loans", "2026-09", "unconsolidated", 100, "2026-09-30"),
+	}
+	metrics := calculateBankMetrics(observations, nil)
+	for _, tc := range []struct {
+		id, period, basis, status string
+		want                      float64
+	}{
+		{bankCIRRule, "2025", "consolidated", "calculated", 32.8},
+		{bankCIRRule, "2026-09", "consolidated", "calculated", 32.0},
+		{bankLeverageRatioRule, "2025", "consolidated", "calculated", 15.0},
+		{bankLCRRule, "2026-06", "consolidated", "calculated", 250.0},
+		{bankNSFRRule, "2026-09", "consolidated", "calculated", 160.0},
+	} {
+		got := findBankMetric(metrics, tc.id, tc.period, tc.basis)
+		if got.Status != tc.status || got.Value == nil || math.Abs(*got.Value-tc.want) > 1e-9 {
+			t.Errorf("%s/%s = %#v; want %s %v", tc.id, tc.period, got, tc.status, tc.want)
+		}
+	}
+	stage2 := findBankMetric(metrics, bankStage2Rule, "2026-09", "unconsolidated")
+	if stage2.Status != "not_calculable" || stage2.Value != nil {
+		t.Fatalf("stage2 > 100%% = %#v; want not_calculable", stage2)
+	}
+	// Mismatched flow period types for Cost-to-Income must conflict.
+	mismatched := []analysisObservation{
+		{Key: "Operating expenses", Subject: "BBCA", Period: "2026-09", PeriodType: "interim",
+			PeriodStart: "2026-01-01", PeriodEnd: "2026-09-30", Basis: "consolidated", Unit: "IDR million", Value: bankFloat(320)},
+		bankBalance("Operating income", "2026-09", "consolidated", 1000, "2026-09-30"),
+	}
+	cirConflict := findBankMetric(calculateBankMetrics(mismatched, nil), bankCIRRule, "2026-09", "consolidated")
+	if cirConflict.Status != "conflict" || cirConflict.Value != nil {
+		t.Fatalf("mismatched CIR period_type = %#v; want conflict", cirConflict)
+	}
+}
+
+func TestOptionalBankRulesDoNotEmitSpuriousMissingInputs(t *testing.T) {
+	observations := bankMetricFixture()
+	metrics := calculateBankMetrics(observations, nil)
+	for _, metric := range metrics {
+		if metric.EntityID == bankLDRRule || metric.EntityID == bankCASARule || metric.EntityID == bankNetWriteOffRule {
+			t.Fatalf("unexpected optional metric from shared balances alone: %#v", metric)
+		}
+	}
+	// Half-missing dedicated pair (e.g. Operating expenses without Operating income) still surfaces missing_inputs.
+	partialCIR := append(observations, analysisObservation{
+		Key: "Operating expenses", Subject: "BBCA", Period: "2025", PeriodType: "annual",
+		PeriodStart: "2025-01-01", PeriodEnd: "2025-12-31", Basis: "consolidated", Unit: "IDR million", Value: bankFloat(300),
+	})
+	cir := findBankMetric(calculateBankMetrics(partialCIR, nil), bankCIRRule, "2025", "consolidated")
+	if cir.Status != "missing_inputs" {
+		t.Fatalf("partial CIR status = %#v; want missing_inputs", cir)
+	}
+}
+
+func TestYearlyBankRiskIncludesPillar3AndJune2026IRRBB(t *testing.T) {
+	v := func(x float64) *float64 { return &x }
+	report := &AnalysisReport{
+		Sources: map[string]analysisSource{
+			"src": {Title: "Test source", URL: "https://example.com", Where: "p. 1"},
+		},
+		BankMetrics: []Metric{
+			{EntityID: bankCIRRule, Period: "2025", Basis: "consolidated", Unit: "percent", Status: "calculated", Value: v(32.80)},
+			{EntityID: bankLeverageRatioRule, Period: "2025", Basis: "consolidated", Unit: "percent", Status: "calculated", Value: v(15.74)},
+			{EntityID: bankLCRRule, Period: "2026-06", Basis: "consolidated", Unit: "percent", Status: "calculated", Value: v(279.63)},
+			{EntityID: bankNSFRRule, Period: "2026-09", Basis: "consolidated", Unit: "percent", Status: "calculated", Value: v(156.70)},
+		},
+		bankObservations: []analysisObservation{
+			{Key: "Maximum EVE reduction relative to Tier 1", Subject: "BBCA", Period: "2026-06", Basis: "consolidated", Unit: "%", Value: v(5.24)},
+			{Key: "Maximum NII reduction relative to projected income", Subject: "BBCA", Period: "2026-06", Basis: "consolidated", Unit: "%", Value: v(2.51)},
+			{Key: "Reported CASA share", Subject: "BBCA", Period: "2026-09", Basis: "group CASA to total funding", Unit: "%", Value: v(85.6)},
+		},
+	}
+	section := report.yearlyBankRisk()
+	if len(section.Tables) != 3 {
+		t.Fatalf("yearlyBankRisk tables = %d; want 3", len(section.Tables))
+	}
+	if section.Tables[1].Title != "Bank efficiency, credit & Pillar 3 ratios" {
+		t.Fatalf("ratios table title = %q", section.Tables[1].Title)
+	}
+	if got := section.Tables[0].Headers; len(got) != 5 || got[2] != "Jun 2026" {
+		t.Fatalf("compare headers = %v; want Jun 2026 at col 2", got)
+	}
+	if got := section.Tables[0].Rows[7][2].Text; got != "5.24%" {
+		t.Fatalf("June 2026 EVE reduction cell = %q; want 5.24%%", got)
 	}
 }
 

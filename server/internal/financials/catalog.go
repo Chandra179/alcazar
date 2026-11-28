@@ -69,6 +69,11 @@ func validateCatalogEntries(path string, entries, allowedDependencies []CatalogE
 		default:
 			return fmt.Errorf("catalog entry %q has unknown type %q", entry.ID, entry.Type)
 		}
+		switch entry.Scope {
+		case "", "issuer", "security", "investor":
+		default:
+			return fmt.Errorf("catalog entry %q has unknown scope %q", entry.ID, entry.Scope)
+		}
 		seen[entry.ID] = true
 	}
 	for _, entry := range entries {

@@ -12,10 +12,12 @@ glossary:
     applies_when: Conditions or comparisons where the entry is useful.
     depends_on: IDs of other entries needed to understand this one.
     source: Where the idea came from, such as a book and page.
+    scope: Optional audience/analysis scope (issuer, security, or investor).
+    exclude_sectors: Optional list of business models where the rule is structurally non-applicable (e.g. deposit-taking-bank).
 
   rules:
     required_fields: [id, type, description]
-    optional_fields: [formula, applies_when, depends_on, source]
+    optional_fields: [formula, applies_when, depends_on, source, scope, exclude_sectors]
     content_style:
       description: Define one idea, usually in one or two sentences.
       applies_when: Keep use guidance concise; use a literal YAML block with Markdown bullets when several checks or caveats need separate lines.
@@ -27,6 +29,8 @@ entries:
     description: Share of revenue remaining after subtracting cost of revenue.
     formula: ((revenue - cost_of_revenue) / revenue) * 100
     applies_when: Useful when comparing a company over time or with similar companies; interpretation depends on industry, business model, and how direct costs are classified.
+    exclude_sectors: [deposit-taking-bank]
+    source: "Corporate accounting convention; revenue less direct cost of goods or services sold."
 
   - id: cost-of-goods-sold
     type: formula
@@ -1283,3 +1287,31 @@ entries:
         or historical earnings-yield spreads as universal.
     depends_on: [intrinsic-business-value, portfolio-diversification]
     source: "Benjamin Graham and David Dodd, Security Analysis, Sixth Edition (2008), chapter 1; Mary Buffett and David Clark, Warren Buffett and the Interpretation of Financial Statements (2008), chapters 2 and 55-57; Benjamin Graham, The Intelligent Investor (2003 edition), chapter 20 and commentary on chapter 20; Warren E. Buffett, Berkshire Hathaway shareholder letter for 1983, discussion of intrinsic business value."
+
+  - id: dividend-payout-ratio
+    type: formula
+    description: Cash dividends per common share as a percentage of earnings per common share for the same period.
+    formula: (annual_dividends_per_share / earnings_per_share) * 100
+    applies_when: Use consistent per-share bases and positive earnings; for banks and capital-intensive firms, assess payout sustainability alongside regulatory capital targets and retention needs.
+    depends_on: [dividend-yield, earnings-per-share, dividend-policy-as-cash-flow-signal]
+    scope: issuer
+    source: "Benjamin Graham and David Dodd, Security Analysis, Sixth Edition (2008), Part IV, chapter 29."
+
+  - id: return-on-tangible-common-equity
+    type: formula
+    description: Net income available to common shareholders as a share of average tangible common equity (common equity less goodwill and other intangible assets).
+    formula: (net_income_available_to_common_shareholders / average_tangible_common_equity) * 100
+    applies_when: Use alongside ROE when acquisitions have created material goodwill or intangibles, and verify whether tangible equity is positive and economically meaningful.
+    depends_on: [return-on-equity, goodwill-and-acquisition-quality, unrecognized-intangible-value]
+    scope: issuer
+    source: "Warren E. Buffett, Berkshire Hathaway shareholder letters for 1983 and 2018, discussions of returns on tangible equity and economic goodwill."
+
+  - id: free-cash-flow
+    type: formula
+    description: Cash flow from operations less capital expenditures; for nonfinancial firms, a starting indicator of cash available before financing decisions.
+    formula: net_cash_from_operating_activities - capital_expenditures
+    applies_when: Distinguish maintenance from growth capital spending and exclude working-capital swings or deposit inflows/outflows at financial institutions, where conventional free cash flow is not directly applicable.
+    depends_on: [cash-flow-statement, owner-earnings, capital-expenditure-to-net-earnings]
+    exclude_sectors: [deposit-taking-bank]
+    scope: issuer
+    source: "Benjamin Graham and David Dodd, Security Analysis, Sixth Edition (2008), Part V, chapter 34; Warren E. Buffett, Berkshire Hathaway shareholder letter for 1986, discussion of owner earnings."

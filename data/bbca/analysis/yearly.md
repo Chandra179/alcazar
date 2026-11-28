@@ -8,11 +8,25 @@ A year-by-year comparison of BCA’s business, financial position and shareholde
 
 | Section | Coverage |
 | --- | --- |
+| [Long-term growth and compounding](#yearly-charts-growth) | 2000–2025 |
+| [Long-term ratios and shareholder returns](#yearly-charts-outcomes) | 2000–2025 |
 | [Interim update](#year-2026) | 2026 interim |
 | [Bank risk and funding](#yearly-bank-risk) |  |
 | [Bank stress and valuation](#yearly-bank-scenarios) |  |
 | [Annual comparison](#year-2025) | 2025–1998 |
 | [Table legend and glossary](#yearly-glossary) | Definitions and comparison notes |
+
+---
+
+<a id="yearly-charts-growth"></a>
+
+## Long-term growth and compounding
+
+---
+
+<a id="yearly-charts-outcomes"></a>
+
+## Long-term ratios and shareholder returns
 
 ---
 
@@ -55,23 +69,36 @@ A year-by-year comparison of BCA’s business, financial position and shareholde
 
 - **Capital.** Risk-weighted assets grew faster than CET1 between December 2025 and September 2026. Disclosed regulatory buffers and the scenario’s management targets answer different questions.
 
-- **Rates.** BCA’s end-2025 rate shocks measure the change in economic value of equity (EVE) and net interest income (NII). Each uses the denominator shown below.
+- **Rates.** BCA’s end-2025 and June 2026 rate shocks measure the change in economic value of equity (EVE) and net interest income (NII). Each uses the denominator shown below.
 
 - **Funding.** CASA comparisons retain each issuer’s definition. A matched series of funding costs, deposit repricing and withdrawals is still needed.
 
 - **Incentives.** BCA’s FY2025 report discloses three-year deferred pay and conditional bonus reduction or clawback for material risk takers. Application of the policy remains a research gap.
 
-| Measure | Dec 2025 | **Sep 2026** | Scope |
-| --- | ---: | ---: | --- |
-| Gross Stage 2 loan share | 2.02% | **2.03%** | Bank only |
-| Gross Stage 3 loan share | 1.67% | **1.79%** | Bank only |
-| Common Equity Tier 1 (CET1) | 273.83T | **275.07T** | Group |
-| Risk-weighted assets | 936.37T | **1019.18T** | Group |
-| CET1 ratio | 29.24% | **26.99%** | Group |
-| CET1 available after minimum capital | 20.37% | **18.13%** | Group |
-| Bank-specific CET1 buffer requirements | 5.00% | **5.00%** | Group |
-| Maximum EVE reduction / Tier 1 capital | 7.07% | **—** | Group |
-| Maximum NII reduction / projected income | 6.18% | **—** | Group |
+| Measure | Dec 2025 | Jun 2026 | **Sep 2026** | Scope |
+| --- | ---: | ---: | ---: | --- |
+| Gross Stage 2 loan share | 2.02% | — | **2.03%** | Bank only |
+| Gross Stage 3 loan share | 1.67% | — | **1.79%** | Bank only |
+| Common Equity Tier 1 (CET1) | 273.83T | — | **275.07T** | Group |
+| Risk-weighted assets | 936.37T | — | **1019.18T** | Group |
+| CET1 ratio | 29.24% | — | **26.99%** | Group |
+| CET1 available after minimum capital | 20.37% | — | **18.13%** | Group |
+| Bank-specific CET1 buffer requirements | 5.00% | — | **5.00%** | Group |
+| Maximum EVE reduction / Tier 1 capital | 7.07% | 5.24% | **—** | Group |
+| Maximum NII reduction / projected income | 6.18% | 2.51% | **—** | Group |
+
+### Bank efficiency, credit & Pillar 3 ratios
+
+| Measure | FY 2025 | Jun 2026 | **Sep 2026** | Scope |
+| --- | ---: | ---: | ---: | --- |
+| Cost-to-income ratio | 32.80% | 31.79% | **32.00%** | Group |
+| Loan-to-deposit ratio | 79.56% | 80.81% | **81.84%** | Bank only |
+| Credit cost ratio (YTD) | 0.51% | 0.25% | **0.36%** | Bank only |
+| NPL coverage proxy | 186.35% | 167.66% | **169.86%** | Bank only |
+| Deposit cost ratio (YTD) | 0.86% | 0.43% | **0.64%** | Group |
+| Basel III leverage ratio | 15.74% | 14.48% | **15.33%** | Group |
+| Liquidity coverage ratio (LCR) | 310.93% | 279.63% | **267.66%** | Group |
+| Net stable funding ratio (NSFR) | 159.85% | 155.11% | **156.70%** | Group |
 
 ### Issuer-reported CASA at September 2026
 
@@ -82,7 +109,7 @@ A year-by-year comparison of BCA’s business, financial position and shareholde
 | BBNI [BNI 3Q26 corporate presentation · PDF p. 18, consolidated CASA ratio.](https://www.bni.co.id/Portals/1/BNI/Perusahaan/HubunganInvestor/Docs/2026/BBNI-Corporate-Presentation-3Q26.pdf#page=18) | 65.2% | consolidated |
 | BBRI [BRI 3Q26 results · Issuer-reported September 2026 CASA ratio.](https://www.bri.co.id/web/guest/id/news-detail/2739) | 70.0% | issuer-reported scope |
 
-**Sources.**  [BCA September 2026 interim statements · PDF pp. 68–69, Note 12, gross Bank loans by stage and industry.](https://pustaka.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2026-billingual.pdf#page=68) · [BCA September 2026 capital and risk exposure disclosure · Printed PDF p. 2, consolidated KM1 capital and liquidity ratios.](https://www.bca.co.id/-/media/Files/laporan-exposure/20261027-capital-and-risk-exposure-publication-report-30-september-2026-pdf.pdf#page=2) · [BCA 2025 annual report · PDF p. 166, consolidated all-currency interest rate shock sensitivities.](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan%20Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=166) · [BCA 2025 annual report · PDF p. 312, variable remuneration deferral, malus and clawback policy.](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan%20Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=312)
+**Sources.**  [BCA September 2026 interim statements · PDF pp. 68–69, Note 12, gross Bank loans by stage and industry.](https://pustaka.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2026-billingual.pdf#page=68) · [BCA September 2026 capital and risk exposure disclosure · Printed PDF p. 2, consolidated KM1 capital and liquidity ratios.](https://www.bca.co.id/-/media/Files/laporan-exposure/20261027-capital-and-risk-exposure-publication-report-30-september-2026-pdf.pdf#page=2) · [BCA June 2026 capital and risk exposure disclosure · Printed PDF pp. 1-2, consolidated KM1 capital, leverage ratio, LCR and NSFR ratios.](https://pustaka.bca.co.id/Report/Laporan-Eksposur/2026/20260731-laporan-eksposur-risiko-dan-permodalan-juni-2026-eng.pdf#page=1) · [BCA June 2026 capital and risk exposure disclosure · Printed PDF pp. 31-32, consolidated IRRBB EVE and NII shock sensitivities at June 2026.](https://pustaka.bca.co.id/Report/Laporan-Eksposur/2026/20260731-laporan-eksposur-risiko-dan-permodalan-juni-2026-eng.pdf#page=32) · [BCA 2025 annual report · PDF p. 166, consolidated all-currency interest rate shock sensitivities.](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan%20Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=166) · [BCA audited financial statements FY2025 · Printed PDF pp. 9-10, consolidated statement of profit or loss (NII, operating income and operating expenses).](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=9) · [BCA June 2026 interim statements · Printed PDF pp. 8-9, consolidated interim statement of profit or loss (1H26 NII, operating income and expenses).](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260728-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-juni-2026-billingual.pdf#page=8) · [BCA September 2026 interim statements · Printed PDF pp. 8-9, consolidated interim statement of profit or loss (9M26 NII, operating income and expenses).](https://pustaka.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2026-billingual.pdf#page=8) · [BCA December 2025 published financial report · Printed PDF p. 2, individual (bank-only) customer deposits (current, saving and time deposits).](https://pustaka.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260127-financial-report-december-2025.pdf#page=2) · [BCA June 2026 published financial report · Printed PDF p. 2, individual (bank-only) customer deposits (current, saving and time deposits).](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260728-financial-report-june-2026.pdf#page=2) · [BCA September 2026 published financial report · Printed PDF p. 2, individual (bank-only) customer deposits (current, saving and time deposits).](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-financial-report-september-2026.pdf#page=2) · [BCA 2025 annual report · PDF p. 312, variable remuneration deferral, malus and clawback policy.](https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan%20Tahunan/2026/20260212-BCA-AR-2025-EN.pdf#page=312)
 
 ---
 

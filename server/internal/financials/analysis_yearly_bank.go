@@ -3,23 +3,27 @@ package financials
 import "fmt"
 
 func (r *AnalysisReport) yearlyBankRisk() reportSection {
-	compare := reportTable{Headers: []string{"Measure", "Dec 2025", "Sep 2026", "Scope"},
-		NumericColumns: []int{1, 2}, CurrentColumn: 2}
+	metricAt := func(id, period, basis string) string {
+		for _, metric := range r.BankMetrics {
+			if metric.EntityID == id && metric.Period == period && (basis == "" || metric.Basis == basis) {
+				return metricText(metric)
+			}
+		}
+		return "—"
+	}
+
+	compare := reportTable{Headers: []string{"Measure", "Dec 2025", "Jun 2026", "Sep 2026", "Scope"},
+		NumericColumns: []int{1, 2, 3}, CurrentColumn: 3}
 	for _, measure := range []struct{ id, label string }{
 		{bankStage2Rule, "Gross Stage 2 loan share"},
 		{bankStage3Rule, "Gross Stage 3 loan share"},
 	} {
-		row := textCells(measure.label)
-		for _, period := range []string{"2025", "2026-09"} {
-			cell := reportCell{Text: "—"}
-			for _, metric := range r.BankMetrics {
-				if metric.EntityID == measure.id && metric.Period == period {
-					cell.Text = metricText(metric)
-				}
-			}
-			row = append(row, cell)
-		}
-		compare.Rows = append(compare.Rows, append(row, reportCell{Text: "Bank only"}))
+		row := textCells(measure.label,
+			metricAt(measure.id, "2025", "unconsolidated"),
+			metricAt(measure.id, "2026-06", "unconsolidated"),
+			metricAt(measure.id, "2026-09", "unconsolidated"),
+			"Bank only")
+		compare.Rows = append(compare.Rows, row)
 	}
 	observationValue := func(key, period, basis, unit string, scale float64) string {
 		item, ok, _, _ := bankObservation(key, period, basis, r.bankObservations, r.bankConflicts)
@@ -46,7 +50,35 @@ func (r *AnalysisReport) yearlyBankRisk() reportSection {
 	} {
 		compare.Rows = append(compare.Rows, textCells(measure.label,
 			observationValue(measure.key, "2025", "consolidated", measure.unit, 1e-6),
+			observationValue(measure.key, "2026-06", "consolidated", measure.unit, 1e-6),
 			observationValue(measure.key, "2026-09", "consolidated", measure.unit, 1e-6), "Group"))
+	}
+
+	ratios := reportTable{
+		Title:          "Bank efficiency, credit & Pillar 3 ratios",
+		Headers:        []string{"Measure", "FY 2025", "Jun 2026", "Sep 2026", "Scope"},
+		NumericColumns: []int{1, 2, 3},
+		CurrentColumn:  3,
+	}
+	for _, item := range []struct {
+		id, label, annualPeriod, scope, basis string
+	}{
+		{bankCIRRule, "Cost-to-income ratio", "2025", "Group", "consolidated"},
+		{bankLDRRule, "Loan-to-deposit ratio", "2025", "Bank only", "unconsolidated"},
+		{bankCreditCostRule, "Credit cost ratio (YTD)", "2025", "Bank only", "unconsolidated"},
+		{bankNPLCoverageRule, "NPL coverage proxy", "2025", "Bank only", "unconsolidated"},
+		{bankDepositCostRule, "Deposit cost ratio (YTD)", "2025", "Group", "consolidated"},
+		{bankLeverageRatioRule, "Basel III leverage ratio", "2025", "Group", "consolidated"},
+		{bankLCRRule, "Liquidity coverage ratio (LCR)", "2025", "Group", "consolidated"},
+		{bankNSFRRule, "Net stable funding ratio (NSFR)", "2025", "Group", "consolidated"},
+	} {
+		vAnnual := metricAt(item.id, item.annualPeriod, item.basis)
+		vJun := metricAt(item.id, "2026-06", item.basis)
+		vSep := metricAt(item.id, "2026-09", item.basis)
+		if vAnnual == "—" && vJun == "—" && vSep == "—" {
+			continue
+		}
+		ratios.Rows = append(ratios.Rows, textCells(item.label, vAnnual, vJun, vSep, item.scope))
 	}
 
 	peers := reportTable{Title: "Issuer-reported CASA at September 2026", Headers: []string{"Bank", "Share", "Reported scope"},
@@ -63,12 +95,12 @@ func (r *AnalysisReport) yearlyBankRisk() reportSection {
 		Paragraphs: []reportCell{
 			{Label: "Credit", Text: "Stage 2 indicates a significant increase in credit risk. Stage 3 measures credit-impaired loans under the accounting policy. Read both alongside the separately defined prudential NPL series."},
 			{Label: "Capital", Text: "Risk-weighted assets grew faster than CET1 between December 2025 and September 2026. Disclosed regulatory buffers and the scenario’s management targets answer different questions."},
-			{Label: "Rates", Text: "BCA’s end-2025 rate shocks measure the change in economic value of equity (EVE) and net interest income (NII). Each uses the denominator shown below."},
+			{Label: "Rates", Text: "BCA’s end-2025 and June 2026 rate shocks measure the change in economic value of equity (EVE) and net interest income (NII). Each uses the denominator shown below."},
 			{Label: "Funding", Text: "CASA comparisons retain each issuer’s definition. A matched series of funding costs, deposit repricing and withdrawals is still needed."},
 			{Label: "Incentives", Text: "BCA’s FY2025 report discloses three-year deferred pay and conditional bonus reduction or clawback for material risk takers. Application of the policy remains a research gap."},
-			{Label: "Sources", Links: r.sourceLinks("bank-loan-stages", "bank-2026-09-capital-risk", "bank-fy25-irrbb", "bank-fy25-remuneration")},
+			{Label: "Sources", Links: r.sourceLinks("bank-loan-stages", "bank-2026-09-capital-risk", "bank-2026-06-capital-risk", "bank-2026-06-irrbb", "bank-fy25-irrbb", "bank-2025-pl", "bank-2026-06-pl", "bank-2026-09-pl", "bank-2025-12-pub", "bank-2026-06-pub", "bank-2026-09-pub", "bank-fy25-remuneration")},
 		},
-		Tables: []reportTable{compare, peers},
+		Tables: []reportTable{compare, ratios, peers},
 	}
 }
 

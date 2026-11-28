@@ -1,4 +1,4 @@
-catalog_hash: 34548287b36c92bb96cdf7ba28fa045c8d0a034eab7490eab75e31835717ee34
+catalog_hash: 254205888b94923034e81ab201aef30b2b900ffa90063165af8280f7b8927b42
 facts_hash: 7a871d482bc0f2ee4e0b05b4dcbc2843f9cd229e8eec43393f25d305d48a7cec
 sources:
   bank-opening-p139:
@@ -6105,3 +6105,22 @@ rules:
     - km1
     gap: The margin depends on the earnings, capital targets and discount assumptions. A scenario range cannot eliminate
       the risk of a permanent loss.
+  dividend-payout-ratio:
+    status: requires_external_data
+    finding: Dividend distributions and EPS are recorded separately; matching entitlement-year payouts to EPS requires aligning interim and final AGM declarations.
+    sources:
+    - div
+    - agm
+    gap: Needs a single entitlement-aligned per-share dividend series matched against diluted EPS.
+  return-on-tangible-common-equity:
+    status: requires_manual_estimate
+    finding: Common equity and goodwill/intangible lines are disclosed in audited statements, while intangible amortization and core-deposit intangibles require consistent separation.
+    sources:
+    - balance
+    gap: Separate goodwill and identifiable intangibles from common equity across all historical years.
+  free-cash-flow:
+    status: not_applicable
+    finding: Conventional operating cash flow minus capex is distorted for deposit-taking banks because deposit and loan balance changes dominate operating cash flows.
+    sources:
+    - balance
+    gap: Use capital-constrained bank distributions and CET1 retention capacity instead of industrial free cash flow.

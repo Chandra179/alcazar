@@ -1,4 +1,4 @@
-catalog_hash: 3ac5eaa6fea410b0c6951928d95aeb3f3fe8407b54e7bce398604f35c0a35b80
+catalog_hash: 41876326179521f10d9010f2ce42a53ef0642d732abe58a8949e4d21a7509d42
 facts_hash: 7a871d482bc0f2ee4e0b05b4dcbc2843f9cd229e8eec43393f25d305d48a7cec
 sources:
   fy2018-loans:
@@ -241,6 +241,38 @@ sources:
     url: https://ojk.go.id/id/kanal/perbankan/data-dan-statistik/direktori-perbankan-indonesia-baru/default.aspx
     where: OJK describes bank-level financial data categories including asset quality, regulatory capital, financial
       ratios, loss allowances, and derivatives; used as a disclosure map, not as a BBCA numeric input.
+  bank-2026-06-capital-risk:
+    title: BCA June 2026 capital and risk exposure disclosure
+    url: https://pustaka.bca.co.id/Report/Laporan-Eksposur/2026/20260731-laporan-eksposur-risiko-dan-permodalan-juni-2026-eng.pdf#page=1
+    where: Printed PDF pp. 1-2, consolidated KM1 capital, leverage ratio, LCR and NSFR ratios.
+  bank-2026-06-irrbb:
+    title: BCA June 2026 capital and risk exposure disclosure
+    url: https://pustaka.bca.co.id/Report/Laporan-Eksposur/2026/20260731-laporan-eksposur-risiko-dan-permodalan-juni-2026-eng.pdf#page=32
+    where: Printed PDF pp. 31-32, consolidated IRRBB EVE and NII shock sensitivities at June 2026.
+  bank-2025-pl:
+    title: BCA audited financial statements FY2025
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Diaudit/2026/20260127-audited-financial-statement-bca-31-december-2025-english-combined.pdf#page=9
+    where: Printed PDF pp. 9-10, consolidated statement of profit or loss (NII, operating income and operating expenses).
+  bank-2026-09-pl:
+    title: BCA September 2026 interim statements
+    url: https://pustaka.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-september-2026-billingual.pdf#page=8
+    where: Printed PDF pp. 8-9, consolidated interim statement of profit or loss (9M26 NII, operating income and expenses).
+  bank-2026-06-pl:
+    title: BCA June 2026 interim statements
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260728-laporan-keuangan-konsolidasi-pt-bca-tbk-periode-30-juni-2026-billingual.pdf#page=8
+    where: Printed PDF pp. 8-9, consolidated interim statement of profit or loss (1H26 NII, operating income and expenses).
+  bank-2025-12-pub:
+    title: BCA December 2025 published financial report
+    url: https://pustaka.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260127-financial-report-december-2025.pdf#page=2
+    where: Printed PDF p. 2, individual (bank-only) customer deposits (current, saving and time deposits).
+  bank-2026-06-pub:
+    title: BCA June 2026 published financial report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20260728-financial-report-june-2026.pdf#page=2
+    where: Printed PDF p. 2, individual (bank-only) customer deposits (current, saving and time deposits).
+  bank-2026-09-pub:
+    title: BCA September 2026 published financial report
+    url: https://www.bca.co.id/-/media/Feature/Report/File/S8/Laporan-Triwulan/2026/20261027-financial-report-september-2026.pdf#page=2
+    where: Printed PDF p. 2, individual (bank-only) customer deposits (current, saving and time deposits).
   buffett-1990:
     title: Warren Buffett, Berkshire Hathaway 1990 letter
     url: https://www.berkshirehathaway.com/letters/1990.html
@@ -1413,6 +1445,349 @@ observations:
   period_type: balance
   period_end: '2026-09-30'
   source: bank-peer-bri
+# June 2026 IRRBB (consolidated)
+- key: Maximum EVE reduction
+  subject: BBCA
+  basis: consolidated
+  value: 13761956
+  unit: IDR million
+  period: '2026-06'
+  period_type: balance
+  period_end: '2026-06-30'
+  source: bank-2026-06-irrbb
+- key: Maximum EVE reduction relative to Tier 1
+  subject: BBCA
+  basis: consolidated
+  value: 5.24
+  unit: '%'
+  period: '2026-06'
+  period_type: balance
+  period_end: '2026-06-30'
+  source: bank-2026-06-irrbb
+- key: Maximum NII reduction
+  subject: BBCA
+  basis: consolidated
+  value: 2216850
+  unit: IDR million
+  period: '2026-06'
+  period_type: balance
+  period_end: '2026-06-30'
+  source: bank-2026-06-irrbb
+- key: Maximum NII reduction relative to projected income
+  subject: BBCA
+  basis: consolidated
+  value: 2.51
+  unit: '%'
+  period: '2026-06'
+  period_type: balance
+  period_end: '2026-06-30'
+  source: bank-2026-06-irrbb
+# Pillar 3 Leverage, LCR & NSFR inputs (2025, 2026-03, 2026-06, 2026-09)
+- key: Tier 1 capital
+  subject: BBCA
+  basis: consolidated
+  value: 273828527
+  unit: IDR million
+  period: '2025'
+  period_type: balance
+  period_end: '2025-12-31'
+  source: bank-2026-06-capital-risk
+- key: Basel III exposure measure
+  subject: BBCA
+  basis: consolidated
+  value: 1739736652
+  unit: IDR million
+  period: '2025'
+  period_type: balance
+  period_end: '2025-12-31'
+  source: bank-2026-06-capital-risk
+- key: High-quality liquid assets
+  subject: BBCA
+  basis: consolidated
+  value: 498662391
+  unit: IDR million
+  period: '2025'
+  period_type: balance
+  period_end: '2025-12-31'
+  source: bank-2026-06-capital-risk
+- key: Total net cash outflows (30d)
+  subject: BBCA
+  basis: consolidated
+  value: 160376849
+  unit: IDR million
+  period: '2025'
+  period_type: balance
+  period_end: '2025-12-31'
+  source: bank-2026-06-capital-risk
+- key: Available stable funding
+  subject: BBCA
+  basis: consolidated
+  value: 1328381341
+  unit: IDR million
+  period: '2025'
+  period_type: balance
+  period_end: '2025-12-31'
+  source: bank-2026-06-capital-risk
+- key: Required stable funding
+  subject: BBCA
+  basis: consolidated
+  value: 831031561
+  unit: IDR million
+  period: '2025'
+  period_type: balance
+  period_end: '2025-12-31'
+  source: bank-2026-06-capital-risk
+- key: Tier 1 capital
+  subject: BBCA
+  basis: consolidated
+  value: 251871619
+  unit: IDR million
+  period: '2026-03'
+  period_type: balance
+  period_end: '2026-03-31'
+  source: bank-2026-06-capital-risk
+- key: Basel III exposure measure
+  subject: BBCA
+  basis: consolidated
+  value: 1800957826
+  unit: IDR million
+  period: '2026-03'
+  period_type: balance
+  period_end: '2026-03-31'
+  source: bank-2026-06-capital-risk
+- key: High-quality liquid assets
+  subject: BBCA
+  basis: consolidated
+  value: 505104921
+  unit: IDR million
+  period: '2026-03'
+  period_type: balance
+  period_end: '2026-03-31'
+  source: bank-2026-06-capital-risk
+- key: Total net cash outflows (30d)
+  subject: BBCA
+  basis: consolidated
+  value: 164295292
+  unit: IDR million
+  period: '2026-03'
+  period_type: balance
+  period_end: '2026-03-31'
+  source: bank-2026-06-capital-risk
+- key: Available stable funding
+  subject: BBCA
+  basis: consolidated
+  value: 1341689857
+  unit: IDR million
+  period: '2026-03'
+  period_type: balance
+  period_end: '2026-03-31'
+  source: bank-2026-06-capital-risk
+- key: Required stable funding
+  subject: BBCA
+  basis: consolidated
+  value: 841808627
+  unit: IDR million
+  period: '2026-03'
+  period_type: balance
+  period_end: '2026-03-31'
+  source: bank-2026-06-capital-risk
+- key: Tier 1 capital
+  subject: BBCA
+  basis: consolidated
+  value: 262698408
+  unit: IDR million
+  period: '2026-06'
+  period_type: balance
+  period_end: '2026-06-30'
+  source: bank-2026-06-capital-risk
+- key: Basel III exposure measure
+  subject: BBCA
+  basis: consolidated
+  value: 1813878088
+  unit: IDR million
+  period: '2026-06'
+  period_type: balance
+  period_end: '2026-06-30'
+  source: bank-2026-06-capital-risk
+- key: High-quality liquid assets
+  subject: BBCA
+  basis: consolidated
+  value: 475246759
+  unit: IDR million
+  period: '2026-06'
+  period_type: balance
+  period_end: '2026-06-30'
+  source: bank-2026-06-capital-risk
+- key: Total net cash outflows (30d)
+  subject: BBCA
+  basis: consolidated
+  value: 169953620
+  unit: IDR million
+  period: '2026-06'
+  period_type: balance
+  period_end: '2026-06-30'
+  source: bank-2026-06-capital-risk
+- key: Available stable funding
+  subject: BBCA
+  basis: consolidated
+  value: 1350309447
+  unit: IDR million
+  period: '2026-06'
+  period_type: balance
+  period_end: '2026-06-30'
+  source: bank-2026-06-capital-risk
+- key: Required stable funding
+  subject: BBCA
+  basis: consolidated
+  value: 870549263
+  unit: IDR million
+  period: '2026-06'
+  period_type: balance
+  period_end: '2026-06-30'
+  source: bank-2026-06-capital-risk
+- key: Tier 1 capital
+  subject: BBCA
+  basis: consolidated
+  value: 275068739
+  unit: IDR million
+  period: '2026-09'
+  period_type: balance
+  period_end: '2026-09-30'
+  source: bank-2026-09-capital-risk
+- key: Basel III exposure measure
+  subject: BBCA
+  basis: consolidated
+  value: 1793957011
+  unit: IDR million
+  period: '2026-09'
+  period_type: balance
+  period_end: '2026-09-30'
+  source: bank-2026-09-capital-risk
+- key: High-quality liquid assets
+  subject: BBCA
+  basis: consolidated
+  value: 438393762
+  unit: IDR million
+  period: '2026-09'
+  period_type: balance
+  period_end: '2026-09-30'
+  source: bank-2026-09-capital-risk
+- key: Total net cash outflows (30d)
+  subject: BBCA
+  basis: consolidated
+  value: 163786827
+  unit: IDR million
+  period: '2026-09'
+  period_type: balance
+  period_end: '2026-09-30'
+  source: bank-2026-09-capital-risk
+- key: Available stable funding
+  subject: BBCA
+  basis: consolidated
+  value: 1373544655
+  unit: IDR million
+  period: '2026-09'
+  period_type: balance
+  period_end: '2026-09-30'
+  source: bank-2026-09-capital-risk
+- key: Required stable funding
+  subject: BBCA
+  basis: consolidated
+  value: 876562531
+  unit: IDR million
+  period: '2026-09'
+  period_type: balance
+  period_end: '2026-09-30'
+  source: bank-2026-09-capital-risk
+# Cost-to-Income Ratio inputs (2025 full year, 2026-06 1H YTD, and 2026-09 9M YTD)
+- key: Operating expenses
+  subject: BBCA
+  basis: consolidated
+  value: 36734403
+  unit: IDR million
+  period: '2025'
+  period_type: annual
+  period_start: '2025-01-01'
+  period_end: '2025-12-31'
+  source: bank-2025-pl
+- key: Operating income
+  subject: BBCA
+  basis: consolidated
+  value: 112006326
+  unit: IDR million
+  period: '2025'
+  period_type: annual
+  period_start: '2025-01-01'
+  period_end: '2025-12-31'
+  source: bank-2025-pl
+- key: Operating expenses
+  subject: BBCA
+  basis: consolidated
+  value: 17822298
+  unit: IDR million
+  period: '2026-06'
+  period_type: interim
+  period_start: '2026-01-01'
+  period_end: '2026-06-30'
+  source: bank-2026-06-pl
+- key: Operating income
+  subject: BBCA
+  basis: consolidated
+  value: 56058590
+  unit: IDR million
+  period: '2026-06'
+  period_type: interim
+  period_start: '2026-01-01'
+  period_end: '2026-06-30'
+  source: bank-2026-06-pl
+- key: Operating expenses
+  subject: BBCA
+  basis: consolidated
+  value: 27400844
+  unit: IDR million
+  period: '2026-09'
+  period_type: interim
+  period_start: '2026-01-01'
+  period_end: '2026-09-30'
+  source: bank-2026-09-pl
+- key: Operating income
+  subject: BBCA
+  basis: consolidated
+  value: 85634200
+  unit: IDR million
+  period: '2026-09'
+  period_type: interim
+  period_start: '2026-01-01'
+  period_end: '2026-09-30'
+  source: bank-2026-09-pl
+# Bank-only (unconsolidated) Customer Deposits for LDR (2025, 2026-06, 2026-09)
+- key: Customer deposits
+  subject: BBCA
+  basis: unconsolidated
+  value: 1219567546
+  unit: IDR million
+  period: '2025'
+  period_type: balance
+  period_end: '2025-12-31'
+  source: bank-2025-12-pub
+- key: Customer deposits
+  subject: BBCA
+  basis: unconsolidated
+  value: 1253144464
+  unit: IDR million
+  period: '2026-06'
+  period_type: balance
+  period_end: '2026-06-30'
+  source: bank-2026-06-pub
+- key: Customer deposits
+  subject: BBCA
+  basis: unconsolidated
+  value: 1270059661
+  unit: IDR million
+  period: '2026-09'
+  period_type: balance
+  period_end: '2026-09-30'
+  source: bank-2026-09-pub
 rules:
   bank-credit-cost-ratio:
     status: partial
@@ -1489,4 +1864,44 @@ rules:
     finding: Gross Stage 3 loans rose from 1.67% to 1.79% of gross staged loans across the same two reporting dates.
     gap: Accounting Stage 3 is a separate series from prudential NPLs.
     sources: [bank-loan-stages]
+  bank-net-interest-margin:
+    status: partial
+    finding: Net interest income is reviewed across FY2018-FY2025 and 9M26; earning-asset average balances require standardized extraction across periods.
+    gap: Matched average earning assets across all historical and interim periods need review after importing the newly archived monthly/quarterly PDFs.
+    sources: [fy2025-loans, bank-2026-09-capital-risk]
+  bank-cost-to-income-ratio:
+    status: partial
+    finding: Operating expenses and operating income are reported in audited and interim statements; scope alignment between consolidated and bank-only OJK BOPO remains separate.
+    gap: Standardize operating-income denominator (net interest + fee/trading income) across historical periods.
+    sources: [fy2025-deposit-cost, ojk-bank-publications]
+  bank-loan-to-deposit-ratio:
+    status: partial
+    finding: Gross loans and customer deposits are reviewed through September 2026; bank-only LDR differs slightly from consolidated group loans-to-deposits due to sharia and finance subsidiaries.
+    gap: Complete bank-only vs consolidated LDR time series from the newly downloaded monthly reports.
+    sources: [fy2025-loans, fy2025-deposits, 2026-09-deposits]
+  bank-casa-ratio:
+    status: partial
+    finding: BCA reported CASA at 85.6% of total funding at September 2026; peer comparisons retain each issuer's denominator.
+    gap: Extract uniform demand + savings vs customer deposits across all historical years and peers.
+    sources: [bank-bca-sep26-funding, bank-peer-mandiri, bank-peer-bni, bank-peer-bri]
+  bank-net-write-off-ratio:
+    status: partial
+    finding: Note 12 allowance roll-forwards disclose annual write-offs and recoveries alongside impairment expense.
+    gap: Multi-year net write-off and recovery extraction from Note 12 tables remains pending review.
+    sources: [bank-loan-stages, fy2025-loans]
+  bank-leverage-ratio:
+    status: partial
+    finding: BCA Capital and Risk Exposure (Pillar 3) reports disclose consolidated Basel III Leverage Ratio (14.48% at June 2026, 13.99% at March 2026).
+    gap: Import and review the newly archived 2023-2026 Pillar 3 PDFs into analysis.db.
+    sources: [bank-2026-09-capital-risk]
+  bank-lcr-ratio:
+    status: partial
+    finding: Consolidated LCR is disclosed quarterly in Pillar 3 Capital and Risk Exposure reports above the 100% OJK minimum.
+    gap: Extract and approve quarterly HQLA and 30-day net cash outflow lines from the newly archived Pillar 3 PDFs.
+    sources: [bank-2026-09-capital-risk]
+  bank-nsfr-ratio:
+    status: partial
+    finding: Consolidated NSFR is disclosed in Pillar 3 Capital and Risk Exposure reports above the 100% OJK minimum.
+    gap: Extract and approve quarterly ASF and RSF lines from the newly archived Pillar 3 PDFs.
+    sources: [bank-2026-09-capital-risk]
 input_conflicts: []

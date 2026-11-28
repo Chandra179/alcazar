@@ -40,7 +40,7 @@ entries:
     description: Interest expense on customer deposits divided by average customer deposits for the same period.
     formula: (interest_expense_on_customer_deposits / average_customer_deposits) * 100
     applies_when: |-
-      - Match customer-deposit interest expense with opening and closing customer deposits for the same scope and period.
+      - Match customer-deposit interest expense with opening and closing customer deposits for the same scope and period. For interim periods, use period-to-date expense without silent annualization and label the result as interim.
       - State whether sharia deposits and other bank funding are included. A deposit-cost measure that excludes them must not be compared with an all-in funding cost.
       - Compare the deposit cost with asset yields and changes in market rates; no single rate establishes a durable funding advantage.
     depends_on: [liquidity-as-financial-optionality]
@@ -101,3 +101,67 @@ entries:
     applies_when: Match reporting date, scope, currency and balance basis. Compare with prudential NPL, retaining both definitions and reconciling differences where disclosed.
     depends_on: [bank-underwriting-and-concentration]
     source: "Issuer loan staging disclosures and Basel Committee, Prudential treatment of problem assets."
+
+  - id: bank-net-interest-margin
+    type: formula
+    description: Net interest income (including sharia margin where consolidated) as a percentage of average earning assets for the same period.
+    formula: (net_interest_income / average_earning_assets) * 100
+    applies_when: Match scope, currency, and earning-asset definition; label interim period-to-date figures separately from annualized or full-year figures.
+    depends_on: [bank-deposit-cost-ratio, bank-through-cycle-earnings-and-value]
+    source: "BCA audited financial statements and OJK bank disclosures; calculation defined for this catalog."
+
+  - id: bank-cost-to-income-ratio
+    type: formula
+    description: Operating expenses as a percentage of total operating income (net interest income plus non-interest operating income).
+    formula: (operating_expenses / operating_income) * 100
+    applies_when: Match consolidated or bank-only scope and verify whether credit provisions are excluded from operating expenses.
+    depends_on: [bank-through-cycle-earnings-and-value]
+    source: "BCA audited financial statements and OJK bank disclosures; calculation defined for this catalog."
+
+  - id: bank-loan-to-deposit-ratio
+    type: formula
+    description: Gross customer loans as a percentage of total customer deposits on the same balance-sheet date.
+    formula: (gross_loans / customer_deposits) * 100
+    applies_when: Match bank-only or consolidated scope and state whether sharia financing/deposits are included.
+    depends_on: [bank-deposit-franchise-resilience, bank-rate-liquidity-and-contingent-risk]
+    source: "BCA audited financial statements and OJK bank disclosures; calculation defined for this catalog."
+
+  - id: bank-casa-ratio
+    type: formula
+    description: Current and savings account (CASA) deposits as a percentage of total customer deposits at the same date.
+    formula: (casa_deposits / customer_deposits) * 100
+    applies_when: Retain each issuer's funding denominator (customer deposits vs total funding) when comparing peers.
+    depends_on: [bank-deposit-franchise-resilience]
+    source: "BCA financial reports and peer bank disclosures; calculation defined for this catalog."
+
+  - id: bank-net-write-off-ratio
+    type: formula
+    description: Net loan write-offs (gross write-offs less recoveries) as a percentage of average gross loans for the period.
+    formula: (net_loan_write_offs / average_gross_loans) * 100
+    applies_when: Compare alongside credit-cost ratio and allowance releases to distinguish accounting provisioning from realized loan losses.
+    depends_on: [bank-credit-cost-ratio, bank-underwriting-and-concentration]
+    source: "BCA Note 12 loan-loss allowance roll-forward and IFRS 9 disclosures; calculation defined for this catalog."
+
+  - id: bank-leverage-ratio
+    type: formula
+    description: Basel III Tier 1 capital divided by the regulatory total exposure measure (on- and off-balance-sheet exposures).
+    formula: (tier_1_capital / basel_iii_exposure_measure) * 100
+    applies_when: Use consolidated Pillar 3 Capital and Risk Exposure disclosures and compare against the OJK minimum requirement.
+    depends_on: [bank-capital-loss-resilience]
+    source: "BCA Capital and Risk Exposure (Pillar 3) reports and Basel III Leverage Framework."
+
+  - id: bank-lcr-ratio
+    type: formula
+    description: Liquidity Coverage Ratio — High-Quality Liquid Assets (HQLA) divided by stressed 30-day net cash outflows.
+    formula: (high_quality_liquid_assets / net_cash_outflows_30d) * 100
+    applies_when: Use consolidated Pillar 3 liquidity disclosures and compare against the 100% regulatory minimum.
+    depends_on: [bank-rate-liquidity-and-contingent-risk]
+    source: "BCA Capital and Risk Exposure (Pillar 3) reports and Basel III LCR standard."
+
+  - id: bank-nsfr-ratio
+    type: formula
+    description: Net Stable Funding Ratio — Available Stable Funding (ASF) divided by Required Stable Funding (RSF).
+    formula: (available_stable_funding / required_stable_funding) * 100
+    applies_when: Use consolidated Pillar 3 liquidity disclosures and compare against the 100% regulatory minimum.
+    depends_on: [bank-deposit-franchise-resilience, bank-rate-liquidity-and-contingent-risk]
+    source: "BCA Capital and Risk Exposure (Pillar 3) reports and Basel III NSFR standard."

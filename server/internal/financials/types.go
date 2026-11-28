@@ -1,13 +1,15 @@
 package financials
 
 type CatalogEntry struct {
-	ID          string   `yaml:"id" json:"id"`
-	Type        string   `yaml:"type" json:"type"`
-	Description string   `yaml:"description" json:"description"`
-	Formula     string   `yaml:"formula" json:"formula,omitempty"`
-	AppliesWhen string   `yaml:"applies_when" json:"applies_when,omitempty"`
-	DependsOn   []string `yaml:"depends_on" json:"depends_on,omitempty"`
-	Source      string   `yaml:"source" json:"source,omitempty"`
+	ID             string   `yaml:"id" json:"id"`
+	Type           string   `yaml:"type" json:"type"`
+	Description    string   `yaml:"description" json:"description"`
+	Formula        string   `yaml:"formula" json:"formula,omitempty"`
+	AppliesWhen    string   `yaml:"applies_when" json:"applies_when,omitempty"`
+	DependsOn      []string `yaml:"depends_on" json:"depends_on,omitempty"`
+	Source         string   `yaml:"source" json:"source,omitempty"`
+	Scope          string   `yaml:"scope" json:"scope,omitempty"`
+	ExcludeSectors []string `yaml:"exclude_sectors" json:"exclude_sectors,omitempty"`
 }
 
 type Document struct {
