@@ -1,4 +1,4 @@
-import { ChevronDown, Table2, Upload } from "lucide-react"
+import { ChevronDown, Info, Table2, Upload } from "lucide-react"
 import { useMemo, useState } from "react"
 
 import { IndexedCompoundingChart } from "@/components/charts/indexed-compounding-chart"
@@ -9,6 +9,7 @@ import { HistorySection } from "@/components/sections/history-section"
 import { RatiosSection } from "@/components/sections/ratios-section"
 import { RiskStressSection } from "@/components/sections/risk-stress-section"
 import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useReport } from "@/lib/report-context"
 import {
   extractAnnualSeries,
@@ -19,6 +20,13 @@ import {
   getSectionById,
   getSectionsByKind,
 } from "@/lib/report-data"
+
+function splitTitleSummary(title?: string): { label: string; summary?: string } {
+  if (!title) return { label: "" }
+  const match = title.match(/^(.+?)\s+[—-]\s+(.+)$/)
+  if (!match) return { label: title }
+  return { label: match[1].trim(), summary: match[2].trim() }
+}
 
 export function OverviewPage() {
   const [span, setSpan] = useState<"5" | "10" | "all">("10")
@@ -115,7 +123,7 @@ export function OverviewPage() {
             label: latestInterim.period_label ?? "Interim",
             value: extractRowValue(latestInterim, "Group"),
             delta: extractRowDelta(latestInterim, "Group"),
-            sub: latestInterim.title ?? "Interim update",
+            sub: "Interim update",
           },
         ]
       : [
@@ -139,7 +147,7 @@ export function OverviewPage() {
       <section id="sec-overview" className="scroll-mt-14 space-y-8 border-b pb-10 min-w-0">
         <header className="space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            {latestAnnual?.title ?? `${ticker} Financial Report`}
+            {ticker ? `${ticker} Financial Report` : "Financial Report"}
           </h1>
           <p className="max-w-2xl text-sm text-muted-foreground leading-relaxed">
             {getSectionById(report, "yearly-cover")?.paragraphs?.[0]?.text ??
@@ -226,39 +234,62 @@ export function OverviewPage() {
           </div>
         ) : null}
 
-        {latestInterim ? (
-          <div className="space-y-3 min-w-0">
-            <div className="flex items-center justify-between gap-3">
-              <h2 className="text-sm font-semibold">{latestInterim.title}</h2>
-              {(latestInterim.tables?.length ?? 0) > 0 ? (
-                <Button
-                  type="button"
-                  size="xs"
-                  variant="ghost"
-                  onClick={() => setShowInterimTables((prev) => !prev)}
-                >
-                  <Table2 className="size-3.5" />
-                  <span>Tables</span>
-                  <ChevronDown
-                    className={`size-3 transition-transform ${
-                      showInterimTables ? "rotate-180" : ""
-                    }`}
-                  />
-                </Button>
+        {latestInterim ? (() => {
+          const interimHeading = splitTitleSummary(latestInterim.title)
+          return (
+            <div className="space-y-3 min-w-0">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-1.5">
+                  <h3 className="text-sm font-medium text-foreground/90">
+                    {interimHeading.label || "Latest interim"}
+                  </h3>
+                  {interimHeading.summary ? (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          aria-label={interimHeading.summary}
+                          className="inline-flex items-center text-muted-foreground hover:text-foreground focus-visible:outline-none"
+                        >
+                          <Info className="size-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>{interimHeading.summary}</TooltipContent>
+                    </Tooltip>
+                  ) : null}
+                </div>
+                {(latestInterim.tables?.length ?? 0) > 0 ? (
+                  <Button
+                    type="button"
+                    size="xs"
+                    variant="ghost"
+                    onClick={() => setShowInterimTables((prev) => !prev)}
+                  >
+                    <Table2 className="size-3.5" />
+                    <span>Tables</span>
+                    <ChevronDown
+                      className={`size-3 transition-transform ${
+                        showInterimTables ? "rotate-180" : ""
+                      }`}
+                    />
+                  </Button>
+                ) : null}
+              </div>
+              {latestInterim.paragraphs?.[0]?.text ? (
+                <p className="max-w-3xl text-[13px] leading-relaxed text-muted-foreground">
+                  {latestInterim.paragraphs[0].text}
+                </p>
+              ) : null}
+              {showInterimTables ? (
+                <div className="space-y-8 pt-2">
+                  {(latestInterim.tables ?? []).map((table, idx) => (
+                    <FinancialTable key={table.title ?? idx} table={table} />
+                  ))}
+                </div>
               ) : null}
             </div>
-            {latestInterim.paragraphs?.[0]?.text ? (
-              <p className="text-sm text-muted-foreground">{latestInterim.paragraphs[0].text}</p>
-            ) : null}
-            {showInterimTables ? (
-              <div className="space-y-4 pt-2">
-                {(latestInterim.tables ?? []).map((table, idx) => (
-                  <FinancialTable key={table.title ?? idx} table={table} compact />
-                ))}
-              </div>
-            ) : null}
-          </div>
-        ) : null}
+          )
+        })() : null}
       </section>
 
       {/* 2. RATIOS */}

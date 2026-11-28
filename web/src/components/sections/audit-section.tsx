@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { mergePlainEnglishGlossary } from "@/lib/glossary-terms"
 import type { AnalysisRule, AnalysisSource, GlossaryEntry } from "@/types/analysis"
 
 interface AuditSectionProps {
@@ -29,22 +30,23 @@ function statusVariant(status: string): "positive" | "warning" | "negative" | "o
 }
 
 export function AuditSection({ glossary, rules, sources }: AuditSectionProps) {
+  const mergedGlossary = useMemo(() => mergePlainEnglishGlossary(glossary), [glossary])
   const [expanded, setExpanded] = useState(false)
   const [tab, setTab] = useState<"glossary" | "rules">(
-    glossary.length > 0 ? "glossary" : "rules",
+    mergedGlossary.length > 0 ? "glossary" : "rules",
   )
   const [query, setQuery] = useState("")
 
   const filteredGlossary = useMemo(() => {
     const q = query.trim().toLowerCase()
-    if (!q) return glossary
-    return glossary.filter(
+    if (!q) return mergedGlossary
+    return mergedGlossary.filter(
       (g) =>
         g.term.toLowerCase().includes(q) ||
         g.meaning.toLowerCase().includes(q) ||
         (g.group ?? "").toLowerCase().includes(q),
     )
-  }, [glossary, query])
+  }, [mergedGlossary, query])
 
   const filteredRules = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -57,15 +59,15 @@ export function AuditSection({ glossary, rules, sources }: AuditSectionProps) {
     )
   }, [rules, query])
 
-  if (glossary.length === 0 && rules.length === 0) return null
+  if (mergedGlossary.length === 0 && rules.length === 0) return null
 
   return (
     <section id="sec-audit" className="scroll-mt-14 space-y-4 min-w-0">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-baseline gap-2.5">
-          <h2 className="text-lg font-semibold tracking-tight">Glossary &amp; Audit</h2>
+          <h2 className="text-xl font-semibold tracking-tight">Glossary &amp; Audit</h2>
           <span className="font-mono text-xs text-muted-foreground">
-            {glossary.length} terms · {rules.length} rules
+            {mergedGlossary.length} terms · {rules.length} rules
           </span>
         </div>
 
@@ -86,14 +88,14 @@ export function AuditSection({ glossary, rules, sources }: AuditSectionProps) {
         <div className="space-y-4 pt-1">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-1.5">
-              {glossary.length > 0 ? (
+              {mergedGlossary.length > 0 ? (
                 <Button
                   type="button"
                   size="xs"
                   variant={tab === "glossary" ? "secondary" : "ghost"}
                   onClick={() => setTab("glossary")}
                 >
-                  Glossary ({glossary.length})
+                  Glossary ({mergedGlossary.length})
                 </Button>
               ) : null}
               {rules.length > 0 ? (
@@ -120,7 +122,7 @@ export function AuditSection({ glossary, rules, sources }: AuditSectionProps) {
           </div>
 
           {tab === "glossary" ? (
-            <div className="border-y">
+            <div className="min-w-0">
               <Table>
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
@@ -134,14 +136,14 @@ export function AuditSection({ glossary, rules, sources }: AuditSectionProps) {
                       <TableCell className="sticky left-0 z-10 bg-background pr-4 font-medium whitespace-nowrap">
                         {item.term}
                       </TableCell>
-                      <TableCell className="text-xs text-muted-foreground">{item.meaning}</TableCell>
+                      <TableCell className="text-muted-foreground">{item.meaning}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </div>
           ) : (
-            <div className="max-h-[480px] overflow-y-auto border-y">
+            <div className="max-h-[480px] min-w-0 overflow-y-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
@@ -155,18 +157,18 @@ export function AuditSection({ glossary, rules, sources }: AuditSectionProps) {
                 <TableBody>
                   {filteredRules.map((item) => (
                     <TableRow key={item.rule.id}>
-                      <TableCell className="font-mono text-xs text-muted-foreground">
+                      <TableCell className="font-mono text-muted-foreground">
                         {item.number}
                       </TableCell>
                       <TableCell className="sticky left-0 z-10 bg-background align-top whitespace-nowrap">
-                        <div className="text-xs font-medium">
+                        <div className="font-medium">
                           {item.rule.title ?? item.rule.id}
                         </div>
                       </TableCell>
                       <TableCell className="align-top">
                         <Badge variant={statusVariant(item.status)}>{item.status}</Badge>
                       </TableCell>
-                      <TableCell className="max-w-md align-top text-xs">
+                      <TableCell className="max-w-md align-top">
                         <p>{item.finding}</p>
                         {item.gap ? (
                           <p className="mt-1 text-amber-700 dark:text-amber-400">

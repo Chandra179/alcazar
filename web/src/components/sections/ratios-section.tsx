@@ -57,7 +57,7 @@ export function RatiosSection({ series }: RatiosSectionProps) {
   return (
     <section id="sec-ratios" className="scroll-mt-14 space-y-5 border-b pb-10 min-w-0">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-lg font-semibold tracking-tight">Ratios &amp; Valuation</h2>
+        <h2 className="text-xl font-semibold tracking-tight">Ratios &amp; Valuation</h2>
 
         <div className="flex items-center gap-1.5">
           {view === "charts" ? (
@@ -94,7 +94,7 @@ export function RatiosSection({ series }: RatiosSectionProps) {
       </div>
 
       {view === "table" ? (
-        <div className="border-y">
+        <div className="min-w-0">
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
@@ -120,7 +120,7 @@ export function RatiosSection({ series }: RatiosSectionProps) {
                   <TableCell className="text-right font-mono text-muted-foreground tabular-nums whitespace-nowrap">
                     {r.median !== null ? `${r.median.toFixed(r.decimals)}${r.unit}` : "—"}
                   </TableCell>
-                  <TableCell className="text-right font-mono text-xs text-muted-foreground tabular-nums whitespace-nowrap">
+                  <TableCell className="text-right font-mono text-muted-foreground tabular-nums whitespace-nowrap">
                     {r.min.toFixed(r.decimals)}–{r.max.toFixed(r.decimals)}
                     {r.unit}
                   </TableCell>

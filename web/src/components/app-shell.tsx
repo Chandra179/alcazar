@@ -98,11 +98,6 @@ export function AppShell() {
                 <Hexagon className="size-3.5" />
               </span>
               <span className="text-sm font-semibold tracking-tight">Alcazar</span>
-              {ticker ? (
-                <span className="font-mono text-xs font-semibold text-teal-700 dark:text-teal-400">
-                  {ticker}
-                </span>
-              ) : null}
             </a>
             <Button
               type="button"
@@ -257,11 +252,6 @@ export function AppShell() {
               <Menu className="size-4" />
             </Button>
             <span className="text-sm font-semibold tracking-tight">Alcazar</span>
-            {ticker ? (
-              <span className="font-mono text-xs font-semibold text-teal-700 dark:text-teal-400">
-                {ticker}
-              </span>
-            ) : null}
           </div>
           <div className="flex items-center gap-1">
             <Button

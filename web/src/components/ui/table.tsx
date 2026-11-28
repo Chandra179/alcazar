@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 export function Table({ className, ...props }: React.ComponentProps<"table">) {
   return (
     <div className="relative w-full overflow-x-auto">
-      <table className={cn("w-full caption-bottom text-sm", className)} {...props} />
+      <table className={cn("w-full caption-bottom text-[13px]", className)} {...props} />
     </div>
   )
 }
@@ -15,13 +15,13 @@ export function TableHeader({ className, ...props }: React.ComponentProps<"thead
 }
 
 export function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
-  return <tbody className={cn("[&_tr:last-child]:border-0", className)} {...props} />
+  return <tbody className={className} {...props} />
 }
 
 export function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
   return (
     <tr
-      className={cn("border-b transition-colors hover:bg-muted/40 data-[state=selected]:bg-muted", className)}
+      className={cn("transition-colors hover:bg-muted/40 data-[state=selected]:bg-muted", className)}
       {...props}
     />
   )
@@ -31,7 +31,7 @@ export function TableHead({ className, ...props }: React.ComponentProps<"th">) {
   return (
     <th
       className={cn(
-        "h-9 px-3 text-left align-middle text-xs font-medium tracking-wide text-muted-foreground uppercase whitespace-nowrap",
+        "px-3 py-2 first:pl-0 last:pr-0 text-left align-bottom text-[11px] leading-tight font-medium tracking-wider text-muted-foreground uppercase",
         className,
       )}
       {...props}
@@ -40,5 +40,7 @@ export function TableHead({ className, ...props }: React.ComponentProps<"th">) {
 }
 
 export function TableCell({ className, ...props }: React.ComponentProps<"td">) {
-  return <td className={cn("px-3 py-2.5 align-middle", className)} {...props} />
+  return (
+    <td className={cn("px-3 py-2 first:pl-0 last:pr-0 align-middle", className)} {...props} />
+  )
 }

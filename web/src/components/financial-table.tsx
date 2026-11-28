@@ -8,13 +8,32 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { isGroupRow } from "@/lib/report-data"
+import { getPlainTermTooltip } from "@/lib/glossary-terms"
 import { cn } from "@/lib/utils"
 import type { ReportCell, ReportTable } from "@/types/analysis"
 
+function TermWithTooltip({ text }: { text: string }) {
+  const tip = getPlainTermTooltip(text)
+  if (!tip) return <>{text}</>
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span
+          tabIndex={0}
+          className="cursor-help underline decoration-dotted decoration-muted-foreground/60 underline-offset-4 focus-visible:outline-none"
+        >
+          {text}
+        </span>
+      </TooltipTrigger>
+      <TooltipContent>{tip}</TooltipContent>
+    </Tooltip>
+  )
+}
+
 interface FinancialTableProps {
   table: ReportTable
-  compact?: boolean
 }
 
 function deltaToneClass(text: string): string {
@@ -29,7 +48,7 @@ function deltaToneClass(text: string): string {
 function renderCellContent(cell: ReportCell) {
   return (
     <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-      {cell.text ? <span>{cell.text}</span> : null}
+      {cell.text ? <TermWithTooltip text={cell.text} /> : null}
       {cell.links?.map((link) => (
         <a
           key={`${link.text}-${link.url}`}
@@ -46,17 +65,15 @@ function renderCellContent(cell: ReportCell) {
   )
 }
 
-export function FinancialTable({ table, compact = false }: FinancialTableProps) {
+export function FinancialTable({ table }: FinancialTableProps) {
   const numericCols = new Set(table.numeric_columns ?? [])
   const currentCol = table.current_column ?? -1
   const changeCol = table.headers.findIndex((h) => h.toLowerCase().includes("change"))
 
   return (
-    <div className="border-y bg-background">
+    <div className="min-w-0 bg-background">
       {table.title ? (
-        <div className="border-b py-2.5">
-          <h3 className="text-sm font-semibold tracking-tight">{table.title}</h3>
-        </div>
+        <h3 className="mb-2 text-sm font-medium tracking-tight text-foreground/90">{table.title}</h3>
       ) : null}
       <Table>
         <TableHeader>
@@ -68,10 +85,9 @@ export function FinancialTable({ table, compact = false }: FinancialTableProps) 
                   idx === 0 && "sticky left-0 z-10 bg-background pr-4",
                   numericCols.has(idx) && "text-right",
                   idx === currentCol && "bg-muted/50 text-foreground font-semibold",
-                  compact && "h-8 px-2.5",
                 )}
               >
-                {header}
+                {header ? <TermWithTooltip text={header} /> : null}
               </TableHead>
             ))}
           </TableRow>
@@ -86,10 +102,7 @@ export function FinancialTable({ table, compact = false }: FinancialTableProps) 
                 >
                   <TableCell
                     colSpan={table.headers.length}
-                    className={cn(
-                      "sticky left-0 py-1.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase",
-                      compact && "px-2.5",
-                    )}
+                    className="sticky left-0 py-1.5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase"
                   >
                     {row[0]?.text}
                   </TableCell>
@@ -109,7 +122,6 @@ export function FinancialTable({ table, compact = false }: FinancialTableProps) 
                       key={`cell-${rowIndex}-${colIndex}`}
                       className={cn(
                         colIndex === 0 && "sticky left-0 z-10 bg-background pr-4 whitespace-nowrap",
-                        compact && "px-2.5 py-2 text-xs",
                         isNumeric && "text-right font-mono tabular-nums whitespace-nowrap",
                         isCurrent && "bg-muted/30 font-semibold",
                         isDelta && deltaToneClass(cell.text),
