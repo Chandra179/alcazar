@@ -17,14 +17,19 @@ var bbcaFinancialFactSourcesSchema string
 //go:embed migrations/sqlite/00004_version_financial_review.sql
 var bbcaFinancialReviewSchema string
 
-// EnsureBBCAFinancialSchema installs the BBCA tables. The migration is
+// EnsureFinancialSchema installs the financial statement tables. The migration is
 // idempotent so both the importer and API can start against a fresh SQLite DB.
-func EnsureBBCAFinancialSchema(ctx context.Context, db *sql.DB) error {
+func EnsureFinancialSchema(ctx context.Context, db *sql.DB) error {
 	for _, migration := range []string{bbcaFinancialSchema, bbcaFinancialFactSourcesSchema, bbcaFinancialReviewSchema} {
 		up := strings.SplitN(migration, "-- +goose Down", 2)[0]
 		if _, err := db.ExecContext(ctx, up); err != nil {
-			return fmt.Errorf("ensure BBCA financial schema: %w", err)
+			return fmt.Errorf("ensure financial schema: %w", err)
 		}
 	}
 	return nil
+}
+
+// EnsureBBCAFinancialSchema is kept for backward compatibility.
+func EnsureBBCAFinancialSchema(ctx context.Context, db *sql.DB) error {
+	return EnsureFinancialSchema(ctx, db)
 }

@@ -37,7 +37,7 @@ export function ReportProvider({ children }: { children: ReactNode }) {
     setLoading(true)
     setUploadError("")
     try {
-      const res = await fetch(`/__alcazar/reports/${encodeURIComponent(company)}`)
+      const res = await fetch(`/__alcazar/reports/${encodeURIComponent(company)}.json`)
       if (!res.ok) throw new Error(`Failed to load ${company}`)
       const parsed = (await res.json()) as AnalysisReport
       if (parsed && Array.isArray(parsed.yearly_sections)) {
@@ -55,7 +55,7 @@ export function ReportProvider({ children }: { children: ReactNode }) {
     let cancelled = false
     async function init() {
       try {
-        const res = await fetch("/__alcazar/reports")
+        const res = await fetch("/__alcazar/reports.json")
         if (!res.ok) {
           if (!cancelled) setLoading(false)
           return

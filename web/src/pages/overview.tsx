@@ -104,7 +104,52 @@ export function OverviewPage() {
     )
   }
 
-  const kpis = [
+  const isCorporate = report.company?.industry === "corporate"
+  const corpSection = isCorporate ? getSectionById(report, "yearly-corporate") : undefined
+
+  interface KpiCard {
+    label: string
+    labelTooltip?: string
+    value: string
+    delta: string
+    sub: string
+    subTooltip?: string
+  }
+
+  const kpis: KpiCard[] = isCorporate && corpSection
+    ? [
+        {
+          label: `FY${latestAnnual?.period_label ?? "Latest"} Revenue`,
+          value: extractRowValue(corpSection, "Revenue"),
+          delta: extractRowDelta(corpSection, "Revenue"),
+          sub: `Profit ${extractRowValue(latestAnnual, "Group profit")}`,
+        },
+        {
+          label: "Operating Margin",
+          labelTooltip:
+            "Share of revenue left after paying all day-to-day operating costs. Higher means a more efficient business.",
+          value: extractRowValue(corpSection, "Operating margin"),
+          delta: extractRowDelta(corpSection, "Operating margin"),
+          sub: `ROE ${extractRowValue(latestAnnual, "Return on equity")}`,
+        },
+        {
+          label: "Free Cash Flow",
+          labelTooltip:
+            "Cash left over from operations after paying for equipment and upkeep (CapEx).",
+          value: extractRowValue(corpSection, "Free cash flow"),
+          delta: extractRowDelta(corpSection, "Free cash flow"),
+          sub: `ROIC ${extractRowValue(corpSection, "ROIC")}`,
+        },
+        {
+          label: "Net Debt / EBITDA",
+          labelTooltip:
+            "How many years of operating cash profit it would take to pay off total debt (minus cash). Lower is safer.",
+          value: extractRowValue(corpSection, "Net debt / EBITDA"),
+          delta: "",
+          sub: `P/E ${extractRowValue(latestAnnual, "Price / earnings")}`,
+        },
+      ].filter((kpi) => kpi.value !== "—")
+    : [
     {
       label: `FY${latestAnnual?.period_label ?? "Latest"} Profit`,
       value: extractRowValue(latestAnnual, "Group profit"),
@@ -173,9 +218,16 @@ export function OverviewPage() {
       {/* 1. OVERVIEW */}
       <section id="sec-overview" className="scroll-mt-14 space-y-8 border-b pb-10 min-w-0">
         <header className="space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            {ticker ? `${ticker} Financial Report` : "Financial Report"}
-          </h1>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              {ticker ? `${ticker} Financial Report` : "Financial Report"}
+            </h1>
+            {report.company?.industry || report.company?.currency ? (
+              <span className="rounded-md bg-muted px-2 py-0.5 font-mono text-xs text-muted-foreground">
+                {[report.company.industry, report.company.currency].filter(Boolean).join(" · ")}
+              </span>
+            ) : null}
+          </div>
           <p className="max-w-2xl text-sm text-muted-foreground leading-relaxed">
             {getSectionById(report, "yearly-cover")?.paragraphs?.[0]?.text ??
               "Annual performance, valuation, risk, and historical records."}
@@ -276,7 +328,7 @@ export function OverviewPage() {
             )}
 
             {chartMode === "profit" && hasProfitOrRoe ? (
-              <ProfitRoeChart data={chartSeries} />
+              <ProfitRoeChart data={chartSeries} currency={report.company?.currency ?? "IDR"} />
             ) : hasCompounding ? (
               <IndexedCompoundingChart data={chartSeries} />
             ) : null}
@@ -333,6 +385,7 @@ export function OverviewPage() {
       {/* 3. RISK & STRESS */}
       <RiskStressSection
         ticker={ticker}
+        currencySymbol={report.company?.currency_symbol ?? "Rp"}
         bankRisk={bankRisk}
         scenarioSection={scenarioSection}
         scenarios={report.bank_scenarios}

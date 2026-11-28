@@ -72,13 +72,13 @@ function alcazarDataPlugin(): Plugin {
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
         const urlPath = (req.url ?? "").split("?")[0]
-        if (urlPath === "/__alcazar/reports") {
+        if (urlPath === "/__alcazar/reports" || urlPath === "/__alcazar/reports.json") {
           const companies = discoverCompanies()
           res.setHeader("Content-Type", "application/json")
           res.end(JSON.stringify({ companies }))
           return
         }
-        const match = urlPath.match(/^\/__alcazar\/reports\/([a-zA-Z0-9_-]+)$/)
+        const match = urlPath.match(/^\/__alcazar\/reports\/([a-zA-Z0-9_-]+?)(?:\.json)?$/)
         if (match) {
           try {
             const payload = loadCompanyReportJson(match[1])
@@ -97,6 +97,38 @@ function alcazarDataPlugin(): Plugin {
         }
         next()
       })
+    },
+    closeBundle() {
+      const companies = discoverCompanies()
+      if (companies.length === 0) return
+
+      const alcazarDir = path.join(rootDirectory, "dist", "__alcazar")
+      const reportsDir = path.join(alcazarDir, "reports")
+      const built: string[] = []
+
+      for (const company of companies) {
+        try {
+          const payload = loadCompanyReportJson(company)
+          if (!payload) continue
+          fs.mkdirSync(reportsDir, { recursive: true })
+          fs.writeFileSync(path.join(reportsDir, `${company}.json`), payload, "utf8")
+          built.push(company)
+        } catch (err) {
+          console.warn(
+            `[alcazar] skipping static report for ${company}:`,
+            err instanceof Error ? err.message : String(err),
+          )
+        }
+      }
+
+      if (built.length > 0) {
+        fs.mkdirSync(alcazarDir, { recursive: true })
+        fs.writeFileSync(
+          path.join(alcazarDir, "reports.json"),
+          JSON.stringify({ companies: built }),
+          "utf8",
+        )
+      }
     },
   }
 }

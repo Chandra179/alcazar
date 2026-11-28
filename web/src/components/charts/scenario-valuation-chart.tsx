@@ -13,9 +13,13 @@ import type { BankScenarioResult } from "@/types/analysis"
 
 interface ScenarioValuationChartProps {
   results: BankScenarioResult[]
+  currencySymbol?: string
 }
 
-export function ScenarioValuationChart({ results }: ScenarioValuationChartProps) {
+export function ScenarioValuationChart({
+  results,
+  currencySymbol = "Rp",
+}: ScenarioValuationChartProps) {
   const chartData = results.map((r) => ({
     name: r.assumptions?.name ?? r.case?.name ?? "Case",
     dividendValue: Math.round(r.dividend_value_per_share ?? r.dividend_value ?? 0),
@@ -35,7 +39,7 @@ export function ScenarioValuationChart({ results }: ScenarioValuationChartProps)
             tick={{ fontSize: 11 }}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(v: number) => `Rp${v.toLocaleString()}`}
+            tickFormatter={(v: number) => `${currencySymbol}${v.toLocaleString()}`}
             width={72}
           />
           <Tooltip
@@ -45,7 +49,7 @@ export function ScenarioValuationChart({ results }: ScenarioValuationChartProps)
               borderRadius: "8px",
               fontSize: "12px",
             }}
-            formatter={(val, name) => [`Rp${Number(val).toLocaleString()}`, String(name)]}
+            formatter={(val, name) => [`${currencySymbol}${Number(val).toLocaleString()}`, String(name)]}
           />
           <Legend wrapperStyle={{ fontSize: "12px" }} />
           <Bar dataKey="dividendValue" name="Dividend value" fill="#0f766e" radius={[4, 4, 0, 0]} />

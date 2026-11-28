@@ -87,11 +87,12 @@ func addBankValuation(report *AnalysisReport) {
 	slices.Sort(roe)
 	commonEquity, equityOK := parseCanonicalNumber(equity.NormalizedValue)
 	scale, scaleOK := unitScale(equity.Unit)
-	cet1 := report.findObservation("Common Equity Tier 1 capital", "BBCA", period, "consolidated", "IDR million")
-	shares := report.findObservation("Closing common shares ex treasury", "BBCA", period, "consolidated", "shares")
+	ticker := report.companyTicker()
+	cet1 := report.findObservation("Common Equity Tier 1 capital", ticker, period, "consolidated", "IDR million")
+	shares := report.findObservation("Closing common shares ex treasury", ticker, period, "consolidated", "shares")
 	rwa := make([]analysisObservation, 0, 3)
 	for _, year := range []string{"2023", "2024", "2025"} {
-		observation := report.findObservation("Risk-weighted assets", "BBCA", year, "consolidated", "IDR million")
+		observation := report.findObservation("Risk-weighted assets", ticker, year, "consolidated", "IDR million")
 		if observation.Value == nil || *observation.Value <= 0 {
 			return
 		}
@@ -127,7 +128,7 @@ func addBankValuation(report *AnalysisReport) {
 	}
 	results["dividend-value-weighted"] = derived("dividend-value-weighted", period, "IDR/share", weighted,
 		map[string]any{"weights": []float64{.25, .50, .25}, "scenarios": []string{values[0].EntityID, values[1].EntityID, values[2].EntityID}})
-	close := report.findObservation("Year-end close", "BBCA", period, "market", "IDR/share")
+	close := report.findObservation("Year-end close", ticker, period, "market", "IDR/share")
 	conservative := values[0]
 	results["margin-of-safety"] = Metric{EntityID: "margin-of-safety", Period: period, Status: "missing_inputs",
 		Reason: "Requires a positive year-end close and conservative scenario value."}

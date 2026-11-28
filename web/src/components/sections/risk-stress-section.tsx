@@ -34,6 +34,7 @@ import type { BankScenarioCase, BankScenarios, ReportSection } from "@/types/ana
 
 interface RiskStressSectionProps {
   ticker: string
+  currencySymbol?: string
   bankRisk?: ReportSection
   scenarioSection?: ReportSection
   scenarios?: BankScenarios
@@ -102,6 +103,7 @@ function InlinePctInput({
 
 export function RiskStressSection({
   ticker,
+  currencySymbol = "Rp",
   bankRisk,
   scenarioSection,
   scenarios,
@@ -129,9 +131,9 @@ export function RiskStressSection({
   }, [canSimulate, customCases, scenarios?.results, simInputs])
 
   const outputTables = useMemo(() => {
-    if (canSimulate) return buildScenarioOutputTables(liveResults, scenarios?.results)
+    if (canSimulate) return buildScenarioOutputTables(liveResults, scenarios?.results, currencySymbol)
     return scenarioSection?.tables ?? []
-  }, [canSimulate, liveResults, scenarioSection?.tables, scenarios?.results])
+  }, [canSimulate, currencySymbol, liveResults, scenarioSection?.tables, scenarios?.results])
 
   const casaPeers = useMemo<CasaPeerPoint[]>(() => {
     const peerTable = bankRisk?.tables?.find((t) =>
@@ -280,7 +282,7 @@ export function RiskStressSection({
           {liveResults.length ? (
             <div className="min-w-0 space-y-2">
               <h3 className="text-sm font-medium">Per-Share Valuation by Scenario</h3>
-              <ScenarioValuationChart results={liveResults} />
+              <ScenarioValuationChart results={liveResults} currencySymbol={currencySymbol} />
             </div>
           ) : null}
           {casaPeers.length > 0 ? (
@@ -389,7 +391,8 @@ export function RiskStressSection({
                             higherRateChanged ? "font-medium text-teal-700 dark:text-teal-400" : ""
                           }`}
                         >
-                          Rp{Math.round(higherRate)}
+                          {currencySymbol}
+                          {Math.round(higherRate)}
                         </td>
                       </TableRow>
                     )

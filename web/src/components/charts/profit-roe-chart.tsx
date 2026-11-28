@@ -13,9 +13,10 @@ import type { AnnualPoint } from "@/types/analysis"
 
 interface ProfitRoeChartProps {
   data: AnnualPoint[]
+  currency?: string
 }
 
-export function ProfitRoeChart({ data }: ProfitRoeChartProps) {
+export function ProfitRoeChart({ data, currency = "IDR" }: ProfitRoeChartProps) {
   return (
     <div className="h-[320px] w-full">
       <ResponsiveContainer width="100%" height="100%">
@@ -55,7 +56,7 @@ export function ProfitRoeChart({ data }: ProfitRoeChartProps) {
             formatter={(value, name) => {
               if (value === null || value === undefined) return ["—", String(name)]
               const num = Number(value)
-              if (name === "Group profit") return [`${num.toFixed(2)}T IDR`, String(name)]
+              if (name === "Group profit") return [`${num.toFixed(2)}T ${currency}`, String(name)]
               return [`${num.toFixed(2)}%`, String(name)]
             }}
           />

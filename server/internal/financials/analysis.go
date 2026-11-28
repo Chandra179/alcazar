@@ -106,7 +106,8 @@ type analysisPeriod struct {
 }
 
 type AnalysisReport struct {
-	CatalogHash      string `json:"catalog_hash"`
+	Company          *CompanyProfile `json:"company,omitempty"`
+	CatalogHash      string          `json:"catalog_hash"`
 	bankObservations []analysisObservation
 	bankConflicts    []bankInputConflict
 	BankScenarios    *bankScenarioAnalysis     `json:"bank_scenarios,omitempty"`
@@ -159,8 +160,20 @@ func BuildAnalysisWithBankOverlay(ctx context.Context, db *sql.DB, catalogPath, 
 }
 
 func BuildAnalysisWithBankScenarios(ctx context.Context, db *sql.DB, catalogPath, evidencePath, bankCatalogPath, bankEvidencePath, bankScenarioPath string) (*AnalysisReport, error) {
+	return BuildAnalysisWithProfile(ctx, db, catalogPath, evidencePath, bankCatalogPath, bankEvidencePath, bankScenarioPath, "")
+}
+
+func BuildAnalysisWithProfile(ctx context.Context, db *sql.DB, catalogPath, evidencePath, bankCatalogPath, bankEvidencePath, bankScenarioPath, profilePath string) (*AnalysisReport, error) {
 	if bankScenarioPath != "" && (bankCatalogPath == "" || bankEvidencePath == "") {
 		return nil, fmt.Errorf("bank scenarios require the bank catalog and reviewed evidence")
+	}
+	profile := defaultBBCAProfile()
+	if profilePath != "" {
+		loaded, err := readCompanyProfile(profilePath)
+		if err != nil {
+			return nil, err
+		}
+		profile = loaded
 	}
 	catalog, hash, err := LoadCatalog(catalogPath)
 	if err != nil {
@@ -291,16 +304,17 @@ func BuildAnalysisWithBankScenarios(ctx context.Context, db *sql.DB, catalogPath
 	addAnnualObservations(report)
 	addInterimGrowth(report.Interim)
 	addInterimMargins(report)
+	report.Company = &profile
 	for _, item := range evidence.Observations {
-		if item.Subject == "BBCA" && item.Basis == "consolidated" && item.Unit == "%" && strings.HasSuffix(item.Key, " (KM1)") {
+		if item.Subject == report.companyTicker() && item.Basis == "consolidated" && item.Unit == "%" && strings.HasSuffix(item.Key, " (KM1)") {
 			report.InterimRisk = append(report.InterimRisk, item)
 		}
 	}
-	report.PeerRows = analysisPeers(evidence.Observations)
+	report.PeerRows = analysisPeersFor(evidence.Observations, report.profile().Peers)
 
 	fy25 := report.Annual[len(report.Annual)-1]
 	fy24 := report.Annual[len(report.Annual)-2]
-	report.Results = analysisResults(fy24, fy25, evidence.Observations, facts)
+	report.Results = analysisResultsForTicker(report.companyTicker(), fy24, fy25, evidence.Observations, facts)
 	addBankValuation(report)
 	addInsurerFloatProxies(report)
 	if len(evidence.Rules) != len(catalog) {
@@ -576,10 +590,17 @@ type analysisPeerRow struct {
 }
 
 func analysisPeers(items []analysisObservation) []analysisPeerRow {
+	return analysisPeersFor(items, nil)
+}
+
+func analysisPeersFor(items []analysisObservation, subjects []string) []analysisPeerRow {
+	if len(subjects) == 0 {
+		subjects = []string{"BBCA", "BBRI", "BMRI"}
+	}
 	var rows []analysisPeerRow
 	for _, key := range []string{"Gross NPL", "Capital adequacy ratio", "Loan to deposit ratio"} {
 		row := analysisPeerRow{Key: key, Basis: "bank only"}
-		for _, subject := range []string{"BBCA", "BBRI", "BMRI"} {
+		for _, subject := range subjects {
 			for _, item := range items {
 				if item.Period == "2025" && item.Key == key && item.Subject == subject && item.Basis == row.Basis && item.Unit == "%" {
 					row.Observations = append(row.Observations, item)
@@ -587,7 +608,7 @@ func analysisPeers(items []analysisObservation) []analysisPeerRow {
 			}
 		}
 		row.Status = "comparable"
-		if len(row.Observations) != 3 {
+		if len(row.Observations) != len(subjects) {
 			row.Status = "matching basis or input missing"
 		}
 		rows = append(rows, row)
@@ -600,6 +621,10 @@ func derived(id, period, unit string, value float64, inputs map[string]any) Metr
 }
 
 func analysisResults(fy24, fy25 analysisPeriod, items []analysisObservation, facts map[string][]periodFact) map[string]Metric {
+	return analysisResultsForTicker("BBCA", fy24, fy25, items, facts)
+}
+
+func analysisResultsForTicker(ticker string, fy24, fy25 analysisPeriod, items []analysisObservation, facts map[string][]periodFact) map[string]Metric {
 	results := make(map[string]Metric)
 	for _, rule := range []string{"earnings-per-share", "return-on-assets", "return-on-equity", "effective-tax-rate",
 		"total-liabilities-to-equity", "net-change-in-cash", "capital-expenditure-to-net-earnings", "net-profit-margin"} {
@@ -609,7 +634,7 @@ func analysisResults(fy24, fy25 analysisPeriod, items []analysisObservation, fac
 	}
 	obs := func(key, period, basis, unit string) (float64, any, bool) {
 		for _, item := range items {
-			if item.Subject == "BBCA" && item.Period == period && item.Key == key && item.Basis == basis && item.Unit == unit {
+			if item.Subject == ticker && item.Period == period && item.Key == key && item.Basis == basis && item.Unit == unit {
 				return *item.Value, item, true
 			}
 		}

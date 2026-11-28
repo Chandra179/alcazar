@@ -58,7 +58,7 @@ func readBankAnalysisEvidence(path string) (bankAnalysisEvidence, error) {
 		key := strings.Join([]string{item.Key, item.Subject, item.Period, item.Basis}, "/")
 		if item.Source == "" || evidence.Sources[item.Source].Title == "" || item.Value == nil ||
 			math.IsNaN(*item.Value) || math.IsInf(*item.Value, 0) || item.Key == "" ||
-			(item.Subject != "BBCA" && item.Key != "Reported CASA share") || item.Subject == "" || item.Period == "" || item.Basis == "" || item.Unit == "" || seen[key] {
+			item.Subject == "" || item.Period == "" || item.Basis == "" || item.Unit == "" || seen[key] {
 			return evidence, fmt.Errorf("duplicate or invalid bank observation %s", key)
 		}
 		if item.Corroboration != "" && evidence.Sources[item.Corroboration].Title == "" {

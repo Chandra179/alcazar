@@ -106,8 +106,9 @@ func calculateBankMetrics(observations []analysisObservation, conflicts []bankIn
 		}
 		periods[period][basis] = true
 	}
+	subject := primaryBankSubject(observations)
 	for _, observation := range observations {
-		if observation.Subject == "BBCA" && bankReportInput(observation.Key, observation.Basis, observation.PeriodType) {
+		if observation.Subject == subject && bankReportInput(observation.Key, observation.Basis, observation.PeriodType) {
 			addPeriod(observation.Period, observation.Basis)
 		}
 	}
@@ -360,12 +361,22 @@ func bankObservation(key, period, basis string, observations []analysisObservati
 	if conflict := bankConflictAt(key, basis, end, conflicts); conflict != nil {
 		return analysisObservation{}, false, conflict.Reason, conflict
 	}
+	subject := primaryBankSubject(observations)
 	for _, item := range observations {
-		if item.Subject == "BBCA" && item.Key == key && item.Period == period && item.Basis == basis {
+		if item.Subject == subject && item.Key == key && item.Period == period && item.Basis == basis {
 			return item, true, "", nil
 		}
 	}
 	return analysisObservation{}, false, "", nil
+}
+
+func primaryBankSubject(observations []analysisObservation) string {
+	for _, item := range observations {
+		if item.Subject != "" && item.Key != "Reported CASA share" {
+			return item.Subject
+		}
+	}
+	return "BBCA"
 }
 
 func appendBankConflict(current any, conflict *bankInputConflict) []bankInputConflict {
@@ -388,8 +399,9 @@ func averageBankBalance(key, basis string, flow analysisObservation, observation
 	openingDate := start.AddDate(0, 0, -1).Format("2006-01-02")
 	closingDate := end.Format("2006-01-02")
 	var opening, closing *analysisObservation
+	subject := primaryBankSubject(observations)
 	for _, item := range observations {
-		if item.Subject != "BBCA" || item.Key != key || item.Basis != basis || item.PeriodType != "balance" {
+		if item.Subject != subject || item.Key != key || item.Basis != basis || item.PeriodType != "balance" {
 			continue
 		}
 		if item.PeriodEnd == openingDate {

@@ -144,6 +144,55 @@ const PLAIN_ENGLISH_TERMS: PlainTermDef[] = [
     includes: ["cet1 gap"],
   },
   {
+    term: "EBITDA",
+    group: "Profitability",
+    meaning:
+      "Operating profit before interest, taxes, and non-cash depreciation—shows how much cash profit the core business makes.",
+    includes: ["ebitda"],
+  },
+  {
+    term: "Free cash flow",
+    group: "Cash Flow",
+    meaning:
+      "Cash left over from operations after paying for equipment and upkeep (CapEx)—money available for dividends, debt paydown, or growth.",
+    includes: ["free cash flow", "fcf"],
+  },
+  {
+    term: "ROIC",
+    group: "Profitability",
+    meaning:
+      "Return on Invested Capital—how much profit a company earns on all the debt and equity invested in the business. Higher is better.",
+    includes: ["roic", "return on invested capital"],
+  },
+  {
+    term: "Net debt / EBITDA",
+    group: "Risk & Stress",
+    meaning:
+      "How many years of operating cash profit it would take to pay off total debt (minus cash). Lower is safer.",
+    includes: ["net debt / ebitda", "net debt to ebitda"],
+  },
+  {
+    term: "Interest coverage",
+    group: "Risk & Stress",
+    meaning:
+      "How many times over operating profit can pay interest on debt. Higher means much lower risk of missing debt payments.",
+    includes: ["interest coverage"],
+  },
+  {
+    term: "Gross margin",
+    group: "Profitability",
+    meaning:
+      "Share of revenue left after subtracting the direct cost of making goods or delivering services. Higher means stronger pricing power.",
+    includes: ["gross margin"],
+  },
+  {
+    term: "Operating margin",
+    group: "Profitability",
+    meaning:
+      "Share of revenue left after paying all day-to-day operating costs (before interest and taxes). Higher means a more efficient business.",
+    includes: ["operating margin"],
+  },
+  {
     term: "Return including cash dividends",
     group: "Shareholder Returns",
     meaning:
@@ -269,7 +318,8 @@ const PLAIN_ENGLISH_TERMS: PlainTermDef[] = [
   {
     term: "CASA (Low-cost deposits)",
     group: "Funding",
-    meaning: "Everyday checking and savings accounts — cheap funding because they pay low interest.",
+    meaning:
+      "Share of the bank's funding from cheap, everyday checking and savings accounts (rather than expensive time deposits). Higher is better.",
     includes: ["casa"],
   },
 ]

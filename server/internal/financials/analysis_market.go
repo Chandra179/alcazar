@@ -5,7 +5,7 @@ func addAnnualObservations(report *AnalysisReport) {
 	for _, row := range report.Annual {
 		period := row.Period
 		find := func(key, basis, unit string) analysisObservation {
-			return report.findObservation(key, "BBCA", period, basis, unit)
+			return report.findObservation(key, report.companyTicker(), period, basis, unit)
 		}
 		if row.Values["net-change-in-cash"].Status == "missing_inputs" {
 			operating := find("Operating cash flow", "consolidated", "IDR million")
@@ -81,7 +81,7 @@ type operatingIncome struct {
 
 func (r *AnalysisReport) operatingIncome(period string) (bank, group operatingIncome, ok bool) {
 	find := func(key string) analysisObservation {
-		return r.findObservation(key, "BBCA", period, "consolidated", "IDR million")
+		return r.findObservation(key, r.companyTicker(), period, "consolidated", "IDR million")
 	}
 	interest, other, insurance := find("Net interest and sharia income"), find("Other operating income"), find("Net insurance income")
 	if interest.Value == nil || other.Value == nil || insurance.Value == nil ||
@@ -98,7 +98,7 @@ const analysisShareBasis = "october-2021-split"
 const bbcaListingYear = "2000"
 
 func (r *AnalysisReport) marketShareObservation(key, period string) analysisObservation {
-	item := r.findObservation(key, "BBCA", period, "market", "IDR/share")
+	item := r.findObservation(key, r.companyTicker(), period, "market", "IDR/share")
 	if item.ShareBasis != analysisShareBasis {
 		return analysisObservation{}
 	}
@@ -111,7 +111,7 @@ func shareholderReturn(open, close, dividends float64) float64 {
 
 func matchingAnnualEPS(report *AnalysisReport, row analysisPeriod) (Metric, bool) {
 	exact := row.Values["earnings-per-share"]
-	shares := report.findObservation("Split-adjusted weighted average shares", "BBCA", row.Period, "consolidated", "shares")
+	shares := report.findObservation("Split-adjusted weighted average shares", report.companyTicker(), row.Period, "consolidated", "shares")
 	if exact.Value == nil || shares.ShareBasis != analysisShareBasis || shares.Value == nil || *shares.Value <= 0 {
 		return exact, false
 	}
@@ -150,7 +150,7 @@ func annualMarketMetrics(report *AnalysisReport, row analysisPeriod, prior strin
 				Reason: "BBCA listed during 2000, so a full-calendar-year holding return is unavailable."}
 		}
 	}
-	eps := report.findObservation("Basic EPS on 2025 share basis", "BBCA", period, "consolidated", "IDR/share")
+	eps := report.findObservation("Basic EPS on 2025 share basis", report.companyTicker(), period, "consolidated", "IDR/share")
 	var epsValue float64
 	var epsInput any
 	if eps.Value != nil && eps.ShareBasis == analysisShareBasis {
@@ -173,7 +173,7 @@ func annualMarketMetrics(report *AnalysisReport, row analysisPeriod, prior strin
 			map[string]any{"close": close, "eps": epsInput})
 	}
 	book := find("Published book value per share", period)
-	shares := report.findObservation("Closing common shares ex treasury", "BBCA", period, "consolidated", "shares")
+	shares := report.findObservation("Closing common shares ex treasury", report.companyTicker(), period, "consolidated", "shares")
 	equity := row.Facts["common_shareholders_equity"]
 	equityValue, equityOK := parseCanonicalNumber(equity.NormalizedValue)
 	scale, scaleOK := unitScale(equity.Unit)
@@ -190,7 +190,7 @@ func annualMarketMetrics(report *AnalysisReport, row analysisPeriod, prior strin
 		results["dividend-yield"] = derived("dividend-yield", period, "%", *paid.Value / *close.Value * 100,
 			map[string]any{"close": close, "cash_dividends_paid": paid})
 	}
-	if period <= bbcaListingYear {
+	if period <= report.listingYear() {
 		return results
 	}
 	open, earned := find("Year-end close", prior), find("Dividends earned", period)
@@ -199,7 +199,7 @@ func annualMarketMetrics(report *AnalysisReport, row analysisPeriod, prior strin
 		nominalMetric := derived("nominal-shareholder-return", period, "%", nominal*100,
 			map[string]any{"opening_close": open, "ending_close": close, "dividends_earned": earned})
 		results["nominal-shareholder-return"] = nominalMetric
-		inflation := report.findObservation("CPI growth", "BBCA", period, "Indonesia CPI", "%")
+		inflation := report.findObservation("CPI growth", report.companyTicker(), period, report.cpiKey(), "%")
 		if inflation.Value != nil && *inflation.Value > -100 {
 			results["real-return-after-inflation"] = derived("real-return-after-inflation", period, "%",
 				((1+nominal)/(1+*inflation.Value/100)-1)*100, map[string]any{"nominal_return": nominalMetric, "inflation": inflation})

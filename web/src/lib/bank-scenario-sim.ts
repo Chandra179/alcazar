@@ -158,6 +158,7 @@ function cells(...texts: string[]): ReportCell[] {
 export function buildScenarioOutputTables(
   results: BankScenarioResult[],
   baselineResults?: BankScenarioResult[],
+  currencySymbol = "Rp",
 ): ReportTable[] {
   const stress: ReportTable = {
     title: "One-year stress",
@@ -212,16 +213,16 @@ export function buildScenarioOutputTables(
     values.rows.push(
       cells(
         item.name,
-        `Rp${Math.round(divVal)}`,
-        `Rp${Math.round(resVal)}`,
+        `${currencySymbol}${Math.round(divVal)}`,
+        `${currencySymbol}${Math.round(resVal)}`,
         `${(normInc / 1e6).toFixed(2)}T`,
-        `Rp${Math.round(y1Dps)}`,
+        `${currencySymbol}${Math.round(y1Dps)}`,
       ),
     )
   }
 
   if (baselineResults?.length) {
-    const baseTables = buildScenarioOutputTables(baselineResults)
+    const baseTables = buildScenarioOutputTables(baselineResults, undefined, currencySymbol)
     ;[stress, values].forEach((table, tIdx) => {
       const baseTable = baseTables[tIdx]
       table.rows.forEach((row, rIdx) => {

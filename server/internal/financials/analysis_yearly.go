@@ -72,11 +72,15 @@ func (r *AnalysisReport) yearlySections(stories map[string]analysisYearStory, st
 		Text: "A year-by-year comparison of BCA’s business, financial position and shareholder outcomes, from the first available annual record through FY2025, with a 2026 update.",
 	}}}
 	sections := []reportSection{cover, r.yearlyInterim(interim, sources)}
-	if r.BankCatalogHash != "" {
-		sections = append(sections, r.yearlyBankRisk())
-	}
-	if r.BankScenarios != nil {
-		sections = append(sections, r.yearlyBankScenarios())
+	if r.profile().Industry != "corporate" {
+		if r.BankCatalogHash != "" {
+			sections = append(sections, r.yearlyBankRisk())
+		}
+		if r.BankScenarios != nil {
+			sections = append(sections, r.yearlyBankScenarios())
+		}
+	} else if corp := r.yearlyCorporate(); corp != nil {
+		sections = append(sections, *corp)
 	}
 	for i := len(r.Annual) - 1; i >= 0; i-- {
 		row := r.Annual[i]
@@ -331,12 +335,13 @@ func (r *AnalysisReport) yearlyMeasures() []yearlyMeasure {
 }
 
 func (r *AnalysisReport) yearlyObservation(key, period, basis, unit, display string, scale float64) yearlyValue {
+	ticker := r.companyTicker()
 	var selected analysisObservation
 	if basis != "" {
-		selected = r.findObservation(key, "BBCA", period, basis, unit)
+		selected = r.findObservation(key, ticker, period, basis, unit)
 	} else {
 		for _, preferred := range []string{"consolidated", "bank only", "unconsolidated"} {
-			selected = r.findObservation(key, "BBCA", period, preferred, unit)
+			selected = r.findObservation(key, ticker, period, preferred, unit)
 			if selected.Value != nil {
 				break
 			}
@@ -587,10 +592,11 @@ func (r *AnalysisReport) interimRiskTable() reportTable {
 		{"Net stable funding ratio (KM1)", "%", "Stable funding · group"},
 	} {
 		priorPeriod, currentPeriod := "2025-12", "2026-09"
-		prior, current := r.findObservation(measure.key, "BBCA", priorPeriod, "consolidated", measure.unit), r.findObservation(measure.key, "BBCA", currentPeriod, "consolidated", measure.unit)
+		ticker := r.companyTicker()
+		prior, current := r.findObservation(measure.key, ticker, priorPeriod, "consolidated", measure.unit), r.findObservation(measure.key, ticker, currentPeriod, "consolidated", measure.unit)
 		if measure.key == "Gross loans and financing" {
 			priorPeriod, currentPeriod = "2025", "2026-09"
-			prior, current = r.findObservation(measure.key, "BBCA", priorPeriod, "consolidated", measure.unit), r.findObservation(measure.key, "BBCA", currentPeriod, "consolidated", measure.unit)
+			prior, current = r.findObservation(measure.key, ticker, priorPeriod, "consolidated", measure.unit), r.findObservation(measure.key, ticker, currentPeriod, "consolidated", measure.unit)
 		}
 		if current.Value == nil {
 			continue

@@ -151,7 +151,20 @@ export interface PeerComparisonRow {
   [key: string]: unknown
 }
 
+export interface CompanyProfile {
+  ticker: string
+  name?: string
+  short_name?: string
+  industry?: string
+  currency?: string
+  currency_symbol?: string
+  listing_year?: string
+  cpi_key?: string
+  peers?: string[]
+}
+
 export interface AnalysisReport {
+  company?: CompanyProfile
   catalog_hash: string
   facts_hash: string
   reviewed_catalog_hash: string

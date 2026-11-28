@@ -2,6 +2,8 @@ GO ?= go
 GOLANGCI_LINT ?= golangci-lint
 NPM ?= npm
 PODMAN ?= podman
+WRANGLER ?= npx --yes wrangler
+WRANGLER_CONFIG ?= wrangler.jsonc
 
 BINARY ?= bin/alcazar-server
 APP_ENVIRONMENT ?= dev
@@ -9,7 +11,7 @@ SQLITE_DSN ?= alcazar.db
 BADGER_DIR ?= alcazar
 
 .PHONY: all build run test lint fmt tidy verify migrate-up podman-build \
-	web-install web-dev web-build web-lint web-typecheck
+	web-install web-dev web-build web-lint web-typecheck cf-local cf-deploy
 
 all: verify lint test build
 
@@ -55,5 +57,11 @@ web-lint:
 
 web-typecheck:
 	$(NPM) --prefix web run typecheck
+
+cf-local: web-build
+	$(WRANGLER) dev -c $(WRANGLER_CONFIG) --local
+
+cf-deploy: web-build
+	$(WRANGLER) deploy -c $(WRANGLER_CONFIG)
 
 include scripts/bbca.mk

@@ -19,6 +19,15 @@ go.work.sum
 
 # Local environment and server runtime data
 .env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+.wrangler/
+wrangler.local.*
+*.pem
+*.key
+web/dist/
 .venv-bbca-pdf/
 *.db
 *.db-*
