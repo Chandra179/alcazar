@@ -11,8 +11,6 @@
     "moduleDetection": "force",
     "noEmit": true,
     "strict": true,
-    "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
     "types": ["node"]
   },
   "include": ["vite.config.ts", "eslint.config.js"]
